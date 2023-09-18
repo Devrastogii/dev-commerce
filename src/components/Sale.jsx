@@ -25,11 +25,7 @@ const Sale = () => {
         setProductOfferPrice(res.data.offer)
         setProductRating(res.data.rating)
         setProductTotalRating(res.data.total_ratings)
-        setProductOff(res.data.off)
-        // setProductImage(res.data.images)  
-
-        console.log(res.data.name);
-        console.log(res.data.images);
+        setProductOff(res.data.off)               
 
         for (let index = 0; index < res.data.name.length; index++) {
             for (let j = 0; j < res.data.uid.length; j++) {                
@@ -37,9 +33,7 @@ const Sale = () => {
                     productImage.push(res.data.images[j])
                 }
             }   
-        }
-
-        console.log(productImage[0] === 'WOHT1MNH.jpg');
+        }        
     }
 
     start()
