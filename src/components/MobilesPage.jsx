@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Navbar from './Navbar'
 import axios from 'axios'
 import { useLocation } from 'react-router-dom'
+import Filter from './FilterSection/Filter'
 
 const MobilesPage = () => {
 
@@ -13,6 +14,8 @@ const MobilesPage = () => {
   const [productTotalRating, setProductTotalRating] = useState([])
   const [productId, setProductId] = useState([])
   const [productDescription, setProductDescription] = useState([])
+
+  const [brandName, setBrandName] = useState([])
 
   const location = useLocation()
   const id = location.state.id
@@ -28,6 +31,8 @@ const MobilesPage = () => {
         setProductOff(res.data.off)
         setProductDescription(res.data.description)    
         setProductId(res.data.uid)     
+        setBrandName(res.data.brand)
+        // console.log(res.data.name.split(" ")[0])        
     }
 
     start()
@@ -38,28 +43,34 @@ const MobilesPage = () => {
         <br />
         <Navbar />
 
-        <section className='mt-10'>
+        <section className='mt-10 px-5'>
             <div className='flex gap-x-5'>
                 <div className='w-1/4 bg-white drop-shadow-lg'>
-                    <div className='text-2xl font-semibold'>Filters</div>
+                    <Filter brand = {brandName} />
                 </div>
-                <div className='w-3/4 bg-white drop-shadow-lg'>
-                    <div>Home</div>
-                    <div>Showing</div>
-                    <div>Navbar</div>
+                <div className='w-3/4 bg-white drop-shadow-lg py-2 px-4'>
+                    <div className='text-sm'>Home</div>
+                    <div className='font-semibold mt-[0.45rem] text-lg'>Showing 1 - 20 of {productName.length} results for Mobiles</div>
+                    <div className='flex gap-x-5 mt-[0.45rem] text-sm'>
+                        <div className='font-semibold'>Sort By</div>
+                        <div>Relevance</div>
+                        <div>Price--Low to High</div>
+                        <div>Price--High to Low</div>
+                        <div>Newest First</div>
+                    </div>       
                     <div className='mt-5'><hr className='opacity-10 border-0 h-[1px] bg-black' /></div>
                     <div>
-                        {productName.slice(0,5).map((val, index) => {                            
+                        {productName.slice(0,20).map((val, index) => {                            
                             return (
                                 <>
                                     <div className='flex mt-10 gap-x-10'>
                                         <div className='flex gap-x-5'>
-                                            <div className='px-1 w-[15rem] h-[22rem] flex justify-center'><img src={require(`../cat_images/mobiles/${productId[index]}.jpg`)} className='w-[12rem] h-[18rem]' loading='lazy' /></div>
+                                            <div className='px-1 w-[15rem] h-[22rem] flex justify-center'><img src={require(`../cat_images/mobiles/${productId[index]}.jpg`)} className='w-[13rem] h-[20rem]' loading='lazy' /></div>
                                             <div className='flex flex-col'>
                                             <div className='font-semibold text-xl w-[30rem]'>{val}</div>
                                             <div className='flex gap-x-4 mt-2 items-center h-auto'>
                                                 <div className='bg-[#4E4FEB] text-white rounded-lg w-[3.2rem] h-6 text-xs flex justify-center items-center'>{productRating[index]} <i class="bi bi-star-fill text-xs ml-1"></i></div>
-                                                <div className='text-gray-500 font-semibold -mt-1'>({productTotalRating[index]})</div> 
+                                                <div className='text-gray-500 font-semibold -mt-1'>{productTotalRating[index]} Ratings</div> 
                                             </div>
                                             <div className='mt-3 px-5'>
                                                 <ul className='list-disc'>
@@ -89,7 +100,9 @@ const MobilesPage = () => {
                                             </div>                                         
                                         </div>
                                         </div>
-                                    </div>                                    
+                                    </div>    
+
+                                        <div className='mt-5'><hr className='opacity-10 border-0 h-[1px] bg-black' /></div>
                                 </>
                             )
                         })}
