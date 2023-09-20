@@ -19,6 +19,18 @@ const FeaturedProducts = () => {
     if(id == "1"){
         navigate('/mobiles_page', {state: {id: 0}})
     }
+
+    else if(id == "2") {
+        navigate('/mobiles_page', {state: {id: 1}})
+    }
+
+    else if(id == "3") {
+        navigate('/mobiles_page', {state: {id: 2}})
+    }
+
+    else if(id == "4") {
+        navigate('/mobiles_page', {state: {id: 3}})
+    }
   }
 
   return (
@@ -58,9 +70,9 @@ const FeaturedProducts = () => {
                 {takeId === "2" ? <>
                 <motion.div initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 1}} className='bg-black w-[30rem] h-[17rem] bg-opacity-50 flex flex-col-reverse p-10'>
                         <motion.div initial={{translateX: -50}} animate={{translateX: 0}} className='font-semibold mt-2'>
-                            <button className='w-[6rem] h-[2.3rem] bg-[#4E4FEB] rounded-md text-md tracking-wide slide_right'>View All</button>
+                            <button className='w-[6rem] h-[2.3rem] bg-[#4E4FEB] rounded-md text-md tracking-wide slide_right' onClick={() => navigatePage("4")}>View All</button>
                         </motion.div>
-                        <motion.div initial={{translateX: -50}} animate={{translateX: 0}} className='text-[2.4rem] tracking-wide font-semibold'>Earbuds</motion.div>
+                        <motion.div initial={{translateX: -50}} animate={{translateX: 0}} className='text-[2.4rem] tracking-wide font-semibold'>Laptops</motion.div>
                         <motion.div initial={{translateX: -50}} animate={{translateX: 0}} className='text-md font-semibold uppercase tracking-wide'>Quality</motion.div>
                     </motion.div>                    
                 </> : null}                    
@@ -76,9 +88,9 @@ const FeaturedProducts = () => {
                         {takeId === "3" ? <>
                         <motion.div initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 1}} className='bg-black w-[14rem] h-[15rem] bg-opacity-50 flex flex-col-reverse p-6'>
                                 <motion.div initial={{translateX: -50}} animate={{translateX: 0}} className='font-semibold mt-2'>
-                                    <button className='w-[4.5rem] h-[2.1rem] bg-[#4E4FEB] rounded-md text-xs tracking-wide slide_right'>View All</button>
+                                    <button className='w-[4.5rem] h-[2.1rem] bg-[#4E4FEB] rounded-md text-xs tracking-wide slide_right' onClick={() => navigatePage("3")}>View All</button>
                                 </motion.div>
-                            <motion.div initial={{translateX: -50}} animate={{translateX: 0}} className='text-[2rem] tracking-wide font-semibold'>Tablets</motion.div>
+                            <motion.div initial={{translateX: -50}} animate={{translateX: 0}} className='text-[2rem] tracking-wide font-semibold'>WATCHES</motion.div>
                             <motion.div initial={{translateX: -50}} animate={{translateX: 0}} className='text-md font-semibold uppercase tracking-wide'>New</motion.div>
                             </motion.div>                    
                         </> : null}                            
@@ -94,7 +106,7 @@ const FeaturedProducts = () => {
                         {takeId === "4" ? <>
                         <motion.div initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 1}} className='bg-black w-[14rem] h-[15rem] bg-opacity-50 flex flex-col-reverse p-6'>
                                 <motion.div initial={{translateX: -50}} animate={{translateX: 0}} className='font-semibold mt-2'>
-                                    <button className='w-[4.5rem] h-[2.1rem] bg-[#4E4FEB] rounded-md text-xs tracking-wide slide_right'>View All</button>
+                                    <button className='w-[4.5rem] h-[2.1rem] bg-[#4E4FEB] rounded-md text-xs tracking-wide slide_right' onClick={() => navigatePage("2")}>View All</button>
                                 </motion.div>
                             <motion.div initial={{translateX: -50}} animate={{translateX: 0}} className='text-[2rem] tracking-wide font-semibold'>Monitors</motion.div>
                             <motion.div initial={{translateX: -50}} animate={{translateX: 0}} className='text-md font-semibold uppercase tracking-wide'>Fresh Out</motion.div>

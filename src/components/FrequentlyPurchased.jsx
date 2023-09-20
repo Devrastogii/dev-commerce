@@ -45,7 +45,7 @@ const FrequentlyPurchased = () => {
                         <>
                         <div className='flex flex-col'>
                     <div>                    
-                        <img src={require(`../mobile_images/${productImage[index]}`)} alt="product-image" loading='lazy' className='h-[12rem]' />
+                        {/* <img src={require(`../mobile_images/${productImage[index]}`)} alt="product-image" loading='lazy' className='h-[12rem]' /> */}
                     </div>
                     <div className='font-semibold mt-4'>{val[0]} <br /> ({val[1]})</div>
                     <div className='flex gap-x-2 items-center mt-3'>
