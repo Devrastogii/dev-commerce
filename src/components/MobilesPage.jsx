@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from './Navbar'
 import axios from 'axios'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Filter from './FilterSection/Filter'
 
 const MobilesPage = () => {
@@ -23,6 +23,7 @@ const MobilesPage = () => {
   const totalPages = productName.length
 
   const location = useLocation()
+  const navigate = useNavigate()
   const id = location.state.id
 
   const image_category = ['mobiles', 'monitors', 'watch', 'laptop', 'tablet', 'fridge', 'machine', 'purifier']
@@ -48,12 +49,23 @@ const MobilesPage = () => {
   const handleHover = (text, index) => {
     if(text == "yes") {
         setHoverState(true)
-        setIndepIndex(index)
-        console.log(indepIndex);
+        setIndepIndex(index)      
     }
 
     else 
         setHoverState(false)
+  }
+
+  const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff) => {
+    navigate('/product-page', {state: {
+        'name': name,
+        'rating': productRating,
+        'totalRating': productTotalRating,
+        'description': productDescription,
+        'offer': productOfferPrice,
+        'price': productPrice,
+        'off': productOff
+    }})
   }
 
   return (
@@ -82,7 +94,7 @@ const MobilesPage = () => {
                         {productName.slice(0,20).map((val, index) => {                            
                             return (
                                 <>
-                                    <div className='flex mt-10 gap-x-3 cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)}>
+                                    <div className='flex mt-10 gap-x-3 cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={() => navigateProductPage(val, productRating[index], productTotalRating[index], productDescription[index], productOfferPrice[index], productPrice[index], productOff[index])}>
                                         <div className='flex gap-x-5'>
                                             <div className='px-1 w-[15rem] h-[22rem] flex justify-center'><img src={require(`../cat_images/${image_category[id]}/${productId[index]}.jpg`)} className='w-[13rem] h-[20rem]' loading='lazy' /></div>
                                             <div className='flex flex-col'>
