@@ -66,10 +66,9 @@ const MobilesPage = () => {
         'price': productPrice,
         'off': productOff,
         'image': image,
-        'category': category
+        'category': category,
+        'id': id
     }})
-
-    console.log(image, category);
   }
 
   return (
@@ -100,9 +99,9 @@ const MobilesPage = () => {
                                 <>
                                     <div className='flex mt-10 gap-x-3 cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={() => navigateProductPage(val, productRating[index], productTotalRating[index], productDescription[index], productOfferPrice[index], productPrice[index], productOff[index], productId[index], image_category[id])}>
                                         <div className='flex gap-x-5'>
-                                            <div className='px-1 w-[15rem] h-[22rem] flex justify-center'><img src={require(`../cat_images/${image_category[id]}/${productId[index]}.jpg`)} className='w-[13rem] h-[20rem]' loading='lazy' /></div>
+                                            <div className='px-1 w-[13rem] h-[15rem] flex justify-center'><img src={require(`../cat_images/${image_category[id]}/${productId[index]}.jpg`)} className='h-[13rem]' loading='lazy' /></div>
                                             <div className='flex flex-col'>
-                                            <div className={`font-semibold text-xl w-[30rem] ${hoverState && (indepIndex === index) ? 'text-[#4E4FEB]': 'text-black'}`}>{val}</div>
+                                            <div className={`font-semibold text-xl w-[32rem] ${hoverState && (indepIndex === index) ? 'text-[#4E4FEB]': 'text-black'}`}>{val}</div>
                                             <div className='flex gap-x-4 mt-2 items-center h-auto'>
                                                 <div className='bg-[#4E4FEB] text-white rounded-lg w-[3.2rem] h-6 text-xs flex justify-center items-center'>{productRating[index]} <i class="bi bi-star-fill text-xs ml-1"></i></div>
                                                 <div className='text-gray-500 font-semibold -mt-1'>{productTotalRating[index]} Ratings</div> 

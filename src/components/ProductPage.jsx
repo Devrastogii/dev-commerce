@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import Navbar from './Navbar'
 import Recommend from './Recommend'
@@ -30,14 +30,18 @@ const ProductPage = () => {
         <Navbar />
         <section className='mt-10'>
             <div className='flex w-full px-4'>
-                <div className='w-1/3 border border-black border-opacity-10 flex flex-col justify-center items-center'>                   
-                        <img src={require(`../cat_images/${category}/${image}.jpg`)} loading='lazy' alt='product-image' /> 
+                <div className='w-1/3 flex flex-col justify-center items-center h-[30rem]'>  
 
-                    <div className='flex mt-10 gap-x-5'>
-                        <button className='bg-orange-600 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center'><i class="bi bi-lightning-fill mr-1"></i> BUY NOW</button>
-                        
-                        <button className='bg-yellow-500 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center'><i class="bi bi-cart-plus-fill mr-1"></i> ADD TO CART</button>
-                </div>                               
+                <div className={`border border-black border-opacity-10 h-[30rem] w-full flex flex-col justify-center items-center`}>
+                <img src={require(`../cat_images/${category}/${image}.jpg`)} loading='lazy' alt='product-image' /> 
+
+                <div className='flex mt-10 gap-x-5'>
+                    <button className='bg-orange-600 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center'><i class="bi bi-lightning-fill mr-1"></i> BUY NOW</button>
+    
+                    <button className='bg-yellow-500 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center'><i class="bi bi-cart-plus-fill mr-1"></i> ADD TO CART</button>
+                </div>
+                </div>                 
+                                                       
                 </div>               
 
                 <div className='w-2/3 flex flex-col py-4 px-6'>
@@ -132,7 +136,8 @@ const ProductPage = () => {
 
         <Recommend name = {name}
                    image = {image}
-                   category = {category} />
+                   category = {category}
+                   id = {location.state.id} />
     </>
   )
 }
