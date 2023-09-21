@@ -3,6 +3,7 @@ import Navbar from './Navbar'
 import axios from 'axios'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Filter from './FilterSection/Filter'
+import Loading from './Loading'
 
 const MobilesPage = () => {
 
@@ -28,6 +29,10 @@ const MobilesPage = () => {
 
   const image_category = ['mobiles', 'monitors', 'watch', 'laptop', 'tablet', 'fridge', 'machine', 'purifier']
 
+  // Loading
+
+  const [show, setShow] = useState(true);
+
   useEffect(() => {
     async function start(){
         const res = await axios.post("/products_show", {id})  
@@ -44,6 +49,15 @@ const MobilesPage = () => {
     }
 
     start()
+
+    const f = setTimeout(() => {
+        setShow(false)
+      }, 2000); 
+  
+      return () => {      
+        clearTimeout(f)
+    };
+
   },[])
 
   const handleHover = (text, index) => {
@@ -73,7 +87,8 @@ const MobilesPage = () => {
 
   return (
     <>
-        <br />
+       {show ? <Loading /> : <>
+       <br />
         <Navbar />
 
         <section className='mt-10 px-5'>
@@ -155,7 +170,8 @@ const MobilesPage = () => {
                 </div>
                 </div>
             </div>
-        </section>        
+        </section>    
+       </>}     
     </>
   )
 }

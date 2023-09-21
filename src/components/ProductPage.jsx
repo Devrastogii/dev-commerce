@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import Navbar from './Navbar'
 import Recommend from './Recommend'
+import Loading from './Loading'
 
 const ProductPage = () => {
 
@@ -24,9 +25,23 @@ const ProductPage = () => {
   const month = new Date().getMonth()
   const day = new Date().getDay()
 
+  const [show, setShow] = useState(true);
+
+  useEffect(() => {
+    const f = setTimeout(() => {
+      setShow(false)
+    }, 1000); 
+
+    return () => {      
+      clearTimeout(f)
+  };
+
+  }, [])
+
   return (
     <>
-        <br />
+       {show ? <Loading /> : <>
+       <br />
         <Navbar />
         <section className='mt-10'>
             <div className='flex w-full px-4'>
@@ -138,6 +153,7 @@ const ProductPage = () => {
                    image = {image}
                    category = {category}
                    id = {location.state.id} />
+       </>} 
     </>
   )
 }

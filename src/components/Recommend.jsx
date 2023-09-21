@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 const Recommend = (props) => {
 
-  const name = props.name
+  const name = props.name  
 
   const [productName, setProductName] = useState([])
   const [productPrice, setProductPrice] = useState([])
@@ -21,19 +21,22 @@ const Recommend = (props) => {
   const id = props.id
   const navigate = useNavigate()
 
-  useEffect(() => {
-    async function getData(){
-        const res = await axios.post('/product-recommend', {name, id})
-        setProductName(res.data.name)
-        setProductPrice(res.data.original)
-        setProductOfferPrice(res.data.offer)
-        setProductRating(res.data.rating)
-        setProductTotalRating(res.data.total_ratings)
-        setProductOff(res.data.off)   
-        setProductId(res.data.uid)   
-        setProductDescription(res.data.description)     
-    }
+  // Common Function
 
+  async function getData(){
+    const res = await axios.post('/product-recommend', {name, id})
+    setProductName(res.data.name)
+    setProductPrice(res.data.original)
+    setProductOfferPrice(res.data.offer)
+    setProductRating(res.data.rating)
+    setProductTotalRating(res.data.total_ratings)
+    setProductOff(res.data.off)   
+    setProductId(res.data.uid)   
+    setProductDescription(res.data.description)    
+  } 
+    
+
+  useEffect(() => {    
     getData()
   }, [])
 
@@ -88,6 +91,7 @@ const Recommend = (props) => {
     }
     
     window.addEventListener('click', scrollToTop)
+    getData()
   }
 
   return (
@@ -121,8 +125,8 @@ const Recommend = (props) => {
                 })}
             </div>
 
-            <div className='flex justify-center items-center h-[15rem] absolute right-0 mt-5'>
-                <div className='flex bg-white justify-center items-center drop-shadow-2xl rounded-xl w-[3rem] h-[6rem]'>
+            <div className='flex justify-center items-center h-[15rem] absolute right-0 mt-5 bg-white'>
+                <div className='flex bg-white justify-center items-center drop-shadow-2xl rounded-xl w-[3rem] h-[6rem] cursor-pointer' onClick={handleSlide}>
                     <button onClick={handleSlide}><i class="bi bi-chevron-double-right text-black text-2xl outline-none"></i></button>
                 </div>
             </div>

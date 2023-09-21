@@ -1,18 +1,30 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from './Navbar'
 import Hero from './Hero'
 import Sale from './Sale'
 import FeaturedProducts from './FeaturedProducts'
-import FrequentlyPurchased from './FrequentlyPurchased'
-import BasketProducts from './BasketProducts'
-import Ad from './Ad'
 import Services from './Services'
 import Footer from './Footer'
+import Loading from './Loading'
 
 const Home = () => {
+
+  const [show, setShow] = useState(true);
+
+  useEffect(() => {
+    const f = setTimeout(() => {
+      setShow(false)
+    }, 1000); 
+
+    return () => {      
+      clearTimeout(f)
+  };
+
+  }, [])
+
   return (
     <>
-        <section>
+        {show ? <Loading /> : <> <section>
             <div className='w-full h-10 bg-black flex justify-center items-center'>
                 <h1 className='text-white text-sm'><span className='opacity-90'>Summer Sale on Tablets and Free Delivery - 30% OFF</span><span className='ml-3 font-bold underline'><a>Shop Now</a></span></h1>
             </div>
@@ -53,6 +65,9 @@ const Home = () => {
         <br /> <br /> <br /> <br /> <br /> <br />
 
         <Footer />
+
+      </>
+        }
     </>
   )
 }
