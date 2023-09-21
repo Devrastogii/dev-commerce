@@ -56,7 +56,7 @@ const MobilesPage = () => {
         setHoverState(false)
   }
 
-  const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff) => {
+  const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category) => {
     navigate('/product-page', {state: {
         'name': name,
         'rating': productRating,
@@ -64,8 +64,12 @@ const MobilesPage = () => {
         'description': productDescription,
         'offer': productOfferPrice,
         'price': productPrice,
-        'off': productOff
+        'off': productOff,
+        'image': image,
+        'category': category
     }})
+
+    console.log(image, category);
   }
 
   return (
@@ -94,7 +98,7 @@ const MobilesPage = () => {
                         {productName.slice(0,20).map((val, index) => {                            
                             return (
                                 <>
-                                    <div className='flex mt-10 gap-x-3 cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={() => navigateProductPage(val, productRating[index], productTotalRating[index], productDescription[index], productOfferPrice[index], productPrice[index], productOff[index])}>
+                                    <div className='flex mt-10 gap-x-3 cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={() => navigateProductPage(val, productRating[index], productTotalRating[index], productDescription[index], productOfferPrice[index], productPrice[index], productOff[index], productId[index], image_category[id])}>
                                         <div className='flex gap-x-5'>
                                             <div className='px-1 w-[15rem] h-[22rem] flex justify-center'><img src={require(`../cat_images/${image_category[id]}/${productId[index]}.jpg`)} className='w-[13rem] h-[20rem]' loading='lazy' /></div>
                                             <div className='flex flex-col'>
