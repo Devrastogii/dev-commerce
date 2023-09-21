@@ -130,7 +130,9 @@ const ProductPage = () => {
             </div>
         </section>
 
-        <Recommend name = {name} />
+        <Recommend name = {name}
+                   image = {image}
+                   category = {category} />
     </>
   )
 }
