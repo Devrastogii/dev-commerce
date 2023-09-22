@@ -24,6 +24,10 @@ const Navbar = () => {
     onOpen()
   }
 
+  const wishlist = () => {
+
+  }
+
   return (
     <>
         <section>
@@ -32,16 +36,12 @@ const Navbar = () => {
                     <h1 className='font-bold text-xl'>DEV-COMMERCE</h1>
                 </div>
                 <div className='flex gap-x-8'>
-                    <div>Home</div>
-                    <div>Contact</div>
-                    <div>About</div>
-                    <button onClick={register}>Sign Up</button>
+                    <div><input type="text" placeholder='Search products...' className='outline-none p-4 w-[24rem] rounded-xl h-[2.5rem] opacity-60 border border-opacity-25 border-black' /></div>                    
                 </div>
-                <div className='flex gap-x-3'>
-                    <div>search bar</div>
-                    <div>wishlist</div>
-                    <div>cart</div>
-                    <div>account</div>
+                <div className='flex gap-x-5 items-center'>                
+                    <button onClick={wishlist}><i class="bi bi-heart text-[1.4rem] hover:text-red-500 transition-all duration-500"></i></button>
+                    <button><i class="bi bi-cart3 text-[1.4rem]"></i></button> 
+                    <button onClick={register} className='w-[6rem] h-[2.5rem] flex justify-center items-center border-opacity-75 font-semibold rounded-lg border border-[#4E4FEB] text-[#4E4FEB] bg-white hover:text-white slide-right-navbar'>Sign Up</button>                  
                 </div>
             </div>
         </section>

@@ -20,8 +20,7 @@ const SalesPage = () => {
         setProductOfferPrice(res.data.offer)
         setProductRating(res.data.rating)
         setProductTotalRating(res.data.total_ratings)
-        setProductOff(res.data.off)
-        // setProductImage(res.data.images) 
+        setProductOff(res.data.off)    
         
         for (let index = 0; index < res.data.name.length; index++) {
             for (let j = 0; j < res.data.uid.length; j++) {                
@@ -34,6 +33,19 @@ const SalesPage = () => {
 
     start()
   },[])
+
+  const [hoverState, setHoverState] = useState(false)
+  const [indepIndex, setIndepIndex] = useState()
+
+  const handleHover = (text, index) => {
+    if(text == "yes") {
+        setHoverState(true)
+        setIndepIndex(index)      
+    }
+
+    else 
+        setHoverState(false)
+  }
 
   return (
     <>
@@ -52,11 +64,11 @@ const SalesPage = () => {
 
                     return (
                         <>
-                        <div className='flex flex-col'>
+                        <div className='flex flex-col cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)}>
                     <div>                    
                         <img src={require(`../all/${productImage[index]}`)} alt="product-image" className='h-[12rem]' loading='lazy' />
                     </div>
-                    <div className='font-semibold mt-4'>{part1} <br /> {part2}</div>
+                    <div className={`font-semibold mt-4 ${hoverState && (indepIndex === index) ? 'text-[#4E4FEB]': 'text-black'}`}>{part1} <br /> {part2}</div>
                     <div className='flex gap-x-2 items-center mt-3'>
                         <div className='bg-[#4E4FEB] text-white rounded-lg w-12 h-6 text-sm flex justify-center items-center'>{productRating[index]}</div>
                         <div className='text-gray-500 font-semibold'>({productTotalRating[index]})</div>                 

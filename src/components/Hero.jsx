@@ -1,5 +1,15 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import {
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
+    PopoverHeader,
+    PopoverBody,
+    PopoverArrow,
+    PopoverCloseButton,
+    Button
+  } from '@chakra-ui/react'
 
 const Hero = () => {
 
@@ -35,8 +45,19 @@ const Hero = () => {
                     <button onClick={() => navigatePage("1")}>Mobile Phones</button>
                     <button onClick={() => navigatePage("5")}>Tablets</button>
                     <button onClick={() => navigatePage("4")}>Laptops</button>
-                    <button onClick={() => navigatePage("1")}>Appliances <span className='ml-2'><i class="bi bi-chevron-right"></i></span></button>
-                    <button onClick={() => navigatePage("1")}>Peripheral Devices <span className='ml-2'><i class="bi bi-chevron-right"></i></span></button>
+                    <Popover>
+  <PopoverTrigger>
+    <Button><button>Appliances <span className='ml-2'><i class="bi bi-chevron-right"></i></span></button></Button>
+  </PopoverTrigger>
+  <PopoverContent>
+    <PopoverArrow />
+    <PopoverCloseButton />
+    <PopoverHeader>Confirmation!</PopoverHeader>
+    <PopoverBody>Are you sure you want to have that milkshake?</PopoverBody>
+  </PopoverContent>
+</Popover>
+                    
+                    <button>Peripheral Devices <span className='ml-2'><i class="bi bi-chevron-right"></i></span></button>
                 </div>
                 <div><hr className='h-[16.5rem] bg-black w-[1px] opacity-10 border-0' /></div>
                 <div className='border border-black w-[55%] h-[40vh] mt-10'></div>
