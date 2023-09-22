@@ -85,6 +85,26 @@ const MobilesPage = () => {
     }})
   }
 
+//   const [countPage, setCountPage] = useState(totalPages / 20)
+  var totalNumberOfPages = Math.floor(totalPages / 20)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [sliceStart, setSliceStart] = useState(0)
+  const [sliceEnd, setSliceEnd] = useState(20)
+
+  const showNextPage = () => {    
+    // const totalNumberOfPages = Math.floor(totalPages / 20)
+
+    if(currentPage <= totalNumberOfPages) {
+        setCurrentPage((prev) => prev + 1);
+        setSliceStart(sliceEnd)
+        setSliceEnd(sliceEnd + 20)
+    }
+  }
+
+  const showPreviousPage = () => {
+    
+  }
+
   return (
     <>
        {show ? <Loading /> : <>
@@ -99,7 +119,7 @@ const MobilesPage = () => {
                 </div>
                 <div className='w-3/4 bg-white drop-shadow-lg py-2 px-4'>
                     <div className='text-sm'>Home</div>
-                    <div className='font-semibold mt-[0.45rem] text-lg'>Showing 1 - 20 of {productName.length} results for {image_category[id]}</div>
+                    <div className='font-semibold mt-[0.45rem] text-lg'>Showing {sliceStart + 1} - {sliceEnd} of {productName.length} results for {image_category[id]}</div>
                     <div className='flex gap-x-5 mt-[0.45rem] text-sm'>
                         <div className='font-semibold'>Sort By</div>
                         <div>Relevance</div>
@@ -109,21 +129,21 @@ const MobilesPage = () => {
                     </div>       
                     <div className='mt-5'><hr className='opacity-10 border-0 h-[1px] bg-black' /></div>
                     <div>
-                        {productName.slice(0,20).map((val, index) => {                            
+                        {productName.slice(sliceStart, sliceEnd).map((val, index) => {                            
                             return (
                                 <>
-                                    <div className='flex mt-10 gap-x-3 cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={() => navigateProductPage(val, productRating[index], productTotalRating[index], productDescription[index], productOfferPrice[index], productPrice[index], productOff[index], productId[index], image_category[id])}>
+                                    <div className='flex mt-10 gap-x-3 cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={() => navigateProductPage(val, productRating[sliceStart + index], productTotalRating[sliceStart + index], productDescription[sliceStart + index], productOfferPrice[sliceStart + index], productPrice[sliceStart + index], productOff[sliceStart + index], productId[sliceStart + index], image_category[id])}>
                                         <div className='flex gap-x-5'>
-                                            <div className='px-1 w-[13rem] h-[15rem] flex justify-center'><img src={require(`../cat_images/${image_category[id]}/${productId[index]}.jpg`)} className='h-[13rem]' loading='lazy' /></div>
+                                            <div className='px-1 w-[13rem] h-[15rem] flex justify-center'><img src={require(`../cat_images/${image_category[id]}/${productId[sliceStart + index]}.jpg`)} className='h-[13rem]' loading='lazy' /></div>
                                             <div className='flex flex-col'>
-                                            <div className={`font-semibold text-xl w-[32rem] ${hoverState && (indepIndex === index) ? 'text-[#4E4FEB]': 'text-black'}`}>{val}</div>
+                                            <div className={`font-semibold text-xl w-[32rem] ${hoverState && (indepIndex === sliceStart + index) ? 'text-[#4E4FEB]': 'text-black'}`}>{val}</div>
                                             <div className='flex gap-x-4 mt-2 items-center h-auto'>
-                                                <div className='bg-[#4E4FEB] text-white rounded-lg w-[3.2rem] h-6 text-xs flex justify-center items-center'>{productRating[index]} <i class="bi bi-star-fill text-xs ml-1"></i></div>
-                                                <div className='text-gray-500 font-semibold -mt-1'>{productTotalRating[index]} Ratings</div> 
+                                                <div className='bg-[#4E4FEB] text-white rounded-lg w-[3.2rem] h-6 text-xs flex justify-center items-center'>{productRating[sliceStart + index]} <i class="bi bi-star-fill text-xs ml-1"></i></div>
+                                                <div className='text-gray-500 font-semibold -mt-1'>{productTotalRating[sliceStart + index]} Ratings</div> 
                                             </div>
                                             <div className='mt-3 px-5'>
                                                 <ul className='list-disc'>
-                                                    {productDescription[index].slice(0, 6).map((v, i) => {
+                                                    {productDescription[sliceStart + index].slice(0, 6).map((v, i) => {
 
                                                         const splitIndex = 40;
 
@@ -142,15 +162,14 @@ const MobilesPage = () => {
 
                                         <div>
                                             <div className='flex flex-col'>
-                                                <div className='font-bold text-2xl'>₹{productOfferPrice[index]}</div>
+                                                <div className='font-bold text-2xl'>₹{productOfferPrice[sliceStart + index]}</div>
                                             <div className='flex gap-x-2 mt-1'>
-                                                <div className='line-through text-gray-500 text-sm font-semibold'>₹{productPrice[index]}</div>
-                                                <div className='text-[#4E4FEB] text-sm font-semibold'>{productOff[index]}% off</div>
+                                                <div className='line-through text-gray-500 text-sm font-semibold'>₹{productPrice[sliceStart + index]}</div>
+                                                <div className='text-[#4E4FEB] text-sm font-semibold'>{productOff[sliceStart + index]}% off</div>
                                             </div>                                         
                                         </div>
                                         </div>
                                     </div>    
-
                                         <div className='mt-5'><hr className='opacity-5 border-0 h-[1px] bg-black' /></div>
                                 </>
                             )
@@ -158,13 +177,13 @@ const MobilesPage = () => {
                     </div>                                   
 
                 <div className='mt-10 flex w-3/4 justify-between'>
-                    <div>Page 1 of {Math.floor(totalPages / 20)}</div>
+                    <div>Page {currentPage} of {totalNumberOfPages}</div>
                     <div className='flex gap-x-5'>
                         <div>
-                            <button className='border border-[#4E4FEB] bg-white text-[#4E4FEB] w-[11rem] h-[2.2rem]'>PREVIOUS PAGE</button>
+                            <button className='border border-[#4E4FEB] bg-white text-[#4E4FEB] w-[11rem] h-[2.2rem]' onClick={showPreviousPage}>PREVIOUS PAGE</button>
                         </div>      
                         <div>
-                            <button className='border border-[#4E4FEB] bg-white text-[#4E4FEB] w-[11rem] h-[2.2rem]'>NEXT PAGE</button>
+                            <button className='border border-[#4E4FEB] bg-white text-[#4E4FEB] w-[11rem] h-[2.2rem]' onClick={showNextPage}>NEXT PAGE</button>
                         </div>      
                     </div>
                 </div>

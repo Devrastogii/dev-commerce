@@ -4,11 +4,8 @@ import {
     Popover,
     PopoverTrigger,
     PopoverContent,
-    PopoverHeader,
     PopoverBody,
-    PopoverArrow,
     PopoverCloseButton,
-    Button
   } from '@chakra-ui/react'
 
 const Hero = () => {
@@ -35,6 +32,18 @@ const Hero = () => {
     else if(id == "5") {
         navigate('/mobiles_page', {state: {id: 4}})
     }
+
+    else if(id == "6") {
+        navigate('/mobiles_page', {state: {id: 5}})
+    }
+
+    else if(id == "7") {
+        navigate('/mobiles_page', {state: {id: 6}})
+    }
+
+    else if(id == "8") {
+        navigate('/mobiles_page', {state: {id: 7}})
+    }
   }
 
   return (
@@ -45,19 +54,23 @@ const Hero = () => {
                     <button onClick={() => navigatePage("1")}>Mobile Phones</button>
                     <button onClick={() => navigatePage("5")}>Tablets</button>
                     <button onClick={() => navigatePage("4")}>Laptops</button>
-                    <Popover>
-  <PopoverTrigger>
-    <Button><button>Appliances <span className='ml-2'><i class="bi bi-chevron-right"></i></span></button></Button>
-  </PopoverTrigger>
-  <PopoverContent>
-    <PopoverArrow />
-    <PopoverCloseButton />
-    <PopoverHeader>Confirmation!</PopoverHeader>
-    <PopoverBody>Are you sure you want to have that milkshake?</PopoverBody>
-  </PopoverContent>
-</Popover>
+
+                    <Popover placement='right' isLazy>
+                        <PopoverTrigger>
+                            <button>Appliances <span className='ml-2'><i class="bi bi-chevron-right"></i></span></button>
+                        </PopoverTrigger>
+                        <PopoverContent bg='black' color = 'white'>                  
+                        <PopoverCloseButton color='white' />                        
+                        <PopoverBody><div className='flex gap-x-5'>                            
+                                <div><button onClick={() => navigatePage("7")}>Washing Machine</button></div>
+                                <div><button onClick={() => navigatePage("6")}>Fridge</button></div>
+                                <div onClick={() => navigatePage("8")}>Purifier</div>                                                   
+                        </div></PopoverBody>
+                    </PopoverContent> 
+                    </Popover>
                     
-                    <button>Peripheral Devices <span className='ml-2'><i class="bi bi-chevron-right"></i></span></button>
+                    <button onClick={() => navigatePage("2")}>Monitors</button>
+                    <button onClick={() => navigatePage("3")}>Watches</button>
                 </div>
                 <div><hr className='h-[16.5rem] bg-black w-[1px] opacity-10 border-0' /></div>
                 <div className='border border-black w-[55%] h-[40vh] mt-10'></div>
