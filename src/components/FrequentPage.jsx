@@ -11,7 +11,7 @@ const FrequentPage = () => {
   const [productOff, setProductOff] = useState([])
   const [productRating, setProductRating] = useState([])
   const [productTotalRating, setProductTotalRating] = useState([])
-  const [productImage, setProductImage] = useState([])
+  const [productId, setProductId] = useState([])
 
   const [show, setShow] = useState(true);
 
@@ -23,15 +23,8 @@ const FrequentPage = () => {
         setProductOfferPrice(res.data.offer)
         setProductRating(res.data.rating)
         setProductTotalRating(res.data.total_ratings)
-        setProductOff(res.data.off)    
-        
-        for (let index = 0; index < res.data.name.length; index++) {
-            for (let j = 0; j < res.data.uid.length; j++) {                
-                if((res.data.uid[index]  + '.jpg') === res.data.images[j]) {                    
-                    productImage.push(res.data.images[j])
-                }
-            }   
-        }        
+        setProductOff(res.data.off)  
+        setProductId(res.data.uid)       
     }    
 
     start()
@@ -64,26 +57,20 @@ const FrequentPage = () => {
         <NavbarForPages />
         <br /> <br /> <br />
 
-        <div className='text-2xl px-10 font-semibold mt-2'>Frequently Purchased Products</div>
+        <div className='text-2xl px-10 font-semibold mt-[1.2rem]'>Frequently Purchased Products</div>
 
         <section className='px-10'>            
-            <div className='mt-7 flex gap-10 px-5 justify-between flex-wrap'>
-                {productName.slice(0,95).map((val, index) => {
-
-                    const splitIndex = 20;
-
-                    const part1 = val[0].slice(0, splitIndex);
-                    const part2 = val[0].slice(splitIndex, 40);
-
+            <div className='mt-12 flex gap-10 px-5 justify-between flex-wrap'>
+                {productName.slice(0, 81).map((val, index) => {
                     return (
                         <>
                         <div className='flex flex-col cursor-pointer w-[12rem]' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)}>
-                    <div>                    
-                        <img src={require(`../frequent_images/${productImage[index]}`)} alt="product-image" className='h-[12rem]' loading='lazy' />
+                    <div className='flex justify-center'>                    
+                        <img src={require(`../frequent_images/${productId[index]}.jpg`)} alt="product-image" className='h-[12rem]' loading='lazy' />
                     </div>
-                    <div className={`font-semibold mt-4 ${hoverState && (indepIndex === index) ? 'text-[#4E4FEB]': 'text-black'}`}>{part1} <br /> {part2}</div>
+                    <div className={`font-semibold mt-4 ${hoverState && (indepIndex === index) ? 'text-[#4E4FEB]': 'text-black'}`}>{val}</div>
                     <div className='flex gap-x-2 items-center mt-3'>
-                        <div className='bg-[#4E4FEB] text-white rounded-lg w-12 h-6 text-sm flex justify-center items-center'>{productRating[index]} <i class="bi bi-star-fill ml-1"></i></div>
+                        <div className='bg-[#4E4FEB] text-white rounded-lg w-[3.6rem] h-[1.7rem] text-sm flex justify-center items-center'>{productRating[index]} <i class="bi bi-star-fill ml-1 text-sm"></i></div>
                         <div className='text-gray-500 font-semibold'>({productTotalRating[index]})</div>                 
                     </div>
                     <div className='mt-3'><span className='font-semibold'>₹{productOfferPrice[index]}</span> <span className='line-through text-gray-500 text-sm font-semibold'>₹{productPrice[index]}</span><span className='text-[#4E4FEB] ml-2 font-semibold text-sm'>{productOff[index]}</span></div>

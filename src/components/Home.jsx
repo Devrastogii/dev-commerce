@@ -43,14 +43,6 @@ const Home = () => {
 
         <Sale />
 
-        {/* <br /> <br /> <br /> */}
-
-        {/* <BasketProducts /> */}        
-
-        {/* <br /> <br /> <br /> */}
-        
-        {/* <Ad /> */}
-
         <br /> <br /> <br />
 
         <FeaturedProducts />   
