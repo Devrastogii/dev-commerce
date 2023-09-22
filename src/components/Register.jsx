@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
-import Loading from "./Loading";
+import React, { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -10,19 +8,6 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cpassword, setCPassword] = useState("");
-
-  const [show, setShow] = useState(true);
-
-  useEffect(() => {
-    const f = setTimeout(() => {
-      setShow(false)
-    }, 1000);
-
-    return () => {
-      clearTimeout(f)
-    }
-    
-  },[])
 
 //   const navigate = useNavigate();
 
@@ -89,7 +74,6 @@ const Register = () => {
   return (
     <>
 
-    {show ? <div className="flex justify-center items-center"><Loading /></div> : <>
     <div className="flex justify-center font-bold text-2xl mt-10 text-black">
         CREATE YOUR ACCOUNT
       </div>
@@ -176,17 +160,11 @@ const Register = () => {
               REGISTER
             </button>
           </div>
+          </form>
+        
+      </div>         
 
-          {/* <div className="flex justify-center mt-2 mb-5">
-            <h1 className='text-sm'>Existing User? <Link to={'/login'} className='text-black text-sm font-bold underline hover:-translate-y-1 transition-all duration-500'>LOG IN</Link></h1>
-          </div> */}
-
-        </form>
-      </div>
-
-      <ToastContainer />
-
-    </>}      
+      <ToastContainer theme="dark" />    
     </>
   );
 };
