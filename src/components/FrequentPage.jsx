@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import NavbarForPages from './NavbarForPages'
+import Loading from './Loading'
 
 const FrequentPage = () => {
 
@@ -11,6 +12,8 @@ const FrequentPage = () => {
   const [productRating, setProductRating] = useState([])
   const [productTotalRating, setProductTotalRating] = useState([])
   const [productImage, setProductImage] = useState([])
+
+  const [show, setShow] = useState(true);
 
   useEffect(() => {
     async function start(){
@@ -28,10 +31,18 @@ const FrequentPage = () => {
                     productImage.push(res.data.images[j])
                 }
             }   
-        }
-    }
+        }        
+    }    
 
     start()
+
+    const f = setTimeout(() => {
+        setShow(false)
+      }, 2000); 
+  
+      return () => {      
+        clearTimeout(f)   
+    };
   },[])
 
   const [hoverState, setHoverState] = useState(false)
@@ -49,10 +60,11 @@ const FrequentPage = () => {
 
   return (
     <>
+    {show ? <Loading /> : <>
         <NavbarForPages />
-        <br /> <br />
+        <br /> <br /> <br />
 
-        <div className='mt-5'><hr className='opacity-10 border-0 h-[1px] bg-black' /></div>
+        <div className='text-2xl px-10 font-semibold mt-2'>Frequently Purchased Products</div>
 
         <section className='px-10'>            
             <div className='mt-7 flex gap-10 px-5 justify-between flex-wrap'>
@@ -65,22 +77,23 @@ const FrequentPage = () => {
 
                     return (
                         <>
-                        <div className='flex flex-col cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)}>
+                        <div className='flex flex-col cursor-pointer w-[12rem]' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)}>
                     <div>                    
                         <img src={require(`../frequent_images/${productImage[index]}`)} alt="product-image" className='h-[12rem]' loading='lazy' />
                     </div>
                     <div className={`font-semibold mt-4 ${hoverState && (indepIndex === index) ? 'text-[#4E4FEB]': 'text-black'}`}>{part1} <br /> {part2}</div>
                     <div className='flex gap-x-2 items-center mt-3'>
-                        <div className='bg-[#4E4FEB] text-white rounded-lg w-12 h-6 text-sm flex justify-center items-center'>{productRating[index]}</div>
+                        <div className='bg-[#4E4FEB] text-white rounded-lg w-12 h-6 text-sm flex justify-center items-center'>{productRating[index]} <i class="bi bi-star-fill ml-1"></i></div>
                         <div className='text-gray-500 font-semibold'>({productTotalRating[index]})</div>                 
                     </div>
-                    <div className='mt-3'><span className='font-semibold'>₹{productOfferPrice[index]}</span> <span className='line-through text-gray-500 text-sm font-semibold'>₹{productPrice[index]}</span><span className='text-[#4E4FEB] ml-2 font-semibold text-sm'>{productOff[index]}% off</span></div>
+                    <div className='mt-3'><span className='font-semibold'>₹{productOfferPrice[index]}</span> <span className='line-through text-gray-500 text-sm font-semibold'>₹{productPrice[index]}</span><span className='text-[#4E4FEB] ml-2 font-semibold text-sm'>{productOff[index]}</span></div>
                 </div>
                         </>
                     )
                 })}                
             </div>
         </section>
+    </>}
     </>
   )
 }

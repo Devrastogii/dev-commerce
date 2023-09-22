@@ -48,6 +48,19 @@ const FrequentlyPurchased = () => {
     }
   }
 
+  const [hoverState, setHoverState] = useState(false)
+  const [indepIndex, setIndepIndex] = useState()
+
+  const handleHover = (text, index) => {
+    if(text == "yes") {
+        setHoverState(true)
+        setIndepIndex(index)      
+    }
+
+    else 
+        setHoverState(false)
+  }
+
   return (
     <>
         <section className='pl-20'>
@@ -61,30 +74,26 @@ const FrequentlyPurchased = () => {
                 <div></div>
             </div>
 
-            <div className='mt-7 flex gap-10 px-5 justify-between flex-wrap'>
-                {productName.slice(0, singleClick ? 10 : 5).map((val, index) => {
-
-                    const splitIndex = 20;
-
-                    const part1 = val[0].slice(0, splitIndex);
-                    const part2 = val[0].slice(splitIndex, 40);
-
+            <div className='px-2'>
+            <div className='mt-7 flex gap-10 flex-wrap justify-evenly'>
+                {productName.slice(0, singleClick ? 10 : 5).map((val, index) => {                 
                     return (
                         <>
-                        <div className='flex flex-col'>
-                    <div>                    
+                        <div className='flex flex-col w-[12rem] cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)}>
+                    <div className='flex justify-center'>                    
                         <img src={require(`../frequent_images/${productImage[index]}`)} alt="product-image" className='h-[12rem]' loading='lazy' />
                     </div>
-                    <div className='font-semibold mt-4'>{part1} <br /> {part2}</div>
+                    <div className={`font-semibold mt-4 ${hoverState && (indepIndex === index) ? 'text-[#4E4FEB]': 'text-black'}`}>{val}</div>
                     <div className='flex gap-x-2 items-center mt-3'>
                         <div className='bg-[#4E4FEB] text-white rounded-lg w-12 h-6 text-sm flex justify-center items-center'>{productRating[index]}</div>
                         <div className='text-gray-500 font-semibold'>({productTotalRating[index]})</div>                 
                     </div>
-                    <div className='mt-3'><span className='font-semibold'>₹{productOfferPrice[index]}</span> <span className='line-through text-gray-500 text-sm font-semibold'>₹{productPrice[index]}</span><span className='text-[#4E4FEB] ml-2 font-semibold text-sm'>{productOff[index]}% off</span></div>
+                    <div className='mt-3'><span className='font-semibold'>₹{productOfferPrice[index]}</span> <span className='line-through text-gray-500 text-sm font-semibold'>₹{productPrice[index]}</span><span className='text-[#4E4FEB] ml-2 font-semibold text-sm'>{productOff[index]}</span></div>
                 </div>
                         </>
                     )
                 })}
+                </div>
 
                 <div className='w-full flex justify-center mt-5 items-center'>
                     <button className='font-bold text-white bg-[#4E4FEB] w-[10rem] h-[2.5rem] slide_right' onClick={handleClick}>{text}</button>

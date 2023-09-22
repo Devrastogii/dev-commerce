@@ -45,11 +45,7 @@ const Home = () => {
 
         {/* <br /> <br /> <br /> */}
 
-        {/* <BasketProducts /> */}
-
-        <br /> <br /> <br />
-
-        <FrequentlyPurchased />
+        {/* <BasketProducts /> */}        
 
         {/* <br /> <br /> <br /> */}
         
@@ -57,7 +53,11 @@ const Home = () => {
 
         <br /> <br /> <br />
 
-        <FeaturedProducts />        
+        <FeaturedProducts />   
+
+        <br /> <br /> <br />
+
+        <FrequentlyPurchased />     
 
         <br /> <br /> <br /> <br /> <br /> <br />
 

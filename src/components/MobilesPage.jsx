@@ -179,12 +179,7 @@ const MobilesPage = () => {
                                             </div>
                                             <div className='mt-3 px-5 w-[22rem]'>
                                                 <ul className='list-disc'>
-                                                    {productDescription[sliceStart + index].slice(0, 6).map((v, i) => {
-
-                                                        {/* const splitIndex = 40;
-
-                                                        productDescription[i][productDescription[i].length-1] = productDescription[i][productDescription[i].length-1].slice(0, splitIndex);  // Slicing last point in description                                                      */}
-
+                                                    {productDescription[sliceStart + index].slice(0, 6).map((v, i) => {                                                   
                                                         return (
                                                             <>
                                                                 <li className='text-sm mt-1'>{v}</li>

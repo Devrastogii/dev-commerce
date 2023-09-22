@@ -51,9 +51,7 @@ const SalesPage = () => {
   return (
     <>
         <NavbarForPages />
-        <br /> <br />
-
-        <div className='mt-5'><hr className='opacity-10 border-0 h-[1px] bg-black' /></div>
+        <br /> <br />       
 
         <section className='px-10'>            
             <div className='mt-7 flex gap-10 px-5 justify-between flex-wrap'>
