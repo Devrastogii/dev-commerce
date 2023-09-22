@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import Navbar from './Navbar'
 import Recommend from './Recommend'
 import Loading from './Loading'
+import NavbarForPages from './NavbarForPages'
 
 const ProductPage = () => {
 
@@ -41,8 +41,10 @@ const ProductPage = () => {
   return (
     <>
        {show ? <Loading /> : <>
-       <br />
-        <Navbar />
+
+        <NavbarForPages />
+        <br /> <br />
+
         <section className='mt-10'>
             <div className='flex w-full px-4'>
                 <div className='w-1/3 flex flex-col justify-center items-center h-[30rem]'>  
@@ -51,9 +53,9 @@ const ProductPage = () => {
                 <img src={require(`../cat_images/${category}/${image}.jpg`)} loading='lazy' alt='product-image' /> 
 
                 <div className='flex mt-10 gap-x-5'>
-                    <button className='bg-orange-600 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center'><i class="bi bi-lightning-fill mr-1"></i> BUY NOW</button>
+                    <button className='bg-orange-600 hover:bg-orange-700 transition-all duration-500 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center'><i class="bi bi-lightning-fill mr-1"></i> BUY NOW</button>
     
-                    <button className='bg-yellow-500 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center'><i class="bi bi-cart-plus-fill mr-1"></i> ADD TO CART</button>
+                    <button className='bg-yellow-500 hover:bg-yellow-600 transition-all duration-500 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center'><i class="bi bi-cart-plus-fill mr-1"></i> ADD TO CART</button>
                 </div>
                 </div>                 
                                                        

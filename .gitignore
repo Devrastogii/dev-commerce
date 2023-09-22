@@ -9,6 +9,7 @@
 /src/images
 /src/all
 /src/cat_images
+/src/frequent_images
 
 # testing
 /coverage

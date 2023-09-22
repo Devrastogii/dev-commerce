@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, useDisclosure } from '@chakra-ui/react';
 import Register from './Register';
 import Login from './Login';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
 
@@ -33,7 +34,7 @@ const Navbar = () => {
         <section>
             <div className='flex w-full justify-around items-center'>
                 <div>
-                    <h1 className='font-bold text-xl'>DEV-COMMERCE</h1>
+                    <Link to={'/'} className='font-bold text-xl'>DEV-COMMERCE</Link>
                 </div>
                 <div className='flex gap-x-8'>
                     <div><input type="text" placeholder='Search products...' className='outline-none p-4 w-[24rem] rounded-xl h-[2.5rem] opacity-60 border border-opacity-25 border-black' /></div>                    

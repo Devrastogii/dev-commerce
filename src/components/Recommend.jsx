@@ -112,12 +112,12 @@ const Recommend = (props) => {
                         <>
                             <div className='flex flex-col w-[14rem] gap-y-1 cursor-pointer' onMouseEnter={() => handleHover("yes", start+i)} onMouseLeave={() =>handleHover("no", start+i)} onClick={() => navigateProductPage(v, productRating[start+i], productTotalRating[start+i], productDescription[start+i], productOfferPrice[start+i], productPrice[start+i], productOff[start+i], productId[start+i], props.category)} >
                                 <div className='w-[12rem] h-[15rem] flex justify-center items-center'><img src={require(`../cat_images/${props.category}/${productId[start+i]}.jpg`)} alt="product-image" className='h-[13rem]' /></div>
-                                <div className={`mt-1 w-[12rem] ${hoverState && (indepIndex === start + i) ? 'text-[#4E4FEB] font-semibold': 'text-black'}`}>{v}</div>
+                                <div className={`mt-1 w-[12rem] ${hoverState && (indepIndex === start + i) ? 'text-[#4E4FEB] font-semibold': 'text-black'} transition-all duration-500`}>{v}</div>
                                 <div className='flex gap-x-2 items-center mt-1'>
                                     <div className='bg-[#4E4FEB] text-white rounded-lg w-12 h-6 text-sm flex justify-center items-center'>{productRating[start+i]}</div>
                                     <div className='text-gray-500 font-semibold'>({productTotalRating[start+i]})</div>                 
                                 </div>
-                                <div className='mt-1'><span className='font-semibold'>₹{productOfferPrice[start+i]}</span> <span className='line-through text-gray-500 text-sm font-semibold ml-1'>₹{productPrice[start+i]}</span><span className='text-[#4E4FEB] ml-2 font-semibold text-sm'>{productOff[start+i]}</span></div>
+                                <div className='mt-1'><span className='font-semibold'>₹{productOfferPrice[start+i]}</span> <span className='line-through text-gray-500 text-sm font-semibold ml-1'>₹{productPrice[start+i]}</span><span className='text-[#4E4FEB] ml-2 font-semibold text-sm'>{productOff[start+i]}%</span></div>
 
                             </div>
                         </>

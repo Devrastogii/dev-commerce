@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import Navbar from './Navbar'
 import axios from 'axios'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Filter from './FilterSection/Filter'
 import Loading from './Loading'
+import NavbarForPages from './NavbarForPages'
 
 const MobilesPage = () => {
 
@@ -33,6 +33,10 @@ const MobilesPage = () => {
 
   const [show, setShow] = useState(true);
 
+  // Back To Top
+
+  const [showBtn, setShowBtn] = useState(false)
+
   useEffect(() => {
     async function start(){
         const res = await axios.post("/products_show", {id})  
@@ -50,13 +54,24 @@ const MobilesPage = () => {
 
     start()
 
+    function scrollToTop() {
+        if(window.scrollY >= 344)
+            setShowBtn(true)        
+
+        else 
+            setShowBtn(false)        
+    }
+    
+    window.addEventListener('scroll', scrollToTop)
+
     const f = setTimeout(() => {
         setShow(false)
       }, 2000); 
   
       return () => {      
         clearTimeout(f)
-    };
+        window.removeEventListener('scroll', scrollToTop)
+    };    
 
   },[])
 
@@ -85,40 +100,61 @@ const MobilesPage = () => {
     }})
   }
 
-//   const [countPage, setCountPage] = useState(totalPages / 20)
   var totalNumberOfPages = Math.floor(totalPages / 20)
   const [currentPage, setCurrentPage] = useState(1)
   const [sliceStart, setSliceStart] = useState(0)
   const [sliceEnd, setSliceEnd] = useState(20)
 
-  const showNextPage = () => {    
-    // const totalNumberOfPages = Math.floor(totalPages / 20)
+  function scrollToTopLogic(){
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    }
+    
+    window.addEventListener('click', scrollToTop)
+  }
 
-    if(currentPage <= totalNumberOfPages) {
+  const showNextPage = () => {    
+    if(currentPage < totalNumberOfPages) {
         setCurrentPage((prev) => prev + 1);
         setSliceStart(sliceEnd)
         setSliceEnd(sliceEnd + 20)
     }
+
+    scrollToTopLogic()
   }
 
   const showPreviousPage = () => {
-    
+    if(currentPage != 1) {
+        setCurrentPage((prev) => prev - 1);
+        setSliceStart(sliceStart - 20)
+        setSliceEnd(sliceStart)
+    }
+
+    scrollToTopLogic()
+  }
+
+  const reachTop = () => {
+    scrollToTopLogic()
   }
 
   return (
     <>
        {show ? <Loading /> : <>
-       <br />
-        <Navbar />
-
+        <NavbarForPages />
+        <br /> <br />
+        
+        {showBtn && <div className='w-full flex justify-center fixed z-10'><button className='w-[10rem] h-[2.2rem] flex justify-center items-center border-opacity-75 font-semibold rounded-md border border-[#4E4FEB] mt-5 text-[#4E4FEB] bg-white slide-right-navbar hover:text-white hover:border-white' onClick={reachTop}>Back To Top</button></div>}
+        
         <section className='mt-10 px-5'>
             <div className='flex gap-x-5'>
                 <div className='w-1/4 bg-white drop-shadow-lg h-full'>
                     <Filter brand = {brandName} 
                           ram = {ram} />
                 </div>
-                <div className='w-3/4 bg-white drop-shadow-lg py-2 px-4'>
-                    <div className='text-sm'>Home</div>
+                <div className='w-3/4 bg-white drop-shadow-lg py-2 px-4'>             
                     <div className='font-semibold mt-[0.45rem] text-lg'>Showing {sliceStart + 1} - {sliceEnd} of {productName.length} results for {image_category[id]}</div>
                     <div className='flex gap-x-5 mt-[0.45rem] text-sm'>
                         <div className='font-semibold'>Sort By</div>
@@ -141,13 +177,13 @@ const MobilesPage = () => {
                                                 <div className='bg-[#4E4FEB] text-white rounded-lg w-[3.2rem] h-6 text-xs flex justify-center items-center'>{productRating[sliceStart + index]} <i class="bi bi-star-fill text-xs ml-1"></i></div>
                                                 <div className='text-gray-500 font-semibold -mt-1'>{productTotalRating[sliceStart + index]} Ratings</div> 
                                             </div>
-                                            <div className='mt-3 px-5'>
+                                            <div className='mt-3 px-5 w-[22rem]'>
                                                 <ul className='list-disc'>
                                                     {productDescription[sliceStart + index].slice(0, 6).map((v, i) => {
 
-                                                        const splitIndex = 40;
+                                                        {/* const splitIndex = 40;
 
-                                                        productDescription[i][productDescription[i].length-1] = productDescription[i][productDescription[i].length-1].slice(0, splitIndex);  // Slicing last point in description                                                     
+                                                        productDescription[i][productDescription[i].length-1] = productDescription[i][productDescription[i].length-1].slice(0, splitIndex);  // Slicing last point in description                                                      */}
 
                                                         return (
                                                             <>

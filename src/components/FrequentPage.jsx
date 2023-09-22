@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import Navbar from './Navbar'
 import axios from 'axios'
 import NavbarForPages from './NavbarForPages'
 
-const SalesPage = () => {
+const FrequentPage = () => {
 
   const [productName, setProductName] = useState([])
   const [productPrice, setProductPrice] = useState([])
@@ -15,7 +14,7 @@ const SalesPage = () => {
 
   useEffect(() => {
     async function start(){
-        const res = await axios.get("/sale_products_show")
+        const res = await axios.get("/frequently_purchased")
         setProductName(res.data.name)
         setProductPrice(res.data.original)
         setProductOfferPrice(res.data.offer)
@@ -68,7 +67,7 @@ const SalesPage = () => {
                         <>
                         <div className='flex flex-col cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)}>
                     <div>                    
-                        <img src={require(`../all/${productImage[index]}`)} alt="product-image" className='h-[12rem]' loading='lazy' />
+                        <img src={require(`../frequent_images/${productImage[index]}`)} alt="product-image" className='h-[12rem]' loading='lazy' />
                     </div>
                     <div className={`font-semibold mt-4 ${hoverState && (indepIndex === index) ? 'text-[#4E4FEB]': 'text-black'}`}>{part1} <br /> {part2}</div>
                     <div className='flex gap-x-2 items-center mt-3'>
@@ -86,4 +85,4 @@ const SalesPage = () => {
   )
 }
 
-export default SalesPage
+export default FrequentPage

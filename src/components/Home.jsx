@@ -6,6 +6,7 @@ import FeaturedProducts from './FeaturedProducts'
 import Services from './Services'
 import Footer from './Footer'
 import Loading from './Loading'
+import FrequentlyPurchased from './FrequentlyPurchased'
 
 const Home = () => {
 
@@ -46,9 +47,9 @@ const Home = () => {
 
         {/* <BasketProducts /> */}
 
-        {/* <br /> <br /> <br /> */}
+        <br /> <br /> <br />
 
-        {/* <FrequentlyPurchased /> */}
+        <FrequentlyPurchased />
 
         {/* <br /> <br /> <br /> */}
         
