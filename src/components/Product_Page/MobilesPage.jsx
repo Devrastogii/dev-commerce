@@ -32,7 +32,7 @@ const MobilesPage = () => {
 
   // Loading
 
-  const [show, setShow] = useState(true);
+  const [load, setLoad] = useState(true);
 
   // Back To Top
 
@@ -50,13 +50,14 @@ const MobilesPage = () => {
         setProductDescription(res.data.description)    
         setProductId(res.data.uid)     
         setBrandName(res.data.brand)
-        setRam(res.data.ram)     
+        setRam(res.data.ram)    
+        setLoad(false) 
     }
 
     start()
 
     function scrollToTop() {
-        if(window.scrollY >= 344)
+        if(window.scrollY >= 350)
             setShowBtn(true)        
 
         else 
@@ -65,12 +66,7 @@ const MobilesPage = () => {
     
     window.addEventListener('scroll', scrollToTop)
 
-    const f = setTimeout(() => {
-        setShow(false)
-      }, 2000); 
-  
-      return () => {      
-        clearTimeout(f)
+    return () => {      
         window.removeEventListener('scroll', scrollToTop)
     };    
 
@@ -139,15 +135,18 @@ const MobilesPage = () => {
 
   const reachTop = () => {
     scrollToTopLogic()
+    setShowBtnHovered()
   }
+
+  const [showBtnHovered, setShowBtnHovered] = useState(false)
 
   return (
     <>
-       {show ? <Loading /> : <>
+       {load ? <Loading /> : <>
         <NavbarForPages />
         <br /> <br />
         
-        {showBtn && <div className='w-full flex justify-center fixed z-10'><motion.button initial={{translateY: -10}} animate={{translateY: 0}} transition={{duration: 0.5}} className='w-[10rem] h-[2.2rem] flex justify-center items-center border-opacity-75 font-semibold rounded-md border border-primary mt-5 text-primary bg-white slide-right-home-navbar hover:text-white hover:border-white' onClick={reachTop}><i class="bi bi-chevron-down text-primary hover:text-white mr-2"></i>Back To Top</motion.button></div>}
+        {showBtn && <div className='w-full flex justify-center fixed z-10'><motion.button initial={{translateY: -10}} animate={{translateY: 0}} transition={{duration: 0.5}} className='w-[10rem] h-[2.2rem] flex justify-center items-center border-opacity-75 font-semibold rounded-md border border-primary mt-5 text-primary bg-white slide-right-home-navbar hover:text-white hover:border-white' onClick={reachTop} onHoverStart={() => setShowBtnHovered(true)} onHoverEnd={() => setShowBtnHovered(false)}><i class={`bi bi-chevron-down ${showBtnHovered ? 'text-white' : 'text-primary'} mr-2`}></i>Back To Top</motion.button></div>}
         
         <section className='mt-10 px-5'>
             <div className='flex gap-x-5'>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import NavbarForPages from '../Nav/NavbarForPages'
+import Loading from '../Loading/Loading'
 
 const SalesPage = () => {
 
@@ -11,6 +12,8 @@ const SalesPage = () => {
   const [productRating, setProductRating] = useState([])
   const [productTotalRating, setProductTotalRating] = useState([])
   const [productImage, setProductImage] = useState([])
+
+  const [load, setLoad] = useState(true)
 
   useEffect(() => {
     async function start(){
@@ -29,6 +32,8 @@ const SalesPage = () => {
                 }
             }   
         }
+        
+        setLoad(false)
     }
 
     start()
@@ -49,7 +54,9 @@ const SalesPage = () => {
 
   return (
     <>
-        <NavbarForPages />
+
+    {load ? <Loading /> : <>
+    <NavbarForPages />
         <br /> <br />  <br />
 
         <div className='text-2xl px-10 font-semibold mt-[1.2rem]'>Flash Sales</div>    
@@ -75,6 +82,7 @@ const SalesPage = () => {
                 })}                
             </div>
         </section>
+    </>}        
     </>
   )
 }
