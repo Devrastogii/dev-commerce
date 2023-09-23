@@ -18,6 +18,21 @@ const Register = () => {
 
   const usersCollection = collection(db, "user-data");
 
+  // Toast Messages
+
+  const showAccountPresentMessage = () => {
+    toast.error("Account already present, please log in !! ", {
+      position: toast.POSITION.BOTTOM_CENTER,
+    });
+  };
+
+  const showToastErrorMessage = () => {
+    toast.error("Please fill all details correctly !! ", {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+
+
   //   const navigate = useNavigate();
 
   // //   useEffect(() => {
@@ -44,25 +59,13 @@ const Register = () => {
   // const data = await getDocs(usersCollection) - to get all entries
   // setUsers(data.docs.map((doc) => ({...doc.data(), id: doc.id})))
 
-  const [show, setShow] = useState(true);
-
-  const showAccountPresentMessage = () => {
-    toast.error("Account already present, please log in !! ", {
-      position: toast.POSITION.BOTTOM_CENTER,
-    });
-  };
+  const [show, setShow] = useState(true);  
 
   async function userRegistration(e) {
     e.preventDefault();
     setShow(false);
 
-    const { name, phone, email, password, cpassword } = userData;
-
-    const showToastErrorMessage = () => {
-      toast.error("Please fill all details correctly !! ", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
-    };
+    const { name, phone, email, password, cpassword } = userData;    
 
     // Regex Validation
 
