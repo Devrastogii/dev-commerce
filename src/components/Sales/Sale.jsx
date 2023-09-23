@@ -80,7 +80,7 @@ const Sale = () => {
                         <>
                         <div className='flex flex-col w-[12rem] cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)}>
                     <div className='flex justify-center'>                    
-                        <img src={require(`../all/${productImage[index]}`)} alt="product-image" className='h-[12rem]' loading='lazy' />
+                        <img src={require(`../../all/${productImage[index]}`)} alt="product-image" className='h-[12rem]' loading='lazy' />
                     </div>
                     <div className={`font-semibold mt-4 ${hoverState && (indepIndex === index) ? 'text-[#4E4FEB]': 'text-black'}`}>{val}</div>
                     <div className='flex gap-x-2 items-center mt-3'>

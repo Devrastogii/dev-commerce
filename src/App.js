@@ -1,10 +1,10 @@
 import { Route, Routes } from "react-router-dom";
-import Home from "./components/Home";
+import Home from "./components/Home/Home";
 import axios from "axios";
-import SalesPage from "./components/SalesPage";
-import MobilesPage from "./components/MobilesPage";
-import ProductPage from "./components/ProductPage";
-import FrequentPage from "./components/FrequentPage";
+import SalesPage from "./components/Sales/SalesPage";
+import MobilesPage from "./components/Product_Page/MobilesPage";
+import ProductPage from "./components/Product_Page/ProductPage";
+import FrequentPage from "./components/Frequent/FrequentPage";
 
 axios.defaults.baseURL = 'http://localhost:5000/';
 axios.defaults.withCredentials = true;

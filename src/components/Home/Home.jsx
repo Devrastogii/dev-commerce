@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import Navbar from './Navbar'
+import Navbar from '../Nav/Navbar'
 import Hero from './Hero'
-import Sale from './Sale'
-import FeaturedProducts from './FeaturedProducts'
+import Sale from '../Sales/Sale'
+import FrequentlyPurchased from '../Frequent/FrequentlyPurchased'
+import FeaturedProducts from '../Home/FeaturedProducts'
 import Services from './Services'
 import Footer from './Footer'
-import Loading from './Loading'
-import FrequentlyPurchased from './FrequentlyPurchased'
+import Loading from '../Loading/Loading'
 
 const Home = () => {
 

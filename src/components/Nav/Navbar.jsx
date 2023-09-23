@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, useDisclosure } from '@chakra-ui/react';
-import Register from './Register';
-import Login from './Login';
+import Register from '../Auth/Register';
+import Login from '../Auth/Login';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
@@ -42,7 +42,7 @@ const Navbar = () => {
                 <div className='flex gap-x-5 items-center'>                
                     <button onClick={wishlist}><i class="bi bi-heart text-[1.4rem] hover:text-red-500 transition-all duration-500"></i></button>
                     <button><i class="bi bi-cart3 text-[1.4rem]"></i></button> 
-                    <button onClick={register} className='w-[6rem] h-[2.5rem] flex justify-center items-center border-opacity-75 font-semibold rounded-lg border border-[#4E4FEB] text-[#4E4FEB] bg-white hover:text-white slide-right-navbar'>Sign Up</button>                  
+                    <button onClick={register} className='w-[6rem] h-[2.5rem] flex justify-center items-center border-opacity-75 font-semibold rounded-lg border border-[#4E4FEB] text-[#4E4FEB] bg-white hover:text-white slide-right-home-navbar'>Sign Up</button>                  
                 </div>
             </div>
         </section>

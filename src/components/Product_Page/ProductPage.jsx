@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import Recommend from './Recommend'
-import Loading from './Loading'
-import NavbarForPages from './NavbarForPages'
+import Loading from '../Loading/Loading'
+import NavbarForPages from '../Nav/NavbarForPages'
 
 const ProductPage = () => {
 
@@ -50,7 +50,7 @@ const ProductPage = () => {
                 <div className='w-1/3 flex flex-col justify-center items-center h-[30rem]'>  
 
                 <div className={`border border-black border-opacity-10 h-[30rem] w-full flex flex-col justify-center items-center`}>
-                <img src={require(`../cat_images/${category}/${image}.jpg`)} loading='lazy' alt='product-image' /> 
+                <img src={require(`../../cat_images/${category}/${image}.jpg`)} loading='lazy' alt='product-image' /> 
 
                 <div className='flex mt-10 gap-x-5'>
                     <button className='bg-orange-600 hover:bg-orange-700 transition-all duration-500 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center'><i class="bi bi-lightning-fill mr-1"></i> BUY NOW</button>

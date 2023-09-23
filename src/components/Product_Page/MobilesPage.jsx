@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useLocation, useNavigate } from 'react-router-dom'
-import Filter from './FilterSection/Filter'
-import Loading from './Loading'
-import NavbarForPages from './NavbarForPages'
+import Filter from '../FilterSection/Filter'
+import Loading from '../Loading/Loading'
+import NavbarForPages from '../Nav/NavbarForPages'
 
 const MobilesPage = () => {
 
@@ -170,7 +170,7 @@ const MobilesPage = () => {
                                 <>
                                     <div className='flex mt-10 gap-x-3 cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={() => navigateProductPage(val, productRating[sliceStart + index], productTotalRating[sliceStart + index], productDescription[sliceStart + index], productOfferPrice[sliceStart + index], productPrice[sliceStart + index], productOff[sliceStart + index], productId[sliceStart + index], image_category[id])}>
                                         <div className='flex gap-x-5'>
-                                            <div className='px-1 w-[13rem] h-[15rem] flex justify-center'><img src={require(`../cat_images/${image_category[id]}/${productId[sliceStart + index]}.jpg`)} className='h-[13rem]' loading='lazy' /></div>
+                                            <div className='px-1 w-[13rem] h-[15rem] flex justify-center'><img src={require(`../../cat_images/${image_category[id]}/${productId[sliceStart + index]}.jpg`)} className='h-[13rem]' loading='lazy' /></div>
                                             <div className='flex flex-col'>
                                             <div className={`font-semibold text-xl w-[32rem] ${hoverState && (indepIndex === sliceStart + index) ? 'text-[#4E4FEB]': 'text-black'}`}>{val}</div>
                                             <div className='flex gap-x-4 mt-2 items-center h-auto'>

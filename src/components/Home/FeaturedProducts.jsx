@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import monitor from '../images/featured_monitor.jpg'
-import watch from '../images/featured_watch.jpg'
-import earbud from '../images/featured_earbud.jpg'
-import mobile from '../images/featured_mobile.jpg'
+import monitor from '../../images/featured_monitor.jpg'
+import watch from '../../images/featured_watch.jpg'
+import earbud from '../../images/featured_earbud.jpg'
+import mobile from '../../images/featured_mobile.jpg'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 
