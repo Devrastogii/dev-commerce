@@ -14,7 +14,7 @@ const NavbarForPages = () => {
   return (
     <>
         <section>
-            <div className='flex w-full justify-center items-center bg-[#4E4FEB] text-white gap-x-[3rem] h-[4rem] fixed top-0 z-10 drop-shadow-lg'>
+            <div className='flex w-full justify-center items-center bg-primary text-white gap-x-[3rem] h-[4rem] fixed top-0 z-10 drop-shadow-lg'>
                 <div>
                     <Link to={'/'} className='font-bold text-xl'>DEV-COMMERCE</Link>
                 </div>
@@ -24,7 +24,7 @@ const NavbarForPages = () => {
                 <div className='flex gap-x-5 items-center'>                
                     <button onClick={wishlist}><i class="bi bi-heart text-[1.4rem] hover:text-red-500 transition-all duration-500"></i></button>
                     <button><i class="bi bi-cart3 text-[1.4rem]"></i></button> 
-                    <button onClick={register} className='w-[6rem] h-[2.2rem] flex justify-center items-center border-opacity-75 font-semibold rounded-lg border border-[#4E4FEB] text-[#4E4FEB] bg-white hover:text-black slide-right-navbar hover:border-2 hover:border-white'>Sign Up</button>                  
+                    <button onClick={register} className='w-[6rem] h-[2.2rem] flex justify-center items-center border-opacity-75 font-semibold rounded-lg border border-primary text-primary bg-white hover:text-black slide-right-navbar hover:border-2 hover:border-white'>Sign Up</button>                  
                 </div>
             </div>
         </section>

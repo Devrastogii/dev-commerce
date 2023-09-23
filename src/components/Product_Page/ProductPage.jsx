@@ -70,20 +70,20 @@ const ProductPage = () => {
                 {/* Ratings */}
 
                     <div className='flex gap-x-4 mt-2 h-auto items-center'>
-                        <div className='bg-[#4E4FEB] text-white rounded-lg w-[3.2rem] h-6 text-xs flex justify-center items-center'>{rating} <i class="bi bi-star-fill text-xs ml-1"></i></div>
+                        <div className='bg-primary text-white rounded-lg w-[3.2rem] h-6 text-xs flex justify-center items-center'>{rating} <i class="bi bi-star-fill text-xs ml-1"></i></div>
                         <div className='text-gray-500 font-semibold -mt-1'>{totalRating} Ratings</div> 
                     </div>
 
                 {/* Extra */}
 
-                    <div className='text-[#4E4FEB] font-semibold mt-8'>Extra ₹{price - offer} off</div>
+                    <div className='text-primary font-semibold mt-8'>Extra ₹{price - offer} off</div>
 
                 {/* Amount */}
 
                     <div className='flex gap-x-4 items-end'>
                         <div className='font-bold text-3xl'>₹{offer}</div>
                         <div className='text-lg opacity-50 line-through font-semibold'>₹{price}</div>
-                        <div className='text-lg text-[#4E4FEB] font-semibold'>{off}% off</div>
+                        <div className='text-lg text-primary font-semibold'>{off}% off</div>
                     </div>
 
                 {/* Offers */}
@@ -91,10 +91,10 @@ const ProductPage = () => {
                     <div className='flex flex-col mt-8'>
                         <div className='font-semibold underline'>Available Offers</div>
                         <div className='mt-2'>
-                            <div><span className='text-[#4E4FEB]'><i class="bi bi-tags-fill"></i></span><span className='font-semibold ml-2'>Bank Offer</span><span> 5% Cashback on Flipkart Axis Bank Card </span> <span className='text-[#4E4FEB] font-semibold'>T&C</span></div>
-                            <div><span className='text-[#4E4FEB]'><i class="bi bi-tags-fill"></i></span><span className='font-semibold ml-2'>Special Offer</span><span> Get extra ₹7401 off (price inclusive of cashback/coupon) </span> <span className='text-[#4E4FEB] font-semibold'>T&C</span></div>
-                            <div><span className='text-[#4E4FEB]'><i class="bi bi-tags-fill"></i></span><span className='font-semibold ml-2'>Partner Offer</span><span> Sign-up for Flipkart Pay Later & get free Times Prime Benefits worth ₹10,000* </span> <span className='text-[#4E4FEB] font-semibold'>Know More</span></div>
-                            <div><span className='text-[#4E4FEB]'><i class="bi bi-tags-fill"></i></span><span className='font-semibold ml-2'>Partner Offer</span><span> Purchase now & get 1 surprise cashback coupon in Future </span> <span className='text-[#4E4FEB] font-semibold'>Know More</span></div>
+                            <div><span className='text-primary'><i class="bi bi-tags-fill"></i></span><span className='font-semibold ml-2'>Bank Offer</span><span> 5% Cashback on Flipkart Axis Bank Card </span> <span className='text-primary font-semibold'>T&C</span></div>
+                            <div><span className='text-primary'><i class="bi bi-tags-fill"></i></span><span className='font-semibold ml-2'>Special Offer</span><span> Get extra ₹7401 off (price inclusive of cashback/coupon) </span> <span className='text-primary font-semibold'>T&C</span></div>
+                            <div><span className='text-primary'><i class="bi bi-tags-fill"></i></span><span className='font-semibold ml-2'>Partner Offer</span><span> Sign-up for Flipkart Pay Later & get free Times Prime Benefits worth ₹10,000* </span> <span className='text-primary font-semibold'>Know More</span></div>
+                            <div><span className='text-primary'><i class="bi bi-tags-fill"></i></span><span className='font-semibold ml-2'>Partner Offer</span><span> Purchase now & get 1 surprise cashback coupon in Future </span> <span className='text-primary font-semibold'>Know More</span></div>
                         </div>
                     </div>
 
@@ -103,8 +103,8 @@ const ProductPage = () => {
                     <div className='flex gap-x-10 mt-8'>
                         <div className='opacity-50 font-bold'>Delivery</div>
                         <div className='flex flex-col'>
-                            <div><input type="number" placeholder='Enter Delivery Pincode' className='text-sm font-semibold pl-2 border-t-0 border-l-0 border-r-0 border-b-[#4E4FEB] border-2 outline-none' /></div>
-                            <div className='text-sm mt-2 font-semibold'><span>Delivery by {date + 5} {monthArr[month]}, {dayArr[day]}</span> | <span className='text-[#4E4FEB]'>Free</span> <span className='line-through font-semibold opacity-40'>₹40</span></div>
+                            <div><input type="number" placeholder='Enter Delivery Pincode' className='text-sm font-semibold pl-2 border-t-0 border-l-0 border-r-0 border-b-primary border-2 outline-none' /></div>
+                            <div className='text-sm mt-2 font-semibold'><span>Delivery by {date + 5} {monthArr[month]}, {dayArr[day]}</span> | <span className='text-primary'>Free</span> <span className='line-through font-semibold opacity-40'>₹40</span></div>
                         </div>
                     </div>
 

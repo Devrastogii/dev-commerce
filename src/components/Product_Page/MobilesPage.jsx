@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import Filter from '../FilterSection/Filter'
 import Loading from '../Loading/Loading'
 import NavbarForPages from '../Nav/NavbarForPages'
+import { motion } from 'framer-motion'
 
 const MobilesPage = () => {
 
@@ -146,7 +147,7 @@ const MobilesPage = () => {
         <NavbarForPages />
         <br /> <br />
         
-        {showBtn && <div className='w-full flex justify-center fixed z-10'><button className='w-[10rem] h-[2.2rem] flex justify-center items-center border-opacity-75 font-semibold rounded-md border border-[#4E4FEB] mt-5 text-[#4E4FEB] bg-white slide-right-navbar hover:text-white hover:border-white' onClick={reachTop}>Back To Top</button></div>}
+        {showBtn && <div className='w-full flex justify-center fixed z-10'><motion.button initial={{translateY: -10}} animate={{translateY: 0}} transition={{duration: 0.5}} className='w-[10rem] h-[2.2rem] flex justify-center items-center border-opacity-75 font-semibold rounded-md border border-primary mt-5 text-primary bg-white slide-right-home-navbar hover:text-white hover:border-white' onClick={reachTop}><i class="bi bi-chevron-down text-primary hover:text-white mr-2"></i>Back To Top</motion.button></div>}
         
         <section className='mt-10 px-5'>
             <div className='flex gap-x-5'>
@@ -172,9 +173,9 @@ const MobilesPage = () => {
                                         <div className='flex gap-x-5'>
                                             <div className='px-1 w-[13rem] h-[15rem] flex justify-center'><img src={require(`../../cat_images/${image_category[id]}/${productId[sliceStart + index]}.jpg`)} className='h-[13rem]' loading='lazy' /></div>
                                             <div className='flex flex-col'>
-                                            <div className={`font-semibold text-xl w-[32rem] ${hoverState && (indepIndex === sliceStart + index) ? 'text-[#4E4FEB]': 'text-black'}`}>{val}</div>
+                                            <div className={`font-semibold text-xl w-[32rem] ${hoverState && (indepIndex === sliceStart + index) ? 'text-primary': 'text-black'}`}>{val}</div>
                                             <div className='flex gap-x-4 mt-2 items-center h-auto'>
-                                                <div className='bg-[#4E4FEB] text-white rounded-lg w-[3.6rem] h-[1.7rem] text-xs flex justify-center items-center'>{productRating[sliceStart + index]} <i class="bi bi-star-fill text-xs ml-1"></i></div>
+                                                <div className='bg-primary text-white rounded-lg w-[3.6rem] h-[1.7rem] text-xs flex justify-center items-center'>{productRating[sliceStart + index]} <i class="bi bi-star-fill text-xs ml-1"></i></div>
                                                 <div className='text-gray-500 font-semibold -mt-1'>{productTotalRating[sliceStart + index]} Ratings</div> 
                                             </div>
                                             <div className='mt-3 px-5 w-[22rem]'>
@@ -196,7 +197,7 @@ const MobilesPage = () => {
                                                 <div className='font-bold text-2xl'>₹{productOfferPrice[sliceStart + index]}</div>
                                             <div className='flex gap-x-2 mt-1'>
                                                 <div className='line-through text-gray-500 text-sm font-semibold'>₹{productPrice[sliceStart + index]}</div>
-                                                <div className='text-[#4E4FEB] text-sm font-semibold'>{productOff[sliceStart + index]}% off</div>
+                                                <div className='text-primary text-sm font-semibold'>{productOff[sliceStart + index]}% off</div>
                                             </div>                                         
                                         </div>
                                         </div>
@@ -211,10 +212,10 @@ const MobilesPage = () => {
                     <div>Page {currentPage} of {totalNumberOfPages}</div>
                     <div className='flex gap-x-5'>
                         <div>
-                            <button className='border border-[#4E4FEB] bg-white text-[#4E4FEB] w-[11rem] h-[2.2rem]' onClick={showPreviousPage}>PREVIOUS PAGE</button>
+                            <button className='border border-primary bg-white text-primary w-[11rem] h-[2.2rem]' onClick={showPreviousPage}>PREVIOUS PAGE</button>
                         </div>      
                         <div>
-                            <button className='border border-[#4E4FEB] bg-white text-[#4E4FEB] w-[11rem] h-[2.2rem]' onClick={showNextPage}>NEXT PAGE</button>
+                            <button className='border border-primary bg-white text-primary w-[11rem] h-[2.2rem]' onClick={showNextPage}>NEXT PAGE</button>
                         </div>      
                     </div>
                 </div>

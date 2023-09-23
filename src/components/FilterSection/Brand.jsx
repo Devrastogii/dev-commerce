@@ -40,8 +40,8 @@ const Brand = (props) => {
             </div>
             
             {!click ? <>
-                <button className='text-[#4E4FEB] mt-2 ml-1 font-semibold text-sm' onClick={showAllBrands}>+{props.brand.length-7} More</button>
-            </> : <button className='text-[#4E4FEB] mt-2 ml-1 font-semibold text-sm' onClick={showAllBrands}>{text}</button>}            
+                <button className='text-primary mt-2 ml-1 font-semibold text-sm' onClick={showAllBrands}>+{props.brand.length-7} More</button>
+            </> : <button className='text-primary mt-2 ml-1 font-semibold text-sm' onClick={showAllBrands}>{text}</button>}            
     </>
   )
 }

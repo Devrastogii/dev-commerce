@@ -65,8 +65,8 @@ const Sale = () => {
     <>
         <section className='pl-20'>
             <div className='flex items-center'>
-                <div className='w-4 h-8 rounded-md bg-[#4E4FEB]'></div>
-                <div className='ml-2 text-sm font-semibold text-[#4E4FEB]'>Today's</div>
+                <div className='w-4 h-8 rounded-md bg-primary'></div>
+                <div className='ml-2 text-sm font-semibold text-primary'>Today's</div>
             </div>
 
             <div className='mt-3 flex gap-x-10'>
@@ -82,19 +82,19 @@ const Sale = () => {
                     <div className='flex justify-center'>                    
                         <img src={require(`../../all/${productImage[index]}`)} alt="product-image" className='h-[12rem]' loading='lazy' />
                     </div>
-                    <div className={`font-semibold mt-4 ${hoverState && (indepIndex === index) ? 'text-[#4E4FEB]': 'text-black'}`}>{val}</div>
+                    <div className={`font-semibold mt-4 ${hoverState && (indepIndex === index) ? 'text-primary': 'text-black'}`}>{val}</div>
                     <div className='flex gap-x-2 items-center mt-3'>
-                        <div className='bg-[#4E4FEB] text-white rounded-lg w-[3.6rem] h-[1.7rem] text-sm flex justify-center items-center'>{productRating[index]} <i class="bi bi-star-fill ml-1 text-sm"></i></div>
+                        <div className='bg-primary text-white rounded-lg w-[3.6rem] h-[1.7rem] text-sm flex justify-center items-center'>{productRating[index]} <i class="bi bi-star-fill ml-1 text-sm"></i></div>
                         <div className='text-gray-500 font-semibold'>({productTotalRating[index]})</div>                 
                     </div>
-                    <div className='mt-3'><span className='font-semibold'>₹{productOfferPrice[index]}</span> <span className='line-through text-gray-500 text-sm font-semibold'>₹{productPrice[index]}</span><span className='text-[#4E4FEB] ml-2 font-semibold text-sm'>{productOff[index]}% off</span></div>
+                    <div className='mt-3'><span className='font-semibold'>₹{productOfferPrice[index]}</span> <span className='line-through text-gray-500 text-sm font-semibold'>₹{productPrice[index]}</span><span className='text-primary ml-2 font-semibold text-sm'>{productOff[index]}% off</span></div>
                 </div>
                         </>
                     )
                 })}
 
                 <div className='w-full flex justify-center mt-5 items-center'>
-                    <button className='font-bold text-white bg-[#4E4FEB] w-[10rem] h-[2.5rem] slide_right' onClick={handleClick}>{text}</button>
+                    <button className='font-bold text-white bg-primary w-[10rem] h-[2.5rem] slide_right' onClick={handleClick}>{text}</button>
                 </div>
             </div>
         </section>
