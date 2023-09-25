@@ -11,6 +11,7 @@ const Sale = () => {
   const [productRating, setProductRating] = useState([])
   const [productTotalRating, setProductTotalRating] = useState([])
   const [productId, setProductId] = useState([])
+  const [productDescription, setProductDescription] = useState([])
   const [singleClick, setSingleClick] = useState(false)
   const [text, setText] = useState("VIEW MORE")
 
@@ -25,7 +26,8 @@ const Sale = () => {
         setProductRating(res.data.rating)
         setProductTotalRating(res.data.total_ratings)
         setProductOff(res.data.off)        
-        setProductId(res.data.uid)               
+        setProductId(res.data.uid)         
+        setProductDescription(res.data.description)      
     }
 
     start()
@@ -54,8 +56,63 @@ const Sale = () => {
         setHoverState(false)
   }
 
-  const addToWishlist = () => {
+  const [productToWishlistSet, setProductToWishlistSet] = useState({
+    pname: new Set(),
+    pid: new Set(),
+    poffer: new Set(),
+    pprice: new Set(),
+    poff: new Set(),
+    prating: new Set(),
+    ptotal: new Set(),
+    pdesc: new Set()
+  })
 
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [color, setColor] = useState('text-gray-300')
+
+  const toggleWishlist = (productId, productName, productRating, productTotalRating, productOfferPrice, productPrice, productOff, productDescription) => {
+    setIsInWishlist((prevIsInWishlist) => !prevIsInWishlist);
+
+    if(!isInWishlist) {
+        addToWishlist(productId, productName, productRating, productTotalRating, productOfferPrice, productPrice, productOff, productDescription)
+    }   
+    
+    else {
+        removeFromWishlist(productId, productName, productRating, productTotalRating, productOfferPrice, productPrice, productOff, productDescription)
+    }
+  };
+
+  const setNames = [productToWishlistSet.pid, productToWishlistSet.prating, productToWishlistSet.pname, productToWishlistSet.ptotal, productToWishlistSet.poff, productToWishlistSet.poffer, productToWishlistSet.pprice, productToWishlistSet.pdesc]
+
+  function addToWishlist(productId, productName, productRating, productTotalRating, productOfferPrice, productPrice, productOff, productDescription) {    
+
+    const argumentsName = [productId, productRating, productName, productTotalRating, productOff, productOfferPrice, productPrice, productDescription]     
+
+    for (let index = 0; index < setNames.length; index++) {            
+        setNames[index].add(argumentsName[index])
+    }           
+    
+    for (let index = 0; index < productId.length; index++) {
+        if(setNames[0].has(productId[index])){
+            setColor('text-red-500')
+            console.log(color);
+        }
+        
+        else {
+            setColor('text-gray-300')
+        }
+    }
+
+    console.log(productToWishlistSet);
+  }
+
+  function removeFromWishlist(productId, productName, productRating, productTotalRating, productOfferPrice, productPrice, productOff, productDescription) {
+
+    const argumentsName = [productId, productRating, productName, productTotalRating, productOff, productOfferPrice, productPrice, productDescription] 
+    
+    for (let index = 0; index < setNames.length; index++) {            
+        setNames[index].delete(argumentsName[index])
+    }
   }
 
   return (
@@ -78,7 +135,7 @@ const Sale = () => {
                         <div className='flex flex-col w-[12rem] cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)}>
                     <div className='flex justify-center'>                    
                         <div><img src={require(`../../all/${productId[index]}.jpg`)} alt="product-image" className='h-[12rem]' loading='lazy' /></div>
-                        <div><i class={`bi bi-heart-fill text-gray-300 hover:text-red-500`} onClick={addToWishlist}></i></div>
+                        <div><i class={`bi bi-heart-fill ${color} hover:text-red-500`} onClick={() => toggleWishlist(productId[index], val, productRating[index], productTotalRating[index], productOfferPrice[index], productPrice[index], productOff[index], productDescription[index])}></i></div>
                     </div>
                     <div className={`font-semibold mt-4 ${hoverState && (indepIndex === index) ? 'text-primary': 'text-black'}`}>{val}</div>
                     <div className='flex gap-x-2 items-center mt-3'>
