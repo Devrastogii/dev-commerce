@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, useDisclosure } from '@chakra-ui/react';
 import Register from '../Auth/Register';
 import Login from '../Auth/Login';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
 
@@ -25,8 +25,10 @@ const Navbar = () => {
     onOpen()
   }
 
-  const wishlist = () => {
+  const navigate = useNavigate()
 
+  const wishlist = () => {
+    navigate('/wishlist')
   }
 
   return (

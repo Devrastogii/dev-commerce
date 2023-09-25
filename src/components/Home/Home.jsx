@@ -7,6 +7,7 @@ import FeaturedProducts from '../Home/FeaturedProducts'
 import Services from './Services'
 import Footer from './Footer'
 import Loading from '../Loading/Loading'
+import { HashLink as Link } from "react-router-hash-link"
 
 const Home = () => {
 
@@ -27,7 +28,7 @@ const Home = () => {
     <>
         {show ? <Loading /> : <> <section>
             <div className='w-full h-10 bg-black flex justify-center items-center'>
-                <h1 className='text-white text-sm'><span className='opacity-90'>Summer Sale on Tablets and Free Delivery - 30% OFF</span><span className='ml-3 font-bold underline'><a>Shop Now</a></span></h1>
+                <h1 className='text-white text-sm'><span className='opacity-90'>Summer Sale on Tablets and Free Delivery - 30% OFF</span><span className='ml-3 font-bold underline'><Link to={'#sales'} smooth>Shop Now</Link></span></h1>
             </div>
         </section>
 

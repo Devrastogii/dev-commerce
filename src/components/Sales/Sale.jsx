@@ -10,7 +10,7 @@ const Sale = () => {
   const [productOff, setProductOff] = useState([])
   const [productRating, setProductRating] = useState([])
   const [productTotalRating, setProductTotalRating] = useState([])
-  const [productImage, setProductImage] = useState([])
+  const [productId, setProductId] = useState([])
   const [singleClick, setSingleClick] = useState(false)
   const [text, setText] = useState("VIEW MORE")
 
@@ -24,15 +24,8 @@ const Sale = () => {
         setProductOfferPrice(res.data.offer)
         setProductRating(res.data.rating)
         setProductTotalRating(res.data.total_ratings)
-        setProductOff(res.data.off)               
-
-        for (let index = 0; index < res.data.name.length; index++) {
-            for (let j = 0; j < res.data.uid.length; j++) {                
-                if((res.data.uid[index]  + '.jpg') === res.data.images[j]) {                    
-                    productImage.push(res.data.images[j])
-                }
-            }   
-        }        
+        setProductOff(res.data.off)        
+        setProductId(res.data.uid)               
     }
 
     start()
@@ -61,9 +54,13 @@ const Sale = () => {
         setHoverState(false)
   }
 
+  const addToWishlist = () => {
+
+  }
+
   return (
     <>
-        <section className='pl-20'>
+        <section className='pl-20' id='sales'>
             <div className='flex items-center'>
                 <div className='w-4 h-8 rounded-md bg-primary'></div>
                 <div className='ml-2 text-sm font-semibold text-primary'>Today's</div>
@@ -80,7 +77,8 @@ const Sale = () => {
                         <>
                         <div className='flex flex-col w-[12rem] cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)}>
                     <div className='flex justify-center'>                    
-                        <img src={require(`../../all/${productImage[index]}`)} alt="product-image" className='h-[12rem]' loading='lazy' />
+                        <div><img src={require(`../../all/${productId[index]}.jpg`)} alt="product-image" className='h-[12rem]' loading='lazy' /></div>
+                        <div><i class={`bi bi-heart-fill text-gray-300 hover:text-red-500`} onClick={addToWishlist}></i></div>
                     </div>
                     <div className={`font-semibold mt-4 ${hoverState && (indepIndex === index) ? 'text-primary': 'text-black'}`}>{val}</div>
                     <div className='flex gap-x-2 items-center mt-3'>

@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { db } from "../../firebase";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { Spinner } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [userData, setUserData] = useState({
@@ -59,7 +60,9 @@ const Register = () => {
   // const data = await getDocs(usersCollection) - to get all entries
   // setUsers(data.docs.map((doc) => ({...doc.data(), id: doc.id})))
 
-  const [show, setShow] = useState(true);  
+  const [show, setShow] = useState(true); 
+  // const [navigateAfterRegister, setNavigateAfterRegister] = useState(false)
+  const navigate = useNavigate()
 
   async function userRegistration(e) {
     e.preventDefault();
@@ -96,7 +99,7 @@ const Register = () => {
       // });
 
       if (checkAccount.size == 0) {
-        await addDoc(usersCollection, { name, phone, email, password });
+        await addDoc(usersCollection, { name, phone, email, password });        
 
         const showAccountCreatedMessage = () => {
           toast.success("Account created successfully !! ", {
@@ -105,7 +108,13 @@ const Register = () => {
         };
 
         setShow(true);
-        showAccountCreatedMessage();
+        showAccountCreatedMessage(); 
+        
+        const time = setTimeout(() => {
+          navigate('/', {state: {
+            navState: true
+          }})
+        }, 2000);
       } else {
         setShow(true);
         showAccountPresentMessage();
