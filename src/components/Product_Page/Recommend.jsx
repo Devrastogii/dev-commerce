@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 const Recommend = (props) => {
 
-  const name = props.name  
+  const name = props.name    
 
   const [productName, setProductName] = useState([])
   const [productPrice, setProductPrice] = useState([])
@@ -37,6 +37,7 @@ const Recommend = (props) => {
     
 
   useEffect(() => {    
+    // console.log(props?.sale);
     getData()
   }, [])
 
@@ -70,6 +71,16 @@ const Recommend = (props) => {
   }
 
   const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category, newImgName) => {
+
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    }
+    
+    window.addEventListener('click', scrollToTop)
+
     navigate('/product-page', {state: {
         'name': name,
         'rating': productRating,
@@ -81,17 +92,12 @@ const Recommend = (props) => {
         'image': image,
         'category': category,
         'id': id,
-        'newImageName': newImgName
+        'newImageName': newImgName,
+        'sale': 'sale'
     }})
 
-    function scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-        });
-    }
+    // console.log("hi");
     
-    window.addEventListener('click', scrollToTop)
     getData()
   }
 
@@ -112,7 +118,7 @@ const Recommend = (props) => {
                     return (
                         <>
                             <div className='flex flex-col w-[14rem] gap-y-1 cursor-pointer' onMouseEnter={() => handleHover("yes", start+i)} onMouseLeave={() =>handleHover("no", start+i)} onClick={() => navigateProductPage(v, productRating[start+i], productTotalRating[start+i], productDescription[start+i], productOfferPrice[start+i], productPrice[start+i], productOff[start+i], productId[start+i], props.category, props.newImgName)} >
-                                <div className='w-[12rem] h-[15rem] flex justify-center items-center'><img src={require(`../../cat_images/${props.category}/${props.newImgName}${productId[start+i]}.jpg`)} alt="product-image" className='h-[13rem]' /></div>
+                                {props?.sale ? <div className='w-[12rem] h-[15rem] flex justify-center items-center'><img src={require(`../../all/${productId[i]}.jpg`)} alt="product-image" className='h-[13rem]' /></div> : <div className='w-[12rem] h-[15rem] flex justify-center items-center'><img src={require(`../../cat_images/${props.category}/${props.newImgName}${productId[start+i]}.jpg`)} alt="product-image" className='h-[13rem]' /></div>}                              
                                 <div className={`mt-1 w-[12rem] ${hoverState && (indepIndex === start + i) ? 'text-primary font-semibold': 'text-black'} transition-all duration-500`}>{v}</div>
                                 <div className='flex gap-x-2 items-center mt-1'>
                                     <div className='bg-primary text-white rounded-lg w-12 h-6 text-sm flex justify-center items-center'>{productRating[start+i]}</div>
@@ -127,8 +133,8 @@ const Recommend = (props) => {
             </div>
 
             <div className='flex justify-center items-center h-[15rem] absolute right-0 mt-5 bg-white'>
-                <div className='flex bg-white justify-center items-center drop-shadow-2xl rounded-xl w-[3rem] h-[6rem] cursor-pointer' onClick={handleSlide}>
-                    <button onClick={handleSlide}><i class="bi bi-chevron-double-right text-black text-2xl outline-none"></i></button>
+                <div className='flex bg-white justify-center items-center drop-shadow-2xl rounded-xl w-[3rem] h-[6rem]'>
+                    <button onClick={handleSlide}><i class="bi bi-chevron-double-right text-black text-2xl outline-none cursor-pointer"></i></button>
                 </div>
             </div>
             </div>

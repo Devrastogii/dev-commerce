@@ -147,7 +147,7 @@ const Sale = () => {
                         <>
                         <div className='flex flex-col w-[12rem] cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)}>
                     <div className='flex justify-center'>                    
-                        {/* <div><img src={require(`../../all/${productId[index]}.jpg`)} alt="product-image" className='h-[12rem]' loading='lazy' /></div> */}
+                        <div><img src={require(`../../all/${productId[index]}.jpg`)} alt="product-image" className='h-[12rem]' loading='lazy' /></div>
                         <div><i class={`bi bi-heart-fill hover:text-red-500`} onClick={() => toggleWishlist(productId[index], val, productRating[index], productTotalRating[index], productOfferPrice[index], productPrice[index], productOff[index], productDescription[index])}></i></div>
                     </div>
                     <div className={`font-semibold mt-4 ${hoverState && (indepIndex === index) ? 'text-primary': 'text-black'}`}>{val}</div>

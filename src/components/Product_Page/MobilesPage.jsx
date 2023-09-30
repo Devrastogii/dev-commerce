@@ -5,6 +5,10 @@ import Filter from '../FilterSection/Filter'
 import Loading from '../Loading/Loading'
 import NavbarForPages from '../Nav/NavbarForPages'
 import { motion } from 'framer-motion'
+import { db } from '../../firebase'
+import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore'
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const MobilesPage = () => {
 
@@ -29,6 +33,18 @@ const MobilesPage = () => {
   const id = location.state.id
 
   const image_category = ['mobiles', 'monitors', 'watch', 'laptop', 'tablet', 'fridge', 'machine', 'purifier']
+    
+  // Toast Messages
+  
+  const showWishlistMessage = (num) => {
+
+    {num == 1 ? toast.success("Added To Wishlist ", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      }) : toast.success("Removed From Wishlist ", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });}
+    
+  };
 
   // Loading
 
@@ -82,7 +98,7 @@ const MobilesPage = () => {
         setHoverState(false)
   }
 
-  const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category, newImageName) => {
+  const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category, newImageName) => { 
     navigate('/product-page', {state: {
         'name': name,
         'rating': productRating,
@@ -140,7 +156,54 @@ const MobilesPage = () => {
   }
 
   const [showBtnHovered, setShowBtnHovered] = useState(false)
-  const newImageName = ['MOB', 'MON', 'W', 'L', 'T', 'F', 'MA', 'P']
+  const newImageName = ['MOB', 'MONMON', 'W', 'L', 'T', 'F', 'MA', 'P']
+
+  const [currentIndex, setCurrentIndex] = useState()
+  const [iconColor, setIconColor] = useState(false)
+
+  const productInWishlist = []
+  const addProduct = new Map()
+
+  const wishlistCollection = collection(db, "wishlist");
+
+  const toggleWishlist = async (index, productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image_category, newImageName, productId) => {
+
+    setCurrentIndex(index)
+    setIconColor(true)    
+
+    productInWishlist.push(index)   
+    addProduct.set('text-red-500', index)   
+
+    let checkInDB = false 
+    let fullImageName = newImageName + productId   
+    
+    const getAllDoc = await getDocs(wishlistCollection);
+
+    getAllDoc.forEach((doc) => {
+        if(productId === doc.data().productId) {
+            checkInDB = true                        
+        }
+    })    
+
+    if(!checkInDB) {
+        const querySnapshot = await addDoc(wishlistCollection, {productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image_category, newImageName, productId, fullImageName})  
+
+        showWishlistMessage(1);
+    }
+
+    else {
+        const deleteFromWishlist = await getDocs(
+            query(collection(db, "/wishlist"), where("fullImageName", "==", fullImageName))
+        );
+       
+        deleteFromWishlist.forEach((doc) => {   
+            deleteDoc(doc.ref);
+          }); 
+          
+        showWishlistMessage(0);
+        setIconColor(false)
+    }
+  }
 
   return (
     <>
@@ -170,9 +233,14 @@ const MobilesPage = () => {
                         {productName.slice(sliceStart, sliceEnd).map((val, index) => {                            
                             return (
                                 <>
-                                    <div className='flex mt-10 gap-x-3 cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={() => navigateProductPage(val, productRating[sliceStart + index], productTotalRating[sliceStart + index], productDescription[sliceStart + index], productOfferPrice[sliceStart + index], productPrice[sliceStart + index], productOff[sliceStart + index], productId[sliceStart + index], image_category[id], newImageName[id])}>
+                                    <div className='flex mt-10 gap-x-3 cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)}>
                                         <div className='flex gap-x-5'>
-                                            <div className='px-1 w-[13rem] h-[15rem] flex justify-center'><img src={require(`../../cat_images/${image_category[id]}/${newImageName[id]}${productId[sliceStart + index]}.jpg`)} className='h-[13rem]' loading='lazy' /></div>
+                                            <div className='px-1 w-[13rem] h-[15rem] flex justify-center gap-x-7'><div><img src={require(`../../cat_images/${image_category[id]}/${newImageName[id]}${productId[sliceStart + index]}.jpg`)} className='h-[13rem]' loading='lazy' /></div>
+
+
+                                            <div><button onClick={() => toggleWishlist(sliceStart + index, val, productRating[sliceStart + index], productTotalRating[sliceStart + index], productDescription[sliceStart + index], productOfferPrice[sliceStart + index], productPrice[sliceStart + index], productOff[sliceStart + index], image_category[id], newImageName[id], productId[sliceStart + index])}>
+                                            
+                                                <i class={`bi bi-heart-fill ${currentIndex === index ? 'text-red-500' : 'text-gray-200'} hover:text-red-500`}></i></button></div></div>
                                             <div className='flex flex-col'>
                                             <div className={`font-semibold text-xl w-[32rem] ${hoverState && (indepIndex === sliceStart + index) ? 'text-primary': 'text-black'}`}>{val}</div>
                                             <div className='flex gap-x-4 mt-2 items-center h-auto'>
@@ -224,6 +292,8 @@ const MobilesPage = () => {
             </div>
         </section>    
        </>}     
+
+       <ToastContainer />
     </>
   )
 }
