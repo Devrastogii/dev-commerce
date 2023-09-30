@@ -17,6 +17,7 @@ const ProductPage = () => {
   const off = location.state.off
   const image = location.state.image
   const category = location.state.category
+  const newImgName = location.state.newImageName
 
   const monthArr = ['Jan', 'Feb', 'Mar', 'Apr', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   const dayArr = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -50,7 +51,7 @@ const ProductPage = () => {
                 <div className='w-1/3 flex flex-col justify-center items-center h-[30rem]'>  
 
                 <div className={`border border-black border-opacity-10 h-[30rem] w-full flex flex-col justify-center items-center`}>
-                <img src={require(`../../cat_images/${category}/${image}.jpg`)} loading='lazy' alt='product-image' /> 
+                <img src={require(`../../cat_images/${category}/${newImgName}${image}.jpg`)} loading='lazy' alt='product-image' /> 
 
                 <div className='flex mt-10 gap-x-5'>
                     <button className='bg-orange-600 hover:bg-orange-700 transition-all duration-500 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center'><i class="bi bi-lightning-fill mr-1"></i> BUY NOW</button>
@@ -154,7 +155,8 @@ const ProductPage = () => {
         <Recommend name = {name}
                    image = {image}
                    category = {category}
-                   id = {location.state.id} />
+                   id = {location.state.id}
+                   newImgName = {newImgName} />
        </>} 
     </>
   )

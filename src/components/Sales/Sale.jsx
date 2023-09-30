@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import { addDoc, collection, deleteDoc, getDocs, query, where } from 'firebase/firestore'
+import { db } from '../../firebase'
 
 const Sale = () => {
 
@@ -14,6 +16,10 @@ const Sale = () => {
   const [productDescription, setProductDescription] = useState([])
   const [singleClick, setSingleClick] = useState(false)
   const [text, setText] = useState("VIEW MORE")
+
+  // Database Connection
+
+  const wishlistCollection = collection(db, "wishlist");
 
   const navigate = useNavigate()
 
@@ -67,52 +73,59 @@ const Sale = () => {
     pdesc: new Set()
   })
 
-  const [isInWishlist, setIsInWishlist] = useState(false);
-  const [color, setColor] = useState('text-gray-300')
+  const setNames = [productToWishlistSet.pid, productToWishlistSet.prating, productToWishlistSet.pname, productToWishlistSet.ptotal, productToWishlistSet.poff, productToWishlistSet.poffer, productToWishlistSet.pprice, productToWishlistSet.pdesc]
 
-  const toggleWishlist = (productId, productName, productRating, productTotalRating, productOfferPrice, productPrice, productOff, productDescription) => {
-    setIsInWishlist((prevIsInWishlist) => !prevIsInWishlist);
+  async function toggleWishlist(productId, productName, productRating, productTotalRating, productOfferPrice, productPrice, productOff, productDescription) {    
 
-    if(!isInWishlist) {
-        addToWishlist(productId, productName, productRating, productTotalRating, productOfferPrice, productPrice, productOff, productDescription)
+    const argumentsName = [productId, productRating, productName, productTotalRating, productOff, productOfferPrice, productPrice, productDescription]
+
+    console.log(setNames[2].has(argumentsName[2]));
+    
+    if (!setNames[2].has(argumentsName[2][0])) {
+
+        for (let index = 0; index < setNames.length; index++) {            
+            setNames[index].add(argumentsName[index])
+        }       
+
+        // const res = await addDoc(wishlistCollection, { productId, productName, productRating, productTotalRating, productOfferPrice, productPrice, productOff, productDescription });   
+
     }   
     
     else {
-        removeFromWishlist(productId, productName, productRating, productTotalRating, productOfferPrice, productPrice, productOff, productDescription)
-    }
-  };
 
-  const setNames = [productToWishlistSet.pid, productToWishlistSet.prating, productToWishlistSet.pname, productToWishlistSet.ptotal, productToWishlistSet.poff, productToWishlistSet.poffer, productToWishlistSet.pprice, productToWishlistSet.pdesc]
-
-  function addToWishlist(productId, productName, productRating, productTotalRating, productOfferPrice, productPrice, productOff, productDescription) {    
-
-    const argumentsName = [productId, productRating, productName, productTotalRating, productOff, productOfferPrice, productPrice, productDescription]     
-
-    for (let index = 0; index < setNames.length; index++) {            
-        setNames[index].add(argumentsName[index])
-    }           
-    
-    for (let index = 0; index < productId.length; index++) {
-        if(setNames[0].has(productId[index])){
-            setColor('text-red-500')
-            console.log(color);
+        for (let index = 0; index < setNames.length; index++) {            
+            setNames[index].delete(argumentsName[index])
         }
-        
-        else {
-            setColor('text-gray-300')
-        }
+
+        console.log(productName[0]);
+
+        // const deleteFromWishlist = await getDocs(
+        //     query(collection(db, "/wishlist"), where("name", "==", productName[0]))
+        // );
+
+        // if (deleteFromWishlist.size > 0) {
+        //     // Loop through the documents that match the query
+        //     deleteFromWishlist.forEach((doc) => {
+        //       // Get the reference to the document
+        //       const docRef = doc(db, "wishlist", doc.id);
+          
+        //       // Delete the document
+        //       deleteDoc(docRef)
+        //         .then(() => {
+        //           console.log("Document deleted successfully!");
+        //         })
+        //         .catch((error) => {
+        //           console.error("Error deleting document: ", error);
+        //         });
+        //     });
+        //   } else {
+        //     console.log("No matching documents found to delete.");
+        //   }
+
     }
+       
 
-    console.log(productToWishlistSet);
-  }
-
-  function removeFromWishlist(productId, productName, productRating, productTotalRating, productOfferPrice, productPrice, productOff, productDescription) {
-
-    const argumentsName = [productId, productRating, productName, productTotalRating, productOff, productOfferPrice, productPrice, productDescription] 
-    
-    for (let index = 0; index < setNames.length; index++) {            
-        setNames[index].delete(argumentsName[index])
-    }
+    console.log(productToWishlistSet); 
   }
 
   return (
@@ -134,8 +147,8 @@ const Sale = () => {
                         <>
                         <div className='flex flex-col w-[12rem] cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)}>
                     <div className='flex justify-center'>                    
-                        <div><img src={require(`../../all/${productId[index]}.jpg`)} alt="product-image" className='h-[12rem]' loading='lazy' /></div>
-                        <div><i class={`bi bi-heart-fill ${color} hover:text-red-500`} onClick={() => toggleWishlist(productId[index], val, productRating[index], productTotalRating[index], productOfferPrice[index], productPrice[index], productOff[index], productDescription[index])}></i></div>
+                        {/* <div><img src={require(`../../all/${productId[index]}.jpg`)} alt="product-image" className='h-[12rem]' loading='lazy' /></div> */}
+                        <div><i class={`bi bi-heart-fill hover:text-red-500`} onClick={() => toggleWishlist(productId[index], val, productRating[index], productTotalRating[index], productOfferPrice[index], productPrice[index], productOff[index], productDescription[index])}></i></div>
                     </div>
                     <div className={`font-semibold mt-4 ${hoverState && (indepIndex === index) ? 'text-primary': 'text-black'}`}>{val}</div>
                     <div className='flex gap-x-2 items-center mt-3'>

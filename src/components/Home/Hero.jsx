@@ -1,5 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import banner from '../../images/banner.png'
 import {
     Popover,
     PopoverTrigger,
@@ -73,7 +74,9 @@ const Hero = () => {
                     <button onClick={() => navigatePage("3")}>Watches</button>
                 </div>
                 <div><hr className='h-[16.5rem] bg-black w-[1px] opacity-10 border-0' /></div>
-                <div className='border border-black w-[55%] h-[40vh] mt-10'></div>
+                <div className='w-[55%] h-[40vh] mt-10'>
+                    <img src={banner} alt="banner" className='h-[40vh]' />
+                </div>
             </div>
         </section>
     </>

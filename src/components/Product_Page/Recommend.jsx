@@ -69,7 +69,7 @@ const Recommend = (props) => {
         setHoverState(false)
   }
 
-  const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category) => {
+  const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category, newImgName) => {
     navigate('/product-page', {state: {
         'name': name,
         'rating': productRating,
@@ -80,7 +80,8 @@ const Recommend = (props) => {
         'off': productOff,
         'image': image,
         'category': category,
-        'id': id
+        'id': id,
+        'newImageName': newImgName
     }})
 
     function scrollToTop() {
@@ -110,8 +111,8 @@ const Recommend = (props) => {
                 {productName.slice(start, end+1).map((v, i) => {
                     return (
                         <>
-                            <div className='flex flex-col w-[14rem] gap-y-1 cursor-pointer' onMouseEnter={() => handleHover("yes", start+i)} onMouseLeave={() =>handleHover("no", start+i)} onClick={() => navigateProductPage(v, productRating[start+i], productTotalRating[start+i], productDescription[start+i], productOfferPrice[start+i], productPrice[start+i], productOff[start+i], productId[start+i], props.category)} >
-                                <div className='w-[12rem] h-[15rem] flex justify-center items-center'><img src={require(`../../cat_images/${props.category}/${productId[start+i]}.jpg`)} alt="product-image" className='h-[13rem]' /></div>
+                            <div className='flex flex-col w-[14rem] gap-y-1 cursor-pointer' onMouseEnter={() => handleHover("yes", start+i)} onMouseLeave={() =>handleHover("no", start+i)} onClick={() => navigateProductPage(v, productRating[start+i], productTotalRating[start+i], productDescription[start+i], productOfferPrice[start+i], productPrice[start+i], productOff[start+i], productId[start+i], props.category, props.newImgName)} >
+                                <div className='w-[12rem] h-[15rem] flex justify-center items-center'><img src={require(`../../cat_images/${props.category}/${props.newImgName}${productId[start+i]}.jpg`)} alt="product-image" className='h-[13rem]' /></div>
                                 <div className={`mt-1 w-[12rem] ${hoverState && (indepIndex === start + i) ? 'text-primary font-semibold': 'text-black'} transition-all duration-500`}>{v}</div>
                                 <div className='flex gap-x-2 items-center mt-1'>
                                     <div className='bg-primary text-white rounded-lg w-12 h-6 text-sm flex justify-center items-center'>{productRating[start+i]}</div>

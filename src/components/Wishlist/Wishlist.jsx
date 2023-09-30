@@ -1,9 +1,31 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import NavbarForPages from '../Nav/NavbarForPages'
+import { collection, getDocs } from 'firebase/firestore'
+import { db } from '../../firebase'
 
 const Wishlist = () => {
 
   const [count, setCount] = useState(0)
+
+  const [productDetails, setProductDetails] = useState({
+    productName: [],
+    productPrice: [],
+    productOfferPrice: [],
+    productOff: [],
+    productRating: [],
+    productTotalRating: [],
+    productId: [],
+    productDescription: []
+  })
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await getDocs(collection(db, 'wishlist'))
+      console.log(data);
+    }
+
+    fetchData()
+  }, [])
 
   return (
     <>    

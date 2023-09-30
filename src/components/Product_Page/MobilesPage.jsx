@@ -82,7 +82,7 @@ const MobilesPage = () => {
         setHoverState(false)
   }
 
-  const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category) => {
+  const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category, newImageName) => {
     navigate('/product-page', {state: {
         'name': name,
         'rating': productRating,
@@ -93,7 +93,8 @@ const MobilesPage = () => {
         'off': productOff,
         'image': image,
         'category': category,
-        'id': id
+        'id': id,
+        'newImageName': newImageName
     }})
   }
 
@@ -139,6 +140,7 @@ const MobilesPage = () => {
   }
 
   const [showBtnHovered, setShowBtnHovered] = useState(false)
+  const newImageName = ['MOB', 'MON', 'W', 'L', 'T', 'F', 'MA', 'P']
 
   return (
     <>
@@ -168,9 +170,9 @@ const MobilesPage = () => {
                         {productName.slice(sliceStart, sliceEnd).map((val, index) => {                            
                             return (
                                 <>
-                                    <div className='flex mt-10 gap-x-3 cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={() => navigateProductPage(val, productRating[sliceStart + index], productTotalRating[sliceStart + index], productDescription[sliceStart + index], productOfferPrice[sliceStart + index], productPrice[sliceStart + index], productOff[sliceStart + index], productId[sliceStart + index], image_category[id])}>
+                                    <div className='flex mt-10 gap-x-3 cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={() => navigateProductPage(val, productRating[sliceStart + index], productTotalRating[sliceStart + index], productDescription[sliceStart + index], productOfferPrice[sliceStart + index], productPrice[sliceStart + index], productOff[sliceStart + index], productId[sliceStart + index], image_category[id], newImageName[id])}>
                                         <div className='flex gap-x-5'>
-                                            <div className='px-1 w-[13rem] h-[15rem] flex justify-center'><img src={require(`../../cat_images/${image_category[id]}/${productId[sliceStart + index]}.jpg`)} className='h-[13rem]' loading='lazy' /></div>
+                                            <div className='px-1 w-[13rem] h-[15rem] flex justify-center'><img src={require(`../../cat_images/${image_category[id]}/${newImageName[id]}${productId[sliceStart + index]}.jpg`)} className='h-[13rem]' loading='lazy' /></div>
                                             <div className='flex flex-col'>
                                             <div className={`font-semibold text-xl w-[32rem] ${hoverState && (indepIndex === sliceStart + index) ? 'text-primary': 'text-black'}`}>{val}</div>
                                             <div className='flex gap-x-4 mt-2 items-center h-auto'>
