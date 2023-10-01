@@ -57,9 +57,6 @@ const Register = () => {
     setUserData({ ...userData, [name]: value });
   };
 
-  // const data = await getDocs(usersCollection) - to get all entries
-  // setUsers(data.docs.map((doc) => ({...doc.data(), id: doc.id})))
-
   const [show, setShow] = useState(true); 
   // const [navigateAfterRegister, setNavigateAfterRegister] = useState(false)
   const navigate = useNavigate()
@@ -93,11 +90,7 @@ const Register = () => {
       const checkAccount = await getDocs(
         query(collection(db, "/user-data"), where("email", "==", email))
       );
-
-      // checkAccount.forEach((doc) => {
-      //   console.log(doc.id, " => ", doc.data());
-      // });
-
+    
       if (checkAccount.size == 0) {
         await addDoc(usersCollection, { name, phone, email, password });        
 

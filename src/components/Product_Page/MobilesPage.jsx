@@ -138,7 +138,7 @@ const MobilesPage = () => {
     if(currentPage < totalNumberOfPages) {
         setCurrentPage((prev) => prev + 1);
         setSliceStart(sliceEnd)
-        setSliceEnd(sliceEnd + 20)
+        setSliceEnd(sliceEnd + 20)       
     }
 
     scrollToTopLogic()
@@ -148,7 +148,7 @@ const MobilesPage = () => {
     if(currentPage != 1) {
         setCurrentPage((prev) => prev - 1);
         setSliceStart(sliceStart - 20)
-        setSliceEnd(sliceStart)
+        setSliceEnd(sliceStart)  
     }
 
     scrollToTopLogic()
@@ -190,7 +190,7 @@ const MobilesPage = () => {
     })    
 
     if(!checkInDB) {
-        const querySnapshot = await addDoc(wishlistCollection, {productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image_category, newImageName, productId, fullImageName})  
+        const querySnapshot = await addDoc(wishlistCollection, {productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image_category, newImageName, productId, fullImageName, id})  
 
         showWishlistMessage(1);
     }
@@ -238,6 +238,7 @@ const MobilesPage = () => {
                             return (
                                 <>
                                     <div className='flex mt-10 gap-x-3 cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={() => navigateProductPage(val, productRating[sliceStart + index], productTotalRating[sliceStart + index], productDescription[sliceStart + index], productOfferPrice[sliceStart + index], productPrice[sliceStart + index], productOff[sliceStart + index], productId[sliceStart + index], image_category[id], newImageName[id])}>
+
                                         <div className='flex gap-x-5'>
                                             <div className='px-1 w-[13rem] h-[15rem] flex justify-center gap-x-7'><div><img src={require(`../../cat_images/${image_category[id]}/${newImageName[id]}${productId[sliceStart + index]}.jpg`)} className='h-[13rem]' loading='lazy' /></div>
 

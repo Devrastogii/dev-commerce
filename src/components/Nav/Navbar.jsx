@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react'
-import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, useDisclosure } from '@chakra-ui/react';
+import { Button, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, useDisclosure } from '@chakra-ui/react';
 import Register from '../Auth/Register';
 import Login from '../Auth/Login';
 import { Link, useNavigate } from 'react-router-dom';
 
-const Navbar = () => {
+const Navbar = (props) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [reg, setReg] = useState(false)
@@ -44,12 +44,24 @@ const Navbar = () => {
                 <div className='flex gap-x-5 items-center'>                
                     <button onClick={wishlist}><i class="bi bi-heart text-[1.4rem] hover:text-red-500 transition-all duration-500"></i></button>
                     <button><i class="bi bi-cart3 text-[1.4rem]"></i></button> 
-                    <button onClick={register} className='w-[6rem] h-[2.5rem] flex justify-center items-center border-opacity-75 font-semibold rounded-lg border border-primary text-primary bg-white hover:text-white slide-right-home-navbar'>Sign Up</button>                  
+                    <button onClick={register} className='w-[6rem] h-[2.5rem] flex justify-center items-center border-opacity-75 font-semibold rounded-lg border border-primary text-primary bg-white'>{props.navState ? <Menu>
+  <MenuButton>
+    Account
+  </MenuButton>
+  {/* Account */}
+  <MenuList>
+    <MenuItem>Download</MenuItem>
+    <MenuItem>Create a Copy</MenuItem>
+    <MenuItem>Mark as Draft</MenuItem>
+    <MenuItem>Delete</MenuItem>
+    <MenuItem>Attend a Workshop</MenuItem>
+  </MenuList>
+</Menu> : 'Sign Up'}</button>                  
                 </div>
             </div>
         </section>
 
-        {reg ? <>
+      {!props.navState && (reg ? <>
                 <Modal
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
@@ -68,9 +80,9 @@ const Navbar = () => {
           </ModalBody>
         </ModalContent>
       </Modal>
-            </> : null }
+            </> : null )
 
-        {log ? <>
+        (log ? <>
                 <Modal
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
@@ -89,7 +101,7 @@ const Navbar = () => {
           </ModalBody>
         </ModalContent>
       </Modal>
-            </> : null }
+            </> : null )}        
     </>
   )
 }

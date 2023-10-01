@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const Wishlist = () => {
   const [count, setCount] = useState();
@@ -25,6 +26,8 @@ const Wishlist = () => {
   const [hoverState, setHoverState] = useState(false)
   const [indepIndex, setIndepIndex] = useState()
 
+  const navigate = useNavigate()
+
   const showWishlistMessage = () => {
 
     toast.success("Removed From Wishlist ", {
@@ -34,20 +37,33 @@ const Wishlist = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const data = await getDocs(collection(db, "wishlist")).then((products) =>
-        setProductDetails(products.docs)
-      );
+      try {
+        const products = await getDocs(collection(db, "wishlist"));
+        setProductDetails(products.docs);
+        setCount(productDetails.length)
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoad(false);
+      }
     }
 
     fetchData();
-
-    setCount(productDetails.length);
-    setLoad(false);
   }, [productDetails]);
 
   const [showDeleteAlert, setshowDeleteAlert] = useState(false);
 
-  const showDeleteModel = (i) => {
+  const handleItemClick = (event, name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category, newImageName, id, i) => {
+
+    if (event.target.tagName === 'DIV') {
+      navigateProductPage(name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category, newImageName, id)
+    } else if (event.target.tagName === 'I') {
+      showDeleteModel(i);
+    }
+
+  };
+
+  const showDeleteModel = (i) => {  
     setshowDeleteAlert(true);
     setCurrentIndex(i);
 
@@ -56,18 +72,22 @@ const Wishlist = () => {
     }
   };
 
-  const deleteFromWishlist = async (i, fullImageName) => {    
+  const deleteFromWishlist = async (i, fullImageName, e) => {
 
-    const deleteFromWishlist = await getDocs(
-      query(collection(db, "/wishlist"), where("fullImageName", "==", fullImageName))
-    );
- 
-    deleteFromWishlist.forEach((doc) => {   
-      deleteDoc(doc.ref);
-    }); 
-
-    setshowDeleteAlert(false)
-    showWishlistMessage()
+    try {
+      const deleteFromWishlist = await getDocs(
+        query(collection(db, "/wishlist"), where("fullImageName", "==", fullImageName))
+      );
+   
+      deleteFromWishlist.forEach((doc) => {   
+        deleteDoc(doc.ref);
+      }); 
+  
+      setshowDeleteAlert(false)
+      showWishlistMessage()
+    } catch (error) {
+      window.alert("Error deleting product:", error);
+    }
   }
 
   const handleHover = (text, index) => {
@@ -78,6 +98,23 @@ const Wishlist = () => {
 
     else 
         setHoverState(false)
+  }
+
+  const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category, newImageName, id) => {     
+
+    navigate('/product-page', {state: {
+        'name': name,
+        'rating': productRating,
+        'totalRating': productTotalRating,
+        'description': productDescription,
+        'offer': productOfferPrice,
+        'price': productPrice,
+        'off': productOff,
+        'image': image,
+        'category': category,
+        'id': id,
+        'newImageName': newImageName
+    }})
   }
 
   return (
@@ -103,7 +140,7 @@ const Wishlist = () => {
             {productDetails.map((v, i) => {
               return (
                 <>
-                  <div className="flex gap-x-20 bg-white drop-shadow-lg p-4 pt-6 cursor-pointer" onMouseEnter={() => handleHover("yes", i)} onMouseLeave={() =>handleHover("no", i)}>
+                  <div className="flex gap-x-20 bg-white drop-shadow-lg p-4 pt-6 cursor-pointer" onMouseEnter={() => handleHover("yes", i)} onMouseLeave={() =>handleHover("no", i)} onClick={(e) => handleItemClick(e, v.data().productName, v.data().productRating, v.data().productTotalRating, v.data().productDescription, v.data().productOfferPrice, v.data().productPrice, v.data().productOff, v.data().productId, v.data().image_category, v.data().newImageName, v.data().id, i)}>                
                     <div className="px-1 w-[10rem] h-[10rem] flex justify-center gap-x-7">
                       <div>
                         <img
@@ -149,7 +186,8 @@ const Wishlist = () => {
 
                     <div className="flex flex-col">
                       <div>
-                        <button onClick={() => showDeleteModel(i)}>
+                        <button>
+                          {/* <i class="bi bi-trash3-fill text-gray-500 hover:text-red-600" onClick={() => showDeleteModel(i)}></i> */}
                           <i class="bi bi-trash3-fill text-gray-500 hover:text-red-600"></i>
                         </button>
                       </div>
@@ -171,7 +209,7 @@ const Wishlist = () => {
                                 </AlertDialogBody>
                                 <AlertDialogFooter>
                                   <Button onClick={onClose} width={'3rem'} height={'2rem'} fontSize={'0.9rem'}>NO</Button>
-                                  <Button colorScheme="red" height={'2rem'} ml={3} fontSize={'0.9rem'} onClick={() => deleteFromWishlist(i, v.data().fullImageName)}>
+                                  <Button colorScheme="red" height={'2rem'} ml={3} fontSize={'0.9rem'} onClick={(e) => deleteFromWishlist(i, v.data().fullImageName, e)}>
                                     YES, REMOVE
                                   </Button>
                                 </AlertDialogFooter>
