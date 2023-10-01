@@ -75,7 +75,7 @@ const Hero = () => {
                 </div>
                 <div><hr className='h-[16.5rem] bg-black w-[1px] opacity-10 border-0' /></div>
                 <div className='w-[55%] h-[40vh] mt-10'>
-                    <img src={banner} alt="banner" className='h-[40vh]' />
+                    <img src={banner} alt="banner" className='h-[40vh]' loading='lazy' />
                 </div>
             </div>
         </section>
