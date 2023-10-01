@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { db } from "../../firebase";
+import { app, db } from "../../firebase";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { Spinner } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import NavbarForPages from "../Nav/NavbarForPages";
+import { Link } from "react-router-dom";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 
 const Register = () => {
   const [userData, setUserData] = useState({
@@ -33,21 +36,6 @@ const Register = () => {
     });
   };
 
-
-  //   const navigate = useNavigate();
-
-  // //   useEffect(() => {
-  // //     async function getData() {
-  // //       const tokenDoc = await axios.get('/login-token');
-  // //       if(tokenDoc.data !== ""){
-  // //         alert('Already logged in !!!');
-  // //         navigate('/account')
-  // //       }
-  // //       }
-
-  // //     getData();
-  // //   }, []);
-
   let name, value;
 
   const postData = (e) => {
@@ -58,8 +46,10 @@ const Register = () => {
   };
 
   const [show, setShow] = useState(true); 
-  // const [navigateAfterRegister, setNavigateAfterRegister] = useState(false)
+  const [error, setError] = useState("")
+
   const navigate = useNavigate()
+  const auth = getAuth(app)
 
   async function userRegistration(e) {
     e.preventDefault();
@@ -90,24 +80,39 @@ const Register = () => {
       const checkAccount = await getDocs(
         query(collection(db, "/user-data"), where("email", "==", email))
       );
+
+      const showAccountCreatedMessage = () => {
+        toast.success("Account created successfully !! ", {
+          position: toast.POSITION.BOTTOM_CENTER,
+        });
+      };
+    
+      const showAccountErrorMessage = () => {
+        toast.error({error}, {
+          position: toast.POSITION.BOTTOM_CENTER,
+        });
+      };
     
       if (checkAccount.size == 0) {
-        await addDoc(usersCollection, { name, phone, email, password });        
 
-        const showAccountCreatedMessage = () => {
-          toast.success("Account created successfully !! ", {
-            position: toast.POSITION.BOTTOM_CENTER,
-          });
-        };
+        try {
 
-        setShow(true);
-        showAccountCreatedMessage(); 
-        
-        const time = setTimeout(() => {
-          navigate('/', {state: {
-            navState: true
-          }})
-        }, 2000);
+          createUserWithEmailAndPassword(auth, email, password)
+          .then(            
+    
+            setShow(true),
+            showAccountCreatedMessage(),
+            await addDoc(usersCollection, { name, phone, email, password })
+
+          ).catch((err) => setError(err), showAccountErrorMessage())         
+          
+          navigate('/')
+        }        
+
+        catch (error) {
+          window.alert("Account Not Created !!")
+        }
+               
       } else {
         setShow(true);
         showAccountPresentMessage();
@@ -122,7 +127,11 @@ const Register = () => {
     <>
       {show ? (
         <>
-          <div className="flex justify-center font-bold text-2xl mt-10 text-black">
+
+        <NavbarForPages />
+        <br /> <br />
+
+          <div className="flex justify-center font-bold text-2xl mt-[3.5rem] text-black">
             CREATE YOUR ACCOUNT
           </div>
 
@@ -221,9 +230,17 @@ const Register = () => {
               </div>
             </form>
           </div>
+
+          <div className="flex justify-center mt-2 mb-5">
+            <h1 className='text-sm'>Existing User? <Link to={'/login-user'} className='text-black text-sm font-bold underline hover:-translate-y-1 transition-all duration-500'>LOG IN</Link></h1>
+          </div>
         </>
-      ) : (
-        <div className="flex w-full justify-center my-4">
+      ) : ( <>
+
+        <NavbarForPages />
+        <br /> <br />
+
+        <div className="flex w-full justify-center h-[80vh] items-center">
           <Spinner
             thickness="4px"
             speed="0.65s"
@@ -232,6 +249,8 @@ const Register = () => {
             size="xl"
           />
         </div>
+
+        </>
       )}
 
       <ToastContainer theme="light" />

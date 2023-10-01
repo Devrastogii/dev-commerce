@@ -15,7 +15,6 @@ const Home = () => {
   const [show, setShow] = useState(true);
 
   const location = useLocation()
-  const navState = location?.state?.navState
 
   useEffect(() => {
     const f = setTimeout(() => {
@@ -38,7 +37,7 @@ const Home = () => {
 
         <br />
 
-        {/* <Navbar navState = {navState} /> */}
+        <Navbar />
 
         <div className='mt-5'><hr className='opacity-10 border-0 h-[1px] bg-black' /></div>    
 

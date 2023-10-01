@@ -1,30 +1,29 @@
-import React, { useRef, useState } from 'react'
-import { Button, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, useDisclosure } from '@chakra-ui/react';
-import Register from '../Auth/Register';
-import Login from '../Auth/Login';
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { app } from '../../firebase';
 
-const Navbar = (props) => {
+const Navbar = () => {
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const [reg, setReg] = useState(false)
-  const [log, setLog] = useState(false)
+  const auth = getAuth(app)
 
-  const initialRef = useRef(null)
-  const finalRef = useRef(null)
+  const [checkLoggedInUser, setLoggedInUser] = useState(null)
 
-  const register = () => {
-    onOpen()
-    setReg(true)
-    setLog(false)
-  }
+  useEffect(() => {
+    onAuthStateChanged(auth, user => {
+      if(user) {
+        setLoggedInUser(user)
+      }
 
-  const login = () => {
-    setReg(false)
-    setLog(true)
-    onOpen()
-  }
+      else {
+        setLoggedInUser(null)
+      }
+      console.log(checkLoggedInUser);
+    })
 
+    console.log(1);
+  }, [])
+  
   const navigate = useNavigate()
 
   const wishlist = () => {
@@ -43,65 +42,12 @@ const Navbar = (props) => {
                 </div>
                 <div className='flex gap-x-5 items-center'>                
                     <button onClick={wishlist}><i class="bi bi-heart text-[1.4rem] hover:text-red-500 transition-all duration-500"></i></button>
-                    <button><i class="bi bi-cart3 text-[1.4rem]"></i></button> 
-                    <button onClick={register} className='w-[6rem] h-[2.5rem] flex justify-center items-center border-opacity-75 font-semibold rounded-lg border border-primary text-primary bg-white'>{props.navState ? <Menu>
-  <MenuButton>
-    Account
-  </MenuButton>
-  {/* Account */}
-  <MenuList>
-    <MenuItem>Download</MenuItem>
-    <MenuItem>Create a Copy</MenuItem>
-    <MenuItem>Mark as Draft</MenuItem>
-    <MenuItem>Delete</MenuItem>
-    <MenuItem>Attend a Workshop</MenuItem>
-  </MenuList>
-</Menu> : 'Sign Up'}</button>                  
+                    <button><i class="bi bi-cart3 text-[1.4rem]"></i></button>                                  
+
+                    {checkLoggedInUser === null ? <Link to={'/new-user-register'} className='w-[6rem] h-[2.5rem] flex justify-center items-center border-opacity-75 font-semibold rounded-lg border border-primary text-primary bg-white slide-right-home-navbar hover:text-white'>Sign Up</Link> : <Link className='w-[6rem] h-[2.5rem] flex justify-center items-center border-opacity-75 font-semibold rounded-lg border border-primary text-primary bg-white slide-right-home-navbar hover:text-white'>Account</Link>  }                                    
                 </div>
             </div>
-        </section>
-
-      {!props.navState && (reg ? <>
-                <Modal
-        initialFocusRef={initialRef}
-        finalFocusRef={finalRef}
-        isOpen={isOpen}
-        onClose={onClose}
-        size={'xl'}
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalCloseButton />
-          <ModalBody pb={6}>         
-            <Register />
-            <div className="flex justify-center mt-2 mb-5">
-            <h1 className='text-sm'>Existing User? <button onClick={login} className='text-black text-sm font-bold underline hover:-translate-y-1 transition-all duration-500'>LOG IN</button></h1>
-          </div>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-            </> : null )
-
-        (log ? <>
-                <Modal
-        initialFocusRef={initialRef}
-        finalFocusRef={finalRef}
-        isOpen={isOpen}
-        onClose={onClose}
-        size={'xl'}
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalCloseButton />
-          <ModalBody pb={6}>       
-            <Login />
-            <div className="flex justify-center mt-2 mb-5">
-            <h1 className='text-sm'>New User? <button onClick={register} className='text-black text-sm font-bold underline hover:-translate-y-1 transition-all duration-500'>SIGN UP</button></h1>
-          </div>         
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-            </> : null )}        
+        </section>    
     </>
   )
 }

@@ -1,13 +1,19 @@
-import { collection, getDoc, getDocs, query, where } from "firebase/firestore";
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { db } from "../../firebase";
+import { app } from "../../firebase";
 import { Spinner } from "@chakra-ui/react";
+import NavbarForPages from "../Nav/NavbarForPages";
+import { Link, useNavigate } from "react-router-dom";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const Login = () => {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate()
+  const auth = getAuth(app)
 
   // Toast Messages
 
@@ -16,60 +22,28 @@ const Login = () => {
       position: toast.POSITION.TOP_RIGHT,
     });
   };
-
-  const showAccountLoginMessage = () => {
-    toast.success("Successfully Logged in !! ", {
-      position: toast.POSITION.TOP_CENTER,
-    });
-  };
-
-  const showAccountNotPresentMessage = () => {
-    toast.error("Account not present, please sign up !! ", {
+ 
+  const showAccountNotPresentMessage = (err) => {
+    toast.error({err}, {
       position: toast.POSITION.BOTTOM_CENTER,
     });
   };
 
   // Loading
 
-  const [show, setShow] = useState(true);
-
-  //   const navigate = useNavigate();
-
-  //   useEffect(() => {
-  //     async function getData() {
-  //       const tokenDoc = await axios.get('/login-token');
-  //       if(tokenDoc.data === ""){
-  //         setShow(true);
-  //       }
-
-  //       else {
-  //         navigate('/account');
-  //       }
-  //       }
-
-  //     getData();
-  //   }, []);
+  const [show, setShow] = useState(true); 
 
   async function loginform(e) {
-    e.preventDefault();
-    setShow(false);
+
+    setShow(false)
+    e.preventDefault()
 
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
     if (email !== "" && password !== "" && emailPattern.test(email)) {
-      const checkAccount = await getDocs(
-        query(collection(db, "/user-data"), where("email", "==", email))
-      );
+    signInWithEmailAndPassword(auth, email, password).then(() => navigate('/')).catch((err) => showAccountNotPresentMessage(err), setShow(false))
 
-      if (checkAccount.size != 0) {
-        setShow(true);
-        showAccountLoginMessage();
-      } else {
-        setShow(true);
-        showAccountNotPresentMessage();
-      }
     } else {
-      setShow(true);
       showToastErrorMessage();
     }
   }
@@ -78,14 +52,14 @@ const Login = () => {
     <>
       {show ? (
         <>
-          <div className="flex justify-center font-bold text-2xl mt-10 text-black">
+          <NavbarForPages />
+          <br /> <br />
+          <div className="flex justify-center font-bold text-2xl mt-[3.5rem] text-black">
             WELCOME BACK
           </div>
-
           <div className="flex justify-center mt-2 text-md text-black opacity-60">
             Login to your account and enjoy our free services
           </div>
-
           <div className="flex justify-center mt-8">
             <form onSubmit={loginform}>
               <label className="block mt-3 text-gray-400">Email Address:</label>
@@ -126,17 +100,32 @@ const Login = () => {
               </div>
             </form>
           </div>
+          <div className="flex justify-center mt-2 mb-5">
+            <h1 className="text-sm">
+              New User?{" "}
+              <Link
+                to={"/new-user-register"}
+                className="text-black text-sm font-bold underline hover:-translate-y-1 transition-all duration-500"
+              >
+                SIGN UP
+              </Link>
+            </h1>
+          </div>
         </>
       ) : (
-        <div className="flex w-full justify-center my-4">
-          <Spinner
-            thickness="4px"
-            speed="0.65s"
-            emptyColor="gray.200"
-            color="blue.500"
-            size="xl"
-          />
-        </div>
+        <>
+          <NavbarForPages />
+          <br /> <br />
+          <div className="flex w-full justify-center h-[80vh] items-center">
+            <Spinner
+              thickness="4px"
+              speed="0.65s"
+              emptyColor="gray.200"
+              color="blue.500"
+              size="xl"
+            />
+          </div>
+        </>
       )}
 
       <ToastContainer theme="light" />

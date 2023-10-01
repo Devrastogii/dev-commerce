@@ -6,6 +6,8 @@ import MobilesPage from "./components/Product_Page/MobilesPage";
 import ProductPage from "./components/Product_Page/ProductPage";
 import FrequentPage from "./components/Frequent/FrequentPage";
 import Wishlist from "./components/Wishlist/Wishlist";
+import Register from "./components/Auth/Register";
+import Login from "./components/Auth/Login";
 
 axios.defaults.baseURL = 'http://localhost:5000/';
 axios.defaults.withCredentials = true;
@@ -19,7 +21,9 @@ function App() {
         <Route path="/mobiles_page" element={<MobilesPage/>} />
         <Route path="/product-page" element={<ProductPage />} />            
         <Route path="/frequent_page" element={<FrequentPage />} />  
-        <Route path="/wishlist" element={<Wishlist />} />          
+        <Route path="/wishlist" element={<Wishlist />} />    
+        <Route path="new-user-register" element={<Register />} />  
+        <Route path="login-user" element={<Login />} />    
       </Routes>
     </>
   );
