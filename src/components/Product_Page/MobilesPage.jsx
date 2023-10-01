@@ -6,7 +6,7 @@ import Loading from '../Loading/Loading'
 import NavbarForPages from '../Nav/NavbarForPages'
 import { motion } from 'framer-motion'
 import { db } from '../../firebase'
-import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore'
+import { addDoc, collection, deleteDoc, getDocs, query, where } from 'firebase/firestore'
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
