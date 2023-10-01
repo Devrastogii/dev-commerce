@@ -14,35 +14,35 @@ const Hero = () => {
   const navigate = useNavigate()
 
   const navigatePage = (id) => {
-    if(id == "1"){
+    if(id === "1"){
         navigate('/mobiles_page', {state: {id: 0}})
     }
 
-    else if(id == "2") {
+    else if(id === "2") {
         navigate('/mobiles_page', {state: {id: 1}})
     }
 
-    else if(id == "3") {
+    else if(id === "3") {
         navigate('/mobiles_page', {state: {id: 2}})
     }
 
-    else if(id == "4") {
+    else if(id === "4") {
         navigate('/mobiles_page', {state: {id: 3}})
     }
 
-    else if(id == "5") {
+    else if(id === "5") {
         navigate('/mobiles_page', {state: {id: 4}})
     }
 
-    else if(id == "6") {
+    else if(id === "6") {
         navigate('/mobiles_page', {state: {id: 5}})
     }
 
-    else if(id == "7") {
+    else if(id === "7") {
         navigate('/mobiles_page', {state: {id: 6}})
     }
 
-    else if(id == "8") {
+    else if(id === "8") {
         navigate('/mobiles_page', {state: {id: 7}})
     }
   }

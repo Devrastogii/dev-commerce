@@ -23,18 +23,6 @@ const Wishlist = () => {
       const data = await getDocs(collection(db, 'wishlist'))
       
       data.forEach((doc) => {
-
-        // setProductDetails((prevState) => ({
-        //   ...prevState,
-        //   productName: [doc.data().productName],
-        //   productPrice: [doc.data().productPrice],
-        //   productOfferPrice: [doc.data().productOfferPrice],
-        //   productOff: [doc.data().productOff],
-        //   productRating: [doc.data().productRating],
-        //   productTotalRating: [doc.data().productTotalRating],
-        //   productDescription: [doc.data().productDescription],
-        //   productId: [doc.data().productId],
-        // }));  
         
         productDetails.productName.push(doc.data().productName)
         productDetails.productPrice.push(doc.data().productPrice)

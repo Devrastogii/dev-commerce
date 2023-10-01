@@ -144,15 +144,7 @@ const ProductPage = () => {
                             </ul>
                             </div>
                         </div>                   
-                    </div>
-
-                {/* Buy Together  */}
-
-                    <div className='border border-black border-opacity-10 mt-8 py-4 px-6 flex flex-col h-[22rem]'>
-                        <div className='text-2xl font-semibold'>Buy Together & Save More</div>
-                        <div className='mt-5'><hr className='opacity-10 border-0 h-[1px] bg-black' /></div>
-                    </div>
-
+                    </div>               
                 </div>
             </div>
         </section>

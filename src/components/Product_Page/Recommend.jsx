@@ -36,21 +36,18 @@ const Recommend = (props) => {
   } 
     
 
-  useEffect(() => {    
-    // console.log(props?.sale);
+  useEffect(() => {     
     getData()
   }, [])
 
   const [start, setStart] = useState(0)
-  const [end, setEnd] = useState(5)
+  const [end, setEnd] = useState(5)  
 
   const handleSlide = () => {    
     if(end < productName.length) {
         setStart((prevStart) => prevStart + 1);
         setEnd((prevEnd) => prevEnd + 1);
     }     
-
-    // Not used setStart(start+5) as it updates the value asynchronously and not immediately, so map function doesn't work properly
   }
 
   const handlePreviousSlide = () => {
@@ -70,7 +67,7 @@ const Recommend = (props) => {
         setHoverState(false)
   }
 
-  const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category, newImgName) => {
+  const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category, newImgName) => {    
 
     function scrollToTop() {
         window.scrollTo({
@@ -95,10 +92,8 @@ const Recommend = (props) => {
         'newImageName': newImgName,
         'sale': 'sale'
     }})
-
-    // console.log("hi");
     
-    getData()
+    getData()  
   }
 
   return (
@@ -117,7 +112,7 @@ const Recommend = (props) => {
                 {productName.slice(start, end+1).map((v, i) => {
                     return (
                         <>
-                            <div className='flex flex-col w-[14rem] gap-y-1 cursor-pointer' onMouseEnter={() => handleHover("yes", start+i)} onMouseLeave={() =>handleHover("no", start+i)} onClick={() => navigateProductPage(v, productRating[start+i], productTotalRating[start+i], productDescription[start+i], productOfferPrice[start+i], productPrice[start+i], productOff[start+i], productId[start+i], props.category, props.newImgName)} >
+                            <div className='flex flex-col w-[14rem] gap-y-1 cursor-pointer' id='recommend-scroll-div' onMouseEnter={() => handleHover("yes", start+i)} onMouseLeave={() =>handleHover("no", start+i)} onClick={() => navigateProductPage(v, productRating[start+i], productTotalRating[start+i], productDescription[start+i], productOfferPrice[start+i], productPrice[start+i], productOff[start+i], productId[start+i], props.category, props.newImgName)} >
                                 {props?.sale ? <div className='w-[12rem] h-[15rem] flex justify-center items-center'><img src={require(`../../all/${productId[i]}.jpg`)} alt="product-image" className='h-[13rem]' /></div> : <div className='w-[12rem] h-[15rem] flex justify-center items-center'><img src={require(`../../cat_images/${props.category}/${props.newImgName}${productId[start+i]}.jpg`)} alt="product-image" className='h-[13rem]' /></div>}                              
                                 <div className={`mt-1 w-[12rem] ${hoverState && (indepIndex === start + i) ? 'text-primary font-semibold': 'text-black'} transition-all duration-500`}>{v}</div>
                                 <div className='flex gap-x-2 items-center mt-1'>
