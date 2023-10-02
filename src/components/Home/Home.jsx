@@ -8,13 +8,10 @@ import Services from './Services'
 import Footer from './Footer'
 import Loading from '../Loading/Loading'
 import { HashLink as Link } from "react-router-hash-link"
-import { useLocation } from 'react-router-dom'
 
 const Home = () => {
 
   const [show, setShow] = useState(true);
-
-  const location = useLocation()
 
   useEffect(() => {
     const f = setTimeout(() => {

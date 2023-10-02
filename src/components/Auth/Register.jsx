@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { app, db } from "../../firebase";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { Spinner } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import NavbarForPages from "../Nav/NavbarForPages";
@@ -88,7 +88,7 @@ const Register = () => {
       };
     
       const showAccountErrorMessage = () => {
-        toast.error({error}, {
+        toast.error("hi", {
           position: toast.POSITION.BOTTOM_CENTER,
         });
       };
@@ -97,20 +97,26 @@ const Register = () => {
 
         try {
 
-          createUserWithEmailAndPassword(auth, email, password)
-          .then(            
-    
-            setShow(true),
-            showAccountCreatedMessage(),
-            await addDoc(usersCollection, { name, phone, email, password })
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+          console.log(userCredential);
 
-          ).catch((err) => setError(err), showAccountErrorMessage())         
+          const user = (await userCredential).user
+          const userDocRef = doc(usersCollection, user.uid)
+
+          if(!userCredential){
+            showAccountErrorMessage()
+          }
+
+          await setDoc(userDocRef, { name, phone, email, password })          
+    
+          setShow(true)
+          showAccountCreatedMessage()                    
           
           navigate('/')
         }        
 
         catch (error) {
-          window.alert("Account Not Created !!")
+          window.alert("Account Not Created !!", error)
         }
                
       } else {
