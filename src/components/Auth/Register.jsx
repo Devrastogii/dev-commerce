@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { app, db } from "../../firebase";
@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import NavbarForPages from "../Nav/NavbarForPages";
 import { Link } from "react-router-dom";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import Loading from "../Loading/Loading";
 
 const Register = () => {
   const [userData, setUserData] = useState({
@@ -17,6 +18,14 @@ const Register = () => {
     password: "",
     cpassword: "",
   });
+
+  const [load, setLoad] = useState(true)
+
+  useEffect(() => {
+    const time = setTimeout(() => {
+        setLoad(false)
+    }, 1000);
+  },[])
 
   // Firestore Collection
 
@@ -46,7 +55,6 @@ const Register = () => {
   };
 
   const [show, setShow] = useState(true); 
-  const [error, setError] = useState("")
 
   const navigate = useNavigate()
   const auth = getAuth(app)
@@ -131,7 +139,8 @@ const Register = () => {
 
   return (
     <>
-      {show ? (
+
+    {load ? <Loading /> : (show ? (
         <>
 
         <NavbarForPages />
@@ -257,7 +266,7 @@ const Register = () => {
         </div>
 
         </>
-      )}
+      ))}      
 
       <ToastContainer theme="light" />
     </>

@@ -26,7 +26,13 @@ const Account = () => {
 
   useEffect(() => {    
 
-    const comingEmail = location.state.email
+    const comingEmail = location?.state?.email    
+
+    if(comingEmail == undefined) {
+      navigate('/login-user')
+    }
+
+    else {
 
     async function fetchDataIfLoggedIn() {
         const getData = await getDocs(query(collection(db, '/user-data'), where("email", "==", comingEmail)))
@@ -57,6 +63,7 @@ const Account = () => {
     return () => {
       clearTimeout(time)
     }
+  }
 
   }, [])
 
@@ -172,7 +179,8 @@ const Account = () => {
                 className={`border border-gray-200 mt-2 outline-blue-500 pl-2 text-gray-500 rounded-md h-8`}
                 value={checkLoggedInUser.email}          
                 name="email"
-                autoComplete="off"               
+                autoComplete="off"
+                readOnly={true}               
               />
                         
                 <div className='mt-8'>
@@ -180,7 +188,7 @@ const Account = () => {
                   <textarea
                     cols={58}                                     
                     className={`border border-gray-200 mt-2 outline-blue-500 pl-2 text-gray-500 rounded-md h-40 ${handleReadOnly ? 'bg-gray-100' : 'bg-white'}`}
-                    value={newUserData.address}
+                    value={handleReadOnly ? userDetails.address : newUserData.address}
                     onChange={changeData}
                     name="address"
                     readOnly={handleReadOnly}

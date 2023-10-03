@@ -1,13 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { app } from "../../firebase";
 import { Button, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Loading from "../Loading/Loading";
 
 const Navbar = () => {
   const auth = getAuth(app);
 
   const [checkLoggedInUser, setLoggedInUser] = useState(null);
+  const [load, setLoad] = useState(false)
+
+  // Toast Messages
+
+  const showLogOutMessage = () => {
+    toast.success("Logged Out Successfully !! ", {
+      position: toast.POSITION.BOTTOM_CENTER,
+    });
+  };
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -25,9 +37,21 @@ const Navbar = () => {
     navigate("/wishlist");
   };
 
+  const logoutUser = () => {
+    setLoad(true)
+    const time = setTimeout(() => {
+      signOut(auth, (user) => {
+        console.log(user);
+      })
+
+      showLogOutMessage()
+      setLoad(false)
+    }, 2000);   
+  }
+
   return (
     <>
-      <section>
+    {load ? <Loading /> : <section>
         <div className="flex w-full justify-around items-center">
           <div>
             <Link to={"/"} className="font-bold text-xl">
@@ -85,7 +109,7 @@ const Navbar = () => {
                     >
                       My Profile
                     </MenuItem>
-                    <MenuItem className="slide-right-home-navbar transition-all duration-500 hover:text-white">
+                    <MenuItem className="slide-right-home-navbar transition-all duration-500 hover:text-white" onClick={logoutUser}>
                       Log Out
                     </MenuItem>
                   </MenuList>
@@ -94,7 +118,9 @@ const Navbar = () => {
             )}
           </div>
         </div>
-      </section>
+      </section>}      
+
+      <ToastContainer />
     </>
   );
 };
