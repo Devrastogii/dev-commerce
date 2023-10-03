@@ -3,6 +3,10 @@ import { useLocation } from 'react-router-dom'
 import Recommend from './Recommend'
 import Loading from '../Loading/Loading'
 import NavbarForPages from '../Nav/NavbarForPages'
+import { addDoc, collection, getDocs } from 'firebase/firestore'
+import { db } from '../../firebase'
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProductPage = () => {
 
@@ -18,7 +22,8 @@ const ProductPage = () => {
   const image = location.state.image
   const category = location.state.category
   const newImgName = location.state.newImageName
-//   const sale = location?.state?.sale
+//   const uid = location.state.uid
+  const id = location?.state?.id
 
   const monthArr = ['Jan', 'Feb', 'Mar', 'Apr', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   const dayArr = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -28,6 +33,14 @@ const ProductPage = () => {
   const day = new Date().getDay()
 
   const [show, setShow] = useState(true);
+
+  // Toast Message
+
+  const showAddToCartMessage = () => {
+    toast.success("Added to Cart ", {
+      position: toast.POSITION.BOTTOM_CENTER,
+    });
+  };
 
   useEffect(() => {
     console.log(name);
@@ -41,6 +54,27 @@ const ProductPage = () => {
 
   }, [])
 
+  const addToCart = async (productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image_category, newImageName) => {
+    
+    let checkInDB = false 
+    let fullImageName = newImageName + image
+    
+    const getAllDoc = await getDocs(collection(db, '/cart'));
+
+    getAllDoc.forEach((doc) => {
+        if(image === doc.data().productId) {
+            checkInDB = true                        
+        }
+    })    
+
+    if(!checkInDB) {
+        const querySnapshot = await addDoc(collection(db, '/cart'), {productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image_category, fullImageName, id})  
+
+        showAddToCartMessage();
+    }
+
+  }
+
   return (
     <>
        {show ? <Loading /> : <>
@@ -52,18 +86,16 @@ const ProductPage = () => {
             <div className='flex w-full px-4'>
                 <div className='w-1/3 flex flex-col justify-center items-center h-[30rem]'>  
 
-                <div className={`border border-black border-opacity-10 h-[30rem] w-full flex flex-col justify-center items-center`}>
-
-                {/* {!sale ? <img src={require(`../../cat_images/${category}/${newImgName}${image}.jpg`)} loading='lazy' alt='product-image' /> : <img src={require(`../../all/${image}.jpg`)} loading='lazy' alt='product-image' />}                  */}
+                <div className={`border border-black border-opacity-10 h-[30rem] w-full flex flex-col justify-center items-center`}>                
 
                 <img src={require(`../../cat_images/${category}/${newImgName}${image}.jpg`)} loading='lazy' alt='product-image' />
 
                 <div className='flex mt-10 gap-x-5'>
                     <button className='bg-orange-600 hover:bg-orange-700 transition-all duration-500 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center'><i class="bi bi-lightning-fill mr-1"></i> BUY NOW</button>
     
-                    <button className='bg-yellow-500 hover:bg-yellow-600 transition-all duration-500 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center'><i class="bi bi-cart-plus-fill mr-1"></i> ADD TO CART</button>
+                    <button className='bg-yellow-500 hover:bg-yellow-600 transition-all duration-500 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center' onClick={() => addToCart(name, rating, totalRating, description, offer, price, off, category, newImgName, image)}><i class="bi bi-cart-plus-fill mr-1"></i> ADD TO CART</button>
                 </div>
-                </div>                 
+                </div>                      
                                                        
                 </div>               
 
@@ -152,10 +184,11 @@ const ProductPage = () => {
         <Recommend name = {name}
                    image = {image}
                    category = {category}
-                   id = {location?.state?.id}
-                   newImgName = {newImgName} />
-                   {/* sale = {sale} /> */}
+                   id = {id}
+                   newImgName = {newImgName} />              
        </>} 
+
+       <ToastContainer />
     </>
   )
 }

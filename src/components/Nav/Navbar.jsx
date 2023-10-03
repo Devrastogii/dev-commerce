@@ -71,7 +71,7 @@ const Navbar = () => {
             <button onClick={wishlist}>
               <i class="bi bi-heart text-[1.4rem] hover:text-red-500 transition-all duration-500"></i>
             </button>
-            <button>
+            <button onClick={() => navigate('/cart')}>
               <i class="bi bi-cart3 text-[1.4rem]"></i>
             </button>
 

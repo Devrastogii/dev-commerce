@@ -9,6 +9,7 @@ import Wishlist from "./components/Wishlist/Wishlist";
 import Register from "./components/Auth/Register";
 import Login from "./components/Auth/Login";
 import Account from "./components/Auth/Account";
+import Cart from "./components/Cart/Cart";
 
 axios.defaults.baseURL = 'http://localhost:5000/';
 axios.defaults.withCredentials = true;
@@ -25,7 +26,8 @@ function App() {
         <Route path="/wishlist" element={<Wishlist />} />    
         <Route path="/new-user-register" element={<Register />} />  
         <Route path="/login-user" element={<Login />} />    
-        <Route path="/profile" element={<Account />} />    
+        <Route path="/profile" element={<Account />} /> 
+        <Route path="/cart" element={<Cart />} />   
       </Routes>
     </>
   );

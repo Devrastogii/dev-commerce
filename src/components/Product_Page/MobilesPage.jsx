@@ -110,7 +110,8 @@ const MobilesPage = () => {
         'image': image,
         'category': category,
         'id': id,
-        'newImageName': newImageName
+        'newImageName': newImageName,
+        // 'uid': productId
     }})
   }
 
