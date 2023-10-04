@@ -29,6 +29,22 @@ const Cart = () => {
   const [productDetails, setProductDetails] = useState([]);
   const { isOpen, onToggle, onClose } = useDisclosure();
   const [currentIndex, setCurrentIndex] = useState();
+  const [productcount, setProductCount] = useState(1);
+
+  function minus(){
+    if(productcount === 1 || productcount <= 0){
+      setProductCount(1);     
+      return false;  
+    }   
+    else {
+    setProductCount(productcount-1);   
+    }
+  }
+
+  function add(){  
+    setProductCount(productcount+1);    
+  }
+
 
   const navigate = useNavigate();
 
@@ -44,6 +60,7 @@ const Cart = () => {
         const products = await getDocs(collection(db, "cart"));
         setProductDetails(products.docs);
         setCount(productDetails.length);
+        console.log(products.docs);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -72,6 +89,7 @@ const Cart = () => {
     id,
     i
   ) => {
+    console.log(newImageName, image);
     if (event.target.tagName === "DIV") {
       navigateProductPage(
         name,
@@ -173,7 +191,7 @@ const Cart = () => {
                   return (
                     <>
                       <div
-                        className="flex gap-x-20 p-4 pt-6"                                             
+                        className="flex gap-x-20 p-4 pt-6"                                           
                       >
                         <div className="px-1 w-[10rem] h-[10rem] flex justify-center gap-x-7">
                           <div>
@@ -242,7 +260,7 @@ const Cart = () => {
                             {/* Counter */}
 
                             <div className="flex gap-x-6">
-                              <div className="w-8 h-8 rounded-full border border-gray-300 flex justify-center items-center">
+                              <div className="w-8 h-8 rounded-full border border-gray-300 flex justify-center items-center" onClick={minus}>
                                 <svg
                                   class="fill-current text-gray-600 w-3 cursor-pointer"
                                   viewBox="0 0 448 512"
@@ -252,10 +270,10 @@ const Cart = () => {
                               </div>
 
                               <div>
-                                <input type="number" name="" id="input" className="w-12 blur-0 border border-gray-300 mt-1 outline-primary text-center h-7" />
+                                <input type="number" name="" id="input" value={productcount} className="w-12 blur-0 border border-gray-300 mt-1 outline-primary text-center h-7" />                                                              
                               </div>
 
-                              <div className="w-8 h-8 rounded-full border border-gray-300 flex justify-center items-center">
+                              <div className="w-8 h-8 rounded-full border border-gray-300 flex justify-center items-center" onClick={add}>
                                 <svg
                                   class="fill-current text-gray-600 w-3 cursor-pointer"
                                   viewBox="0 0 448 512"

@@ -57,9 +57,9 @@ const Footer = () => {
                   <br />
                 </li>
                 <li>
-                  <a class="text-gray-400 hover:text-white cursor-pointer hover:underline">
+                  <Link to={'/wishlist'} class="text-gray-400 hover:text-white cursor-pointer hover:underline">
                     Wishlist
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a class="text-gray-400 hover:text-white cursor-pointer hover:underline">
@@ -103,9 +103,9 @@ const Footer = () => {
                 <li>
                   <button>
                     {" "}
-                    <a class="text-gray-400 hover:text-white hover:underline cursor-pointer ">
+                    <Link to={'/profile'} class="text-gray-400 hover:text-white hover:underline cursor-pointer ">
                       Your Account
-                    </a>
+                    </Link>
                   </button>
                 </li>
                 <li>
