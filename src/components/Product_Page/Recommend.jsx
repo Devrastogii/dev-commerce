@@ -69,6 +69,8 @@ const Recommend = (props) => {
 
   const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category, newImgName) => {    
 
+    {props.text("ADD TO CART")}
+
     function scrollToTop() {
         window.scrollTo({
             top: 0,
