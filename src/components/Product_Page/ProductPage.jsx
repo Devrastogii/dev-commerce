@@ -25,6 +25,9 @@ const ProductPage = () => {
   const newImgName = location.state.newImageName;
   const id = location?.state?.id;
 
+  const [pincode, setPincode] = useState();
+  const [pinErr, showPinErr] = useState('');
+
   const monthArr = [
     "Jan",
     "Feb",
@@ -62,6 +65,12 @@ const ProductPage = () => {
     });
   };
 
+  const showDeliveryErrorMessage = () => {
+    toast.error("Please provide correct pin code", {
+      position: toast.POSITION.BOTTOM_CENTER,
+    });
+  };
+
   useEffect(() => {
     console.log(name);
     const f = setTimeout(() => {
@@ -87,42 +96,78 @@ const ProductPage = () => {
     image_category,
     newImageName
   ) => {
-    if (changeCartText == "ADD TO CART") {
-      setAddLoadCartBtn(true);
 
-      let checkInDB = false;
-      let fullImageName = newImageName + image;
-
-      const getAllDoc = await getDocs(collection(db, "/cart"));
-
-      getAllDoc.forEach((doc) => {
-        if (fullImageName === doc.data().fullImageName) {
-          checkInDB = true;
-        }
-      });
-
-      if (!checkInDB) {
-        const querySnapshot = await addDoc(collection(db, "/cart"), {
-          productName,
-          productRating,
-          productTotalRating,
-          productDescription,
-          productOfferPrice,
-          productPrice,
-          productOff,
-          image_category,
-          fullImageName,
-          id,
-          image,
+    if(validatePincode(pinErr)){
+      if (changeCartText == "ADD TO CART") {
+        setAddLoadCartBtn(true);
+  
+        let checkInDB = false;
+        let fullImageName = newImageName + image;
+  
+        const getAllDoc = await getDocs(collection(db, "/cart"));
+  
+        getAllDoc.forEach((doc) => {
+          if (fullImageName === doc.data().fullImageName) {
+            checkInDB = true;
+          }
         });
-
-        showAddToCartMessage();
-        setAddLoadCartBtn(false);
-        setChangeCardText("GO TO CART");
+  
+        if (!checkInDB) {
+          const querySnapshot = await addDoc(collection(db, "/cart"), {
+            productName,
+            productRating,
+            productTotalRating,
+            productDescription,
+            productOfferPrice,
+            productPrice,
+            productOff,
+            image_category,
+            fullImageName,
+            id,
+            image,
+          });
+  
+          showAddToCartMessage();
+          setAddLoadCartBtn(false);
+          setChangeCardText("GO TO CART");
+        }
+      } else {
+        navigate("/cart");
       }
-    } else {
-      navigate("/cart");
     }
+
+    else {
+      showDeliveryErrorMessage()
+      return;
+    }    
+  };
+
+  function validatePincode(pincode) {
+    var regexPattern = /^[1-9][0-9]{5}$/;  
+    return regexPattern.test(pincode);
+  }
+
+  const handlePinCode = (e) => {
+    let val = e.target.value;
+    setPincode(val); 
+
+    if(val < 0){
+      setPincode('')
+    }
+
+    {
+      validatePincode(val)
+        ? showPinErr("")
+        : showPinErr("** Please provide correct pin code");
+    } 
+    
+    // Scroll Disable
+
+    const numberInput = document.getElementById("delivery")
+
+    numberInput.addEventListener('wheel', (e) => {
+      e.preventDefault();
+  });
   };
 
   return (
@@ -279,18 +324,25 @@ const ProductPage = () => {
                 <div className="flex gap-x-10 mt-8">
                   <div className="opacity-50 font-bold">Delivery</div>
                   <div className="flex flex-col">
-                    <div>
-                      <input
-                        type="number"
-                        placeholder="Enter Delivery Pincode"
-                        className="text-sm font-semibold pl-2 border-t-0 border-l-0 border-r-0 border-b-primary border-2 outline-none"
-                      />
+                    <div className="flex gap-x-5">
+                      <div>
+                        <input
+                          type="number"
+                          placeholder="Enter Delivery Pincode"
+                          className="text-sm pl-2 border-t-0 border-l-0 border-r-0 border-b-primary border-2 outline-none"
+                          value={pincode}
+                          onChange={handlePinCode}
+                          id="delivery"                         
+                        />
+                      </div>
+
+                      {pinErr != "" ? <div className="text-sm text-red-500">{pinErr}</div> : null}
                     </div>
                     <div className="text-sm mt-2 font-semibold">
                       <span>
                         Delivery by {date + 5} {monthArr[month]}, {dayArr[day]}
                       </span>{" "}
-                      | <span className="text-primary">Free</span>                     
+                      | <span className="text-primary">Free</span>
                     </div>
                   </div>
                 </div>

@@ -4,11 +4,11 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import Filter from '../FilterSection/Filter'
 import Loading from '../Loading/Loading'
 import NavbarForPages from '../Nav/NavbarForPages'
-import { motion } from 'framer-motion'
 import { db } from '../../firebase'
 import { addDoc, collection, deleteDoc, getDocs, query, where } from 'firebase/firestore'
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ScrollToTop from "react-scroll-to-top";
 
 const MobilesPage = () => {
 
@@ -98,6 +98,16 @@ const MobilesPage = () => {
         setHoverState(false)
   }
 
+  const identifyBtnClicked = (event, name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category, newImageName, id, i) => {
+
+    if (event.target.tagName === 'DIV') {
+      navigateProductPage(name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category, newImageName, id)
+    } else if (event.target.tagName === 'I') {
+      toggleWishlist(name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category, newImageName, id, i);   
+    }
+
+  };
+
   const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category, newImageName) => { 
     navigate('/product-page', {state: {
         'name': name,
@@ -111,7 +121,6 @@ const MobilesPage = () => {
         'category': category,
         'id': id,
         'newImageName': newImageName,
-        // 'uid': productId
     }})
   }
 
@@ -120,21 +129,6 @@ const MobilesPage = () => {
   const [sliceStart, setSliceStart] = useState(0)
   const [sliceEnd, setSliceEnd] = useState(20)
 
-  function scrollToTopLogic(){
-    function scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-        });
-    }
-    
-    window.addEventListener('click', scrollToTop)
-
-    return (
-        window.removeEventListener('click', scrollToTop)
-    )
-  }
-
   const showNextPage = () => {    
     if(currentPage < totalNumberOfPages) {
         setCurrentPage((prev) => prev + 1);
@@ -142,7 +136,10 @@ const MobilesPage = () => {
         setSliceEnd(sliceEnd + 20)       
     }
 
-    scrollToTopLogic()
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })
   }
 
   const showPreviousPage = () => {
@@ -152,40 +149,32 @@ const MobilesPage = () => {
         setSliceEnd(sliceStart)  
     }
 
-    scrollToTopLogic()
-  }
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })
+  }  
 
-  const reachTop = () => {
-    scrollToTopLogic()
-    setShowBtnHovered()
-  }
-
-  const [showBtnHovered, setShowBtnHovered] = useState(false)
+  const [wishlistContainer, storeWishlistContainer] = useState([])
   const newImageName = ['MOB', 'MONMON', 'W', 'L', 'T', 'F', 'MA', 'P']
-
-  const [currentIndex, setCurrentIndex] = useState()
-  const [iconColor, setIconColor] = useState(false)
-
-  const productInWishlist = []
-  const addProduct = new Map()
 
   const wishlistCollection = collection(db, "wishlist");
 
-  const toggleWishlist = async (index, productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image_category, newImageName, productId) => {
+  const toggleWishlist = async (productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, image_category, newImageName, index) => {
+    
+    storeWishlistContainer((prev) => [...prev, index])
+    wishlistContainer.sort()
 
-    setCurrentIndex(index)
-    setIconColor(true)    
-
-    productInWishlist.push(index)   
-    addProduct.set('text-red-500', index)   
-
+    console.log(wishlistContainer);
+   
     let checkInDB = false 
     let fullImageName = newImageName + productId   
     
     const getAllDoc = await getDocs(wishlistCollection);
 
     getAllDoc.forEach((doc) => {
-        if(productId === doc.data().productId) {
+        console.log(fullImageName, doc.data().fullImageName);
+        if(fullImageName === doc.data().fullImageName) {
             checkInDB = true                        
         }
     })    
@@ -205,8 +194,7 @@ const MobilesPage = () => {
             deleteDoc(doc.ref);
           }); 
           
-        showWishlistMessage(0);
-        setIconColor(false)
+        showWishlistMessage(0); 
     }
   }
 
@@ -216,7 +204,7 @@ const MobilesPage = () => {
         <NavbarForPages />
         <br /> <br />
         
-        {showBtn && <div className='w-full flex justify-center fixed z-10'><motion.button initial={{translateY: -10}} animate={{translateY: 0}} transition={{duration: 0.5}} className='w-[10rem] h-[2.2rem] flex justify-center items-center border-opacity-75 font-semibold rounded-md border border-primary mt-5 text-primary bg-white slide-right-home-navbar hover:text-white hover:border-white' onClick={reachTop} onHoverStart={() => setShowBtnHovered(true)} onHoverEnd={() => setShowBtnHovered(false)}><i class={`bi bi-chevron-down ${showBtnHovered ? 'text-white' : 'text-primary'} mr-2`}></i>Back To Top</motion.button></div>}
+        {showBtn && <ScrollToTop smooth color='#4E4FEB' svgPath='M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z' viewBox='0 0 16 16' className='flex justify-center items-center' style={{ border: '1px solid #4E4FEB' }} />}
         
         <section className='mt-10 px-5'>
             <div className='flex gap-x-5'>
@@ -235,18 +223,22 @@ const MobilesPage = () => {
                     </div>       
                     <div className='mt-5'><hr className='opacity-10 border-0 h-[1px] bg-black' /></div>
                     <div>
-                        {productName.slice(sliceStart, sliceEnd).map((val, index) => {                            
+                        {productName.slice(sliceStart, sliceEnd).map((val, index) => {                                                   
                             return (
                                 <>
-                                    <div className='flex mt-10 gap-x-3 cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={() => navigateProductPage(val, productRating[sliceStart + index], productTotalRating[sliceStart + index], productDescription[sliceStart + index], productOfferPrice[sliceStart + index], productPrice[sliceStart + index], productOff[sliceStart + index], productId[sliceStart + index], image_category[id], newImageName[id])}>
+                                    <div className='flex mt-10 gap-x-3 cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={(e) => identifyBtnClicked(e, val, productRating[sliceStart + index], productTotalRating[sliceStart + index], productDescription[sliceStart + index], productOfferPrice[sliceStart + index], productPrice[sliceStart + index], productOff[sliceStart + index], productId[sliceStart + index], image_category[id], newImageName[id], sliceStart + index)}>                                
 
                                         <div className='flex gap-x-5'>
                                             <div className='px-1 w-[13rem] h-[15rem] flex justify-center gap-x-7'><div><img src={require(`../../cat_images/${image_category[id]}/${newImageName[id]}${productId[sliceStart + index]}.jpg`)} className='h-[13rem]' loading='lazy' /></div>
 
 
-                                            <div><button onClick={() => toggleWishlist(sliceStart + index, val, productRating[sliceStart + index], productTotalRating[sliceStart + index], productDescription[sliceStart + index], productOfferPrice[sliceStart + index], productPrice[sliceStart + index], productOff[sliceStart + index], image_category[id], newImageName[id], productId[sliceStart + index])}>
+                                            <div><button>                                           
                                             
-                                                <i class={`bi bi-heart-fill ${currentIndex === index ? 'text-red-500' : 'text-gray-200'} hover:text-red-500`}></i></button></div></div>
+                                                <i class={`bi bi-heart-fill text-gray-200 hover:text-red-500`}></i>
+                                                
+                                                </button></div>
+                                                </div>
+
                                             <div className='flex flex-col'>
                                             <div className={`font-semibold text-xl w-[32rem] ${hoverState && (indepIndex === sliceStart + index) ? 'text-primary': 'text-black'}`}>{val}</div>
                                             <div className='flex gap-x-4 mt-2 items-center h-auto'>
