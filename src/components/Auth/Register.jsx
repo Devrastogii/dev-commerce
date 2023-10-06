@@ -114,8 +114,10 @@ const Register = () => {
           if(!userCredential){
             showAccountErrorMessage()
           }
+          
+          let userId = user.uid
 
-          await setDoc(userDocRef, { name, phone, email, password })          
+          await setDoc(userDocRef, { userId, name, phone, email, password })          
     
           setShow(true)
           showAccountCreatedMessage()                    

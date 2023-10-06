@@ -24,6 +24,7 @@ const ProductPage = () => {
   const category = location.state.category;
   const newImgName = location.state.newImageName;
   const id = location?.state?.id;
+  const sale = location?.state?.origin
 
   const [pincode, setPincode] = useState();
   const [pinErr, showPinErr] = useState('');
@@ -72,7 +73,6 @@ const ProductPage = () => {
   };
 
   useEffect(() => {
-    console.log(name);
     const f = setTimeout(() => {
       setShow(false);
     }, 1000);
@@ -80,6 +80,8 @@ const ProductPage = () => {
     return () => {
       clearTimeout(f);
     };
+
+
   }, []);
 
   const [addLoadCartBtn, setAddLoadCartBtn] = useState(false);
@@ -97,7 +99,7 @@ const ProductPage = () => {
     newImageName
   ) => {
 
-    if(validatePincode(pinErr)){
+    // if(validatePincode(pinErr)){
       if (changeCartText == "ADD TO CART") {
         setAddLoadCartBtn(true);
   
@@ -112,7 +114,7 @@ const ProductPage = () => {
           }
         });
   
-        if (!checkInDB) {
+        if (!checkInDB && !sale) {
           const querySnapshot = await addDoc(collection(db, "/cart"), {
             productName,
             productRating,
@@ -131,15 +133,39 @@ const ProductPage = () => {
           setAddLoadCartBtn(false);
           setChangeCardText("GO TO CART");
         }
-      } else {
+
+        else if(!checkInDB && sale) {
+          const querySnapshot = await addDoc(collection(db, "/cart"), {
+            productName,
+            productRating,
+            productTotalRating,
+            productDescription,
+            productOfferPrice,
+            productPrice,
+            productOff, 
+            id,
+            image,
+          });
+  
+          showAddToCartMessage();
+          setAddLoadCartBtn(false);
+          setChangeCardText("GO TO CART");
+        }
+
+        // else {
+        //   setChangeCardText("GO TO CART");
+        //   setAddLoadCartBtn(false);
+        // }
+
+      } else {        
         navigate("/cart");
       }
-    }
+    // }
 
-    else {
-      showDeliveryErrorMessage()
-      return;
-    }    
+    // else {
+    //   showDeliveryErrorMessage()
+    //   return;
+    // }    
   };
 
   function validatePincode(pincode) {
@@ -149,7 +175,7 @@ const ProductPage = () => {
 
   const handlePinCode = (e) => {
     let val = e.target.value;
-    setPincode(val); 
+    setPincode(parseInt(val)); 
 
     if(val < 0){
       setPincode('')
@@ -184,11 +210,16 @@ const ProductPage = () => {
                 <div
                   className={`border border-black border-opacity-10 h-[30rem] w-full flex flex-col justify-center items-center`}
                 >
-                  <img
+
+                {sale ? <img
+                    src={require(`../../all/${image}.jpg`)}
+                    loading="lazy"
+                    alt="product-image"
+                  /> : <img
                     src={require(`../../cat_images/${category}/${newImgName}${image}.jpg`)}
                     loading="lazy"
                     alt="product-image"
-                  />
+                  />}                  
 
                   <div className="flex mt-10 gap-x-5">
                     <button className="bg-orange-600 hover:bg-orange-700 transition-all duration-500 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center">
@@ -326,10 +357,11 @@ const ProductPage = () => {
                   <div className="flex flex-col">
                     <div className="flex gap-x-5">
                       <div>
+                      <i class="bi bi-search text-primary absolute"></i>
                         <input
                           type="number"
                           placeholder="Enter Delivery Pincode"
-                          className="text-sm pl-2 border-t-0 border-l-0 border-r-0 border-b-primary border-2 outline-none"
+                          className="text-sm pl-6 pb-1 border-t-0 border-l-0 border-r-0 border-b-primary border-2 outline-none"
                           value={pincode}
                           onChange={handlePinCode}
                           id="delivery"                         
@@ -340,7 +372,7 @@ const ProductPage = () => {
                     </div>
                     <div className="text-sm mt-2 font-semibold">
                       <span>
-                        Delivery by {date + 5} {monthArr[month]}, {dayArr[day]}
+                        Delivery by {(date + 5) % 31} {monthArr[month-1]}, {dayArr[day-1]}
                       </span>{" "}
                       | <span className="text-primary">Free</span>
                     </div>
@@ -386,6 +418,7 @@ const ProductPage = () => {
             id={id}
             newImgName={newImgName}
             text={setChangeCardText}
+            sale={sale}
           />
         </>
       )}

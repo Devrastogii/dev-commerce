@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NavbarForPages from "../Nav/NavbarForPages";
 import { collection, deleteDoc, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../firebase";
+import { app, db } from "../../firebase";
 import Loading from "../Loading/Loading";
 import {
   AlertDialog,
@@ -15,6 +15,7 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const Wishlist = () => {
   const [count, setCount] = useState();
@@ -27,6 +28,8 @@ const Wishlist = () => {
   const [indepIndex, setIndepIndex] = useState()
 
   const navigate = useNavigate()
+  const auth = getAuth(app)
+  const [checkLoggedInUser, setLoggedInUser] = useState(null);
 
   const showWishlistMessage = () => {
 
@@ -36,6 +39,15 @@ const Wishlist = () => {
   };
 
   useEffect(() => {
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoggedInUser(user);
+      } else {
+        setLoggedInUser(null);
+      }
+    })
+
     async function fetchData() {
       try {
         const products = await getDocs(collection(db, "wishlist"));

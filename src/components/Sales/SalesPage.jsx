@@ -13,7 +13,6 @@ const SalesPage = () => {
   const [productId, setProductId] = useState([])
   const [productRating, setProductRating] = useState([])
   const [productTotalRating, setProductTotalRating] = useState([])
-//   const [productImage, setProductImage] = useState([])
   const [productDescription, setProductDescription] = useState([])
 
   const [load, setLoad] = useState(true)
@@ -28,15 +27,7 @@ const SalesPage = () => {
         setProductTotalRating(res.data.total_ratings)
         setProductOff(res.data.off)    
         setProductDescription(res.data.description)
-        setProductId(res.data.uid)    
-        
-        // for (let index = 0; index < res.data.name.length; index++) {
-        //     for (let j = 0; j < res.data.uid.length; j++) {                
-        //         if((res.data.uid[index]  + '.jpg') === res.data.images[j]) {                    
-        //             productImage.push(res.data.images[j])
-        //         }
-        //     }   
-        // }
+        setProductId(res.data.uid)             
         
         setLoad(false)
         console.log(productName);
@@ -61,7 +52,6 @@ const SalesPage = () => {
   const navigate = useNavigate()
 
   const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId) => {
-    // console.log(name);
     navigate('/product-page', {state: {
         'name': name,
         'rating': productRating,
@@ -71,8 +61,8 @@ const SalesPage = () => {
         'price': productPrice,
         'off': productOff,
         'image': productId,
-        // 'sale': 'sale',
-        'id': 8    
+        'id': 8,
+        'origin':'sale'
     }})
   }
 

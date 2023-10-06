@@ -31,20 +31,20 @@ const Cart = () => {
   const [currentIndex, setCurrentIndex] = useState();
   const [productcount, setProductCount] = useState(1);
 
-  function minus(){
-    if(productcount === 1 || productcount <= 0){
-      setProductCount(1);     
-      return false;  
-    }   
-    else {
-    setProductCount(productcount-1);   
+  const [totalAmount, setTotalAmount] = useState();
+
+  function minus() {
+    if (productcount === 1 || productcount <= 0) {
+      setProductCount(1);
+      return false;
+    } else {
+      setProductCount(productcount - 1);
     }
   }
 
-  function add(){  
-    setProductCount(productcount+1);    
+  function add() {
+    setProductCount(productcount + 1);
   }
-
 
   const navigate = useNavigate();
 
@@ -59,8 +59,15 @@ const Cart = () => {
       try {
         const products = await getDocs(collection(db, "cart"));
         setProductDetails(products.docs);
-        setCount(productDetails.length);
+        setCount(products.docs.length);
         console.log(products.docs);
+
+        products.docs.forEach((doc) => {
+          totalAmount += parseInt(doc.data().productOfferPrice);
+          // console.log(doc.data());
+        });
+
+        // console.log(products.docs);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -70,7 +77,8 @@ const Cart = () => {
 
     fetchData();
 
-  }, [productDetails]);
+    console.log(totalAmount);
+  }, []);
 
   const [showDeleteAlert, setshowDeleteAlert] = useState(false);
 
@@ -87,9 +95,12 @@ const Cart = () => {
     category,
     newImageName,
     id,
+    fullImageName,
     i
   ) => {
-    console.log(newImageName, image);
+
+    console.log(fullImageName, image, category, newImageName);
+  
     if (event.target.tagName === "DIV") {
       navigateProductPage(
         name,
@@ -101,8 +112,9 @@ const Cart = () => {
         productOff,
         image,
         category,
-        newImageName,
-        id
+        newImageName,         
+        id,
+        fullImageName
       );
     } else if (event.target.tagName === "I") {
       showDeleteModel(i);
@@ -148,10 +160,14 @@ const Cart = () => {
     productOff,
     image,
     category,
-    newImageName,
-    id
+    newImageName,    
+    id,
+    fullImageName
   ) => {
-    navigate("/product-page", {
+
+    console.log(fullImageName, image, category, newImageName);
+
+    {fullImageName ? navigate("/product-page", {
       state: {
         name: name,
         rating: productRating,
@@ -163,10 +179,25 @@ const Cart = () => {
         image: image,
         category: category,
         id: id,
-        newImageName: newImageName,
+        newImageName: newImageName,        
       },
-    });
-  };  
+    }) : navigate("/product-page", {
+      state: {
+        name: name,
+        rating: productRating,
+        totalRating: productTotalRating,
+        description: productDescription,
+        offer: productOfferPrice,
+        price: productPrice,
+        off: productOff,
+        image: image,
+        category: category,
+        id: 8,
+        'origin': 'sale'        
+      },
+    });}
+    
+  };
 
   return (
     <>
@@ -190,41 +221,48 @@ const Cart = () => {
                 {productDetails.map((v, i) => {
                   return (
                     <>
-                      <div
-                        className="flex gap-x-20 p-4 pt-6"                                           
-                      >
+                      <div className="flex gap-x-20 p-4 pt-6">
                         <div className="px-1 w-[10rem] h-[10rem] flex justify-center gap-x-7">
                           <div>
-                            <img
-                              src={require(`../../cat_images/${
-                                v.data().image_category
-                              }/${v.data().fullImageName}.jpg`)}
-                              className="h-[8rem]"
-                              loading="lazy"
-                            />
+                            {v.data().fullImageName ? (
+                              <img
+                                src={require(`../../cat_images/${
+                                  v.data().image_category
+                                }/${v.data().fullImageName}.jpg`)}
+                                className="h-[8rem]"
+                                loading="lazy"
+                              />
+                            ) : (
+                              <img
+                                src={require(`../../all/${v.data().image}.jpg`)}
+                                className="h-[8rem]"
+                                loading="lazy"
+                              />
+                            )}
                           </div>
                         </div>
 
                         <div className="flex flex-col w-[50rem]">
-                          <div                     
+                          <div
                             className="hover:text-primary font-semibold cursor-pointer"
                             onClick={(e) =>
-                          handleItemClick(
-                            e,
-                            v.data().productName,
-                            v.data().productRating,
-                            v.data().productTotalRating,
-                            v.data().productDescription,
-                            v.data().productOfferPrice,
-                            v.data().productPrice,
-                            v.data().productOff,
-                            v.data().productId,
-                            v.data().image_category,
-                            v.data().newImageName,
-                            v.data().id,
-                            i
-                          )
-                        }
+                              handleItemClick(
+                                e,
+                                v.data().productName,
+                                v.data().productRating,
+                                v.data().productTotalRating,
+                                v.data().productDescription,
+                                v.data().productOfferPrice,
+                                v.data().productPrice,
+                                v.data().productOff,
+                                v.data().image,
+                                v.data().image_category,
+                                v.data().newImageName,
+                                v.data().id,
+                                v.data().fullImageName,                               
+                                i                              
+                              )
+                            }
                           >
                             {v.data().productName}
                           </div>
@@ -260,7 +298,10 @@ const Cart = () => {
                             {/* Counter */}
 
                             <div className="flex gap-x-6">
-                              <div className="w-8 h-8 rounded-full border border-gray-300 flex justify-center items-center" onClick={minus}>
+                              <div
+                                className="w-8 h-8 rounded-full border border-gray-300 flex justify-center items-center"
+                                onClick={minus}
+                              >
                                 <svg
                                   class="fill-current text-gray-600 w-3 cursor-pointer"
                                   viewBox="0 0 448 512"
@@ -270,10 +311,19 @@ const Cart = () => {
                               </div>
 
                               <div>
-                                <input type="number" name="" id="input" value={productcount} className="w-12 blur-0 border border-gray-300 mt-1 outline-primary text-center h-7" />                                                              
+                                <input
+                                  type="number"
+                                  name=""
+                                  id="input"
+                                  value={productcount}
+                                  className="w-12 blur-0 border border-gray-300 mt-1 outline-primary text-center h-7"
+                                />
                               </div>
 
-                              <div className="w-8 h-8 rounded-full border border-gray-300 flex justify-center items-center" onClick={add}>
+                              <div
+                                className="w-8 h-8 rounded-full border border-gray-300 flex justify-center items-center"
+                                onClick={add}
+                              >
                                 <svg
                                   class="fill-current text-gray-600 w-3 cursor-pointer"
                                   viewBox="0 0 448 512"
@@ -282,66 +332,65 @@ const Cart = () => {
                                 </svg>
                               </div>
                             </div>
-                                                       
                           </div>
                         </div>
-               
-                        {/* Del Button */} 
+
+                        {/* Del Button */}
 
                         <div className="flex flex-col">
-                              <div>
-                                <button>
-                                  <i class="bi bi-trash3-fill text-gray-500 hover:text-red-600"></i>
-                                </button>
-                              </div>
+                          <div>
+                            <button>
+                              <i class="bi bi-trash3-fill text-gray-500 hover:text-red-600"></i>
+                            </button>
+                          </div>
 
-                              <div>
-                                {showDeleteAlert && currentIndex === i && (
-                                  <>
-                                    <AlertDialog
-                                      motionPreset="slideInBottom"
-                                      onClose={onClose}
-                                      isOpen={isOpen}
-                                      isCentered
-                                    >
-                                      <AlertDialogOverlay />
+                          <div>
+                            {showDeleteAlert && currentIndex === i && (
+                              <>
+                                <AlertDialog
+                                  motionPreset="slideInBottom"
+                                  onClose={onClose}
+                                  isOpen={isOpen}
+                                  isCentered
+                                >
+                                  <AlertDialogOverlay />
 
-                                      <AlertDialogContent padding={2}>
-                                        <AlertDialogBody>
-                                          Are you sure you want to remove this
-                                          product?
-                                        </AlertDialogBody>
-                                        <AlertDialogFooter>
-                                          <Button
-                                            onClick={onClose}
-                                            width={"3rem"}
-                                            height={"2rem"}
-                                            fontSize={"0.9rem"}
-                                          >
-                                            NO
-                                          </Button>
-                                          <Button
-                                            colorScheme="red"
-                                            height={"2rem"}
-                                            ml={3}
-                                            fontSize={"0.9rem"}
-                                            onClick={(e) =>
-                                              deleteFromCart(
-                                                i,
-                                                v.data().fullImageName,
-                                                e
-                                              )
-                                            }
-                                          >
-                                            YES, REMOVE
-                                          </Button>
-                                        </AlertDialogFooter>
-                                      </AlertDialogContent>
-                                    </AlertDialog>
-                                  </>
-                                )}
-                              </div>
-                            </div>
+                                  <AlertDialogContent padding={2}>
+                                    <AlertDialogBody>
+                                      Are you sure you want to remove this
+                                      product?
+                                    </AlertDialogBody>
+                                    <AlertDialogFooter>
+                                      <Button
+                                        onClick={onClose}
+                                        width={"3rem"}
+                                        height={"2rem"}
+                                        fontSize={"0.9rem"}
+                                      >
+                                        NO
+                                      </Button>
+                                      <Button
+                                        colorScheme="red"
+                                        height={"2rem"}
+                                        ml={3}
+                                        fontSize={"0.9rem"}
+                                        onClick={(e) =>
+                                          deleteFromCart(
+                                            i,
+                                            v.data().fullImageName,
+                                            e
+                                          )
+                                        }
+                                      >
+                                        YES, REMOVE
+                                      </Button>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </>
+                            )}
+                          </div>
+                        </div>
                       </div>
                       <hr className="opacity-10 border-0 h-[1px] bg-black" />
                     </>
@@ -381,7 +430,7 @@ const Cart = () => {
 
               <div className="mt-5 flex justify-between font-semibold text-lg px-5">
                 <div>Total Amount</div>
-                <div>₹4000</div>
+                <div>₹{totalAmount}</div>
               </div>
 
               <div className="mt-6 flex justify-center w-full">
@@ -393,7 +442,6 @@ const Cart = () => {
               </div>
             </div>
           </div>
-          
         </section>
       )}
       <ToastContainer />
