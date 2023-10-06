@@ -65,7 +65,7 @@ const Hero = () => {
                         <PopoverBody><div className='flex gap-x-5'>                            
                                 <div><button onClick={() => navigatePage("7")}>Washing Machine</button></div>
                                 <div><button onClick={() => navigatePage("6")}>Fridge</button></div>
-                                <div onClick={() => navigatePage("8")}>Purifier</div>                                                   
+                                <div><button onClick={() => navigatePage("8")}>Purifier</button></div>                                                   
                         </div></PopoverBody>
                     </PopoverContent> 
                     </Popover>

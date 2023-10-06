@@ -123,27 +123,12 @@ const ProductPage = () => {
           fullImageName,
           id,
           image,
+          newImageName
         });
 
         showAddToCartMessage();
         setAddLoadCartBtn(false);
-        setChangeCardText("GO TO CART");
-      } else if (!checkInDB) {
-        const querySnapshot = await addDoc(collection(db, "/cart"), {
-          productName,
-          productRating,
-          productTotalRating,
-          productDescription,
-          productOfferPrice,
-          productPrice,
-          productOff,
-          id,
-          image,
-        });
-
-        showAddToCartMessage();
-        setAddLoadCartBtn(false);
-        setChangeCardText("GO TO CART");
+        setChangeCardText("GO TO CART");      
       }
 
       // else {

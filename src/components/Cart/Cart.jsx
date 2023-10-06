@@ -27,26 +27,28 @@ const Cart = () => {
   const [load, setLoad] = useState(true);
 
   const [productDetails, setProductDetails] = useState([]);
-  const { isOpen, onToggle, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [currentIndex, setCurrentIndex] = useState();
-  const [productcount, setProductCount] = useState(1);
+  const [quantity, setQuantity] = useState(1);
 
   const [totalSum, setTotalSum] = useState(0)
   const [totalDiscount, setTotalDiscount] = useState(0)
 
-  function minus(i) {
-    setCurrentIndex(i)
-    if (productcount === 1 || productcount <= 0) {
-      setProductCount(1);
+  function minus() {
+    if (quantity === 1 || quantity <= 0) {
+      setQuantity(1);
       return false;
     } else {
-      setProductCount(productcount - 1);
+      setQuantity(quantity - 1);
     }
   }
 
-  function add(i) {
-    setCurrentIndex(i)
-    setProductCount(productcount + 1);
+  function add() {
+    if(quantity === 5) {
+      setQuantity(quantity)
+      return false
+    }
+    setQuantity(quantity + 1);
   }
 
   const navigate = useNavigate();
@@ -70,8 +72,8 @@ useEffect(() => {
       const totalDiscountAvail = []
 
       products.docs.forEach((doc) => {
-        const productOfferPrice = parseInt(doc.data().productOfferPrice);
-        totalAmount.push(productOfferPrice);
+        const productPrice = parseInt(doc.data().productPrice);
+        totalAmount.push(productPrice);
         const productTotalDiscount = parseInt(doc.data().productPrice) - parseInt(doc.data().productOfferPrice);
         totalDiscountAvail.push(productTotalDiscount)
       });
@@ -89,59 +91,21 @@ useEffect(() => {
   }
 
   fetchData();
-}, []);
+}, [productDetails]);
 
   const [showDeleteAlert, setshowDeleteAlert] = useState(false);
-
-  const handleItemClick = (
-    event,
-    name,
-    productRating,
-    productTotalRating,
-    productDescription,
-    productOfferPrice,
-    productPrice,
-    productOff,
-    image,
-    category,
-    newImageName,
-    id,
-    fullImageName,
-    i
-  ) => {
-
-    console.log(fullImageName, image, category, newImageName);
-  
-    if (event.target.tagName === "DIV") {
-      navigateProductPage(
-        name,
-        productRating,
-        productTotalRating,
-        productDescription,
-        productOfferPrice,
-        productPrice,
-        productOff,
-        image,
-        category,
-        newImageName,         
-        id,
-        fullImageName
-      );
-    } else if (event.target.tagName === "I") {
-      showDeleteModel(i);
-    }
-  };
 
   const showDeleteModel = (i) => {
     setshowDeleteAlert(true);
     setCurrentIndex(i);
 
-    if (showDeleteAlert) {
-      onToggle();
+    if (!isOpen) {
+      onOpen();
     }
   };
 
-  const deleteFromCart = async (i, fullImageName, e) => {
+  const deleteFromCart = async (fullImageName) => {
+    console.log(fullImageName);
     try {
       const deleteFromCart = await getDocs(
         query(
@@ -162,6 +126,7 @@ useEffect(() => {
   };
 
   const navigateProductPage = (
+    e,
     name,
     productRating,
     productTotalRating,
@@ -173,12 +138,10 @@ useEffect(() => {
     category,
     newImageName,    
     id,
-    fullImageName
   ) => {
 
-    console.log(fullImageName, image, category, newImageName);
-
-    // {fullImageName ? 
+    e.preventDefault()
+  
       navigate("/product-page", {
       state: {
         name: name,
@@ -194,21 +157,6 @@ useEffect(() => {
         newImageName: newImageName,        
       },
     }) 
-    // : navigate("/product-page", {
-    //   state: {
-    //     name: name,
-    //     rating: productRating,
-    //     totalRating: productTotalRating,
-    //     description: productDescription,
-    //     offer: productOfferPrice,
-    //     price: productPrice,
-    //     off: productOff,
-    //     image: image,
-    //     category: category,
-    //     id: 8,
-    //     'origin': 'sale'        
-    //   },
-    // });}
     
   };
 
@@ -259,7 +207,7 @@ useEffect(() => {
                           <div
                             className="hover:text-primary font-semibold cursor-pointer"
                             onClick={(e) =>
-                              handleItemClick(
+                              navigateProductPage(
                                 e,
                                 v.data().productName,
                                 v.data().productRating,
@@ -271,9 +219,7 @@ useEffect(() => {
                                 v.data().image,
                                 v.data().image_category,
                                 v.data().newImageName,
-                                v.data().id,
-                                v.data().fullImageName,                               
-                                i                              
+                                v.data().id                                                          
                               )
                             }
                           >
@@ -313,7 +259,7 @@ useEffect(() => {
                             <div className="flex gap-x-6">
                               <div
                                 className="w-8 h-8 rounded-full border border-gray-300 flex justify-center items-center"
-                                onClick={(i) => minus(i)}
+                                onClick={minus}
                               >
                                 <svg
                                   class="fill-current text-gray-600 w-3 cursor-pointer"
@@ -328,14 +274,14 @@ useEffect(() => {
                                   type="number"
                                   name=""
                                   id="input"
-                                  value={productcount}
+                                  value={quantity}
                                   className="w-12 blur-0 border border-gray-300 mt-1 outline-primary text-center h-7"
                                 />
                               </div>
 
                               <div
                                 className="w-8 h-8 rounded-full border border-gray-300 flex justify-center items-center"
-                                onClick={(i) => add(i)}
+                                onClick={add}
                               >
                                 <svg
                                   class="fill-current text-gray-600 w-3 cursor-pointer"
@@ -353,7 +299,7 @@ useEffect(() => {
                         <div className="flex flex-col">
                           <div>
                             <button>
-                              <i class="bi bi-trash3-fill text-gray-500 hover:text-red-600"></i>
+                              <i class="bi bi-trash3-fill text-gray-500 hover:text-red-600" onClick={() => showDeleteModel(i)}></i>
                             </button>
                           </div>
 
@@ -387,11 +333,9 @@ useEffect(() => {
                                         height={"2rem"}
                                         ml={3}
                                         fontSize={"0.9rem"}
-                                        onClick={(e) =>
-                                          deleteFromCart(
-                                            i,
-                                            v.data().fullImageName,
-                                            e
+                                        onClick={() =>
+                                          deleteFromCart(                                           
+                                            v.data().fullImageName,                                            
                                           )
                                         }
                                       >
@@ -431,8 +375,8 @@ useEffect(() => {
                 </div>
 
                 <div className="flex flex-col gap-y-3">
-                  <div>₹{totalSum.toLocaleString()}</div>
-                  <div>- ₹{totalDiscount.toLocaleString()}</div>
+                  <div className="flex justify-end">₹{(totalSum*quantity).toLocaleString()}</div>
+                  <div className="flex justify-end">- ₹{(totalDiscount*quantity).toLocaleString()}</div>
                   <div className="text-primary font-semibold w-full flex justify-end">
                     FREE
                   </div>
@@ -445,7 +389,7 @@ useEffect(() => {
 
               <div className="mt-5 flex justify-between font-semibold text-lg px-5">
                 <div>Total Amount</div>
-                <div>₹{(totalSum-totalDiscount).toLocaleString()}</div>
+                <div>₹{(totalSum*quantity-totalDiscount*quantity).toLocaleString()}</div>
               </div>
 
               <div className="mt-6 flex justify-center w-full">
@@ -453,7 +397,7 @@ useEffect(() => {
               </div>
 
               <div className="mt-5 flex justify-between font-semibold text-lg px-5 text-primary mb-5">
-                <div>You will save ₹4000 on this order</div>
+                <div>You will save ₹{(totalDiscount*quantity).toLocaleString()} on this order</div>
               </div>
             </div>
           </div>
