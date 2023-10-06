@@ -10,6 +10,7 @@ const FrequentlyPurchased = () => {
   const [productOff, setProductOff] = useState([])
   const [productRating, setProductRating] = useState([])
   const [productTotalRating, setProductTotalRating] = useState([])
+  const [productDescription, setProductDescription] = useState([])
   const [productId, setProductId] = useState([])
   const [singleClick, setSingleClick] = useState(false)
   const [text, setText] = useState("VIEW MORE")
@@ -26,9 +27,10 @@ const FrequentlyPurchased = () => {
         setProductTotalRating(res.data.total_ratings)
         setProductOff(res.data.off)               
         setProductId(res.data.uid)
+        setProductDescription(res.data.description)
     }
 
-    start()
+    start()    
   },[])
 
   const handleClick = () => {
@@ -54,6 +56,21 @@ const FrequentlyPurchased = () => {
         setHoverState(false)
   }
 
+  const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId) => {
+    navigate('/product-page', {state: {
+        'name': name,
+        'rating': productRating,
+        'totalRating': productTotalRating,
+        'description': productDescription,
+        'offer': productOfferPrice,
+        'price': productPrice,
+        'off': productOff,
+        'image': productId,
+        'id': 9,
+        'forigin':'frequent'
+    }})
+  }
+
   return (
     <>
         <section className='pl-20'>
@@ -72,7 +89,7 @@ const FrequentlyPurchased = () => {
                 {productName.slice(0, singleClick ? 10 : 5).map((val, index) => {                 
                     return (
                         <>
-                        <div className='flex flex-col w-[12rem] cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)}>
+                        <div className='flex flex-col w-[12rem] cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={() => navigateProductPage(val, productRating[index], productTotalRating[index], productDescription[index], productOfferPrice[index], productPrice[index], productOff[index], productId[index])}>
                     <div className='flex justify-center'>                    
                         <img src={require(`../../frequent_images/${productId[index]}.jpg`)} alt="product-image" className='h-[12rem]' loading='lazy' />
                     </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import NavbarForPages from '../Nav/NavbarForPages'
 import Loading from '../Loading/Loading'
+import { useNavigate } from 'react-router-dom'
 
 const FrequentPage = () => {
 
@@ -11,9 +12,12 @@ const FrequentPage = () => {
   const [productOff, setProductOff] = useState([])
   const [productRating, setProductRating] = useState([])
   const [productTotalRating, setProductTotalRating] = useState([])
+  const [productDescription, setProductDescription] = useState([])
   const [productId, setProductId] = useState([])
 
   const [show, setShow] = useState(true);
+
+  const navigate = useNavigate()  
 
   useEffect(() => {
     async function start(){
@@ -24,7 +28,8 @@ const FrequentPage = () => {
         setProductRating(res.data.rating)
         setProductTotalRating(res.data.total_ratings)
         setProductOff(res.data.off)  
-        setProductId(res.data.uid)       
+        setProductId(res.data.uid)      
+        setProductDescription(res.data.description) 
     }    
 
     start()
@@ -51,6 +56,21 @@ const FrequentPage = () => {
         setHoverState(false)
   }
 
+  const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId) => {
+    navigate('/product-page', {state: {
+        'name': name,
+        'rating': productRating,
+        'totalRating': productTotalRating,
+        'description': productDescription,
+        'offer': productOfferPrice,
+        'price': productPrice,
+        'off': productOff,
+        'image': productId,
+        'id': 9,
+        'forigin':'frequent'
+    }})
+  }
+
   return (
     <>
     {show ? <Loading /> : <>
@@ -64,7 +84,7 @@ const FrequentPage = () => {
                 {productName.slice(0, 81).map((val, index) => {
                     return (
                         <>
-                        <div className='flex flex-col cursor-pointer w-[12rem]' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)}>
+                        <div className='flex flex-col cursor-pointer w-[12rem]' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={() => navigateProductPage(val, productRating[index], productTotalRating[index], productDescription[index], productOfferPrice[index], productPrice[index], productOff[index], productId[index])}>
                     <div className='flex justify-center'>                    
                         <img src={require(`../../frequent_images/${productId[index]}.jpg`)} alt="product-image" className='h-[12rem]' loading='lazy' />
                     </div>

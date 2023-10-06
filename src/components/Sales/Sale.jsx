@@ -127,6 +127,21 @@ const Sale = () => {
 
     console.log(productToWishlistSet); 
   }
+  
+  const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId) => {
+    navigate('/product-page', {state: {
+        'name': name,
+        'rating': productRating,
+        'totalRating': productTotalRating,
+        'description': productDescription,
+        'offer': productOfferPrice,
+        'price': productPrice,
+        'off': productOff,
+        'image': productId,
+        'id': 8,
+        'origin':'sale'
+    }})
+  }
 
   return (
     <>
@@ -145,7 +160,7 @@ const Sale = () => {
                 {productName.slice(0, singleClick ? 10 : 5).map((val, index) => {            
                     return (
                         <>
-                        <div className='flex flex-col w-[12rem] cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)}>
+                        <div className='flex flex-col w-[12rem] cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={() => navigateProductPage(val, productRating[index], productTotalRating[index], productDescription[index], productOfferPrice[index], productPrice[index], productOff[index], productId[index])}>
                     <div className='flex justify-center'>                    
                         <div><img src={require(`../../all/${productId[index]}.jpg`)} alt="product-image" className='h-[12rem]' loading='lazy' /></div>
                         <div><i class={`bi bi-heart-fill hover:text-red-500`} onClick={() => toggleWishlist(productId[index], val, productRating[index], productTotalRating[index], productOfferPrice[index], productPrice[index], productOff[index], productDescription[index])}></i></div>

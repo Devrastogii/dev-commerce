@@ -31,9 +31,11 @@ const Cart = () => {
   const [currentIndex, setCurrentIndex] = useState();
   const [productcount, setProductCount] = useState(1);
 
-  const [totalAmount, setTotalAmount] = useState();
+  const [totalSum, setTotalSum] = useState(0)
+  const [totalDiscount, setTotalDiscount] = useState(0)
 
-  function minus() {
+  function minus(i) {
+    setCurrentIndex(i)
     if (productcount === 1 || productcount <= 0) {
       setProductCount(1);
       return false;
@@ -42,7 +44,8 @@ const Cart = () => {
     }
   }
 
-  function add() {
+  function add(i) {
+    setCurrentIndex(i)
     setProductCount(productcount + 1);
   }
 
@@ -54,31 +57,39 @@ const Cart = () => {
     });
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const products = await getDocs(collection(db, "cart"));
-        setProductDetails(products.docs);
-        setCount(products.docs.length);
-        console.log(products.docs);
+  
+useEffect(() => {
+  async function fetchData() {
+    try {
+      const products = await getDocs(collection(db, "cart"));
+      setProductDetails(products.docs);
+      setCount(products.docs.length);
 
-        products.docs.forEach((doc) => {
-          totalAmount += parseInt(doc.data().productOfferPrice);
-          // console.log(doc.data());
-        });
+      // Initialize totalAmount as an array
+      const totalAmount = [];
+      const totalDiscountAvail = []
 
-        // console.log(products.docs);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoad(false);
-      }
+      products.docs.forEach((doc) => {
+        const productOfferPrice = parseInt(doc.data().productOfferPrice);
+        totalAmount.push(productOfferPrice);
+        const productTotalDiscount = parseInt(doc.data().productPrice) - parseInt(doc.data().productOfferPrice);
+        totalDiscountAvail.push(productTotalDiscount)
+      });
+
+      // Calculate the sum of totalAmount and update totalSum
+      const sum = totalAmount.reduce((acc, price) => acc + price, 0);
+      const discount = totalDiscountAvail.reduce((acc, discount) => acc + discount, 0)
+      setTotalSum(sum);
+      setTotalDiscount(discount)
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoad(false);
     }
+  }
 
-    fetchData();
-
-    console.log(totalAmount);
-  }, []);
+  fetchData();
+}, []);
 
   const [showDeleteAlert, setshowDeleteAlert] = useState(false);
 
@@ -167,7 +178,8 @@ const Cart = () => {
 
     console.log(fullImageName, image, category, newImageName);
 
-    {fullImageName ? navigate("/product-page", {
+    // {fullImageName ? 
+      navigate("/product-page", {
       state: {
         name: name,
         rating: productRating,
@@ -181,21 +193,22 @@ const Cart = () => {
         id: id,
         newImageName: newImageName,        
       },
-    }) : navigate("/product-page", {
-      state: {
-        name: name,
-        rating: productRating,
-        totalRating: productTotalRating,
-        description: productDescription,
-        offer: productOfferPrice,
-        price: productPrice,
-        off: productOff,
-        image: image,
-        category: category,
-        id: 8,
-        'origin': 'sale'        
-      },
-    });}
+    }) 
+    // : navigate("/product-page", {
+    //   state: {
+    //     name: name,
+    //     rating: productRating,
+    //     totalRating: productTotalRating,
+    //     description: productDescription,
+    //     offer: productOfferPrice,
+    //     price: productPrice,
+    //     off: productOff,
+    //     image: image,
+    //     category: category,
+    //     id: 8,
+    //     'origin': 'sale'        
+    //   },
+    // });}
     
   };
 
@@ -300,7 +313,7 @@ const Cart = () => {
                             <div className="flex gap-x-6">
                               <div
                                 className="w-8 h-8 rounded-full border border-gray-300 flex justify-center items-center"
-                                onClick={minus}
+                                onClick={(i) => minus(i)}
                               >
                                 <svg
                                   class="fill-current text-gray-600 w-3 cursor-pointer"
@@ -322,7 +335,7 @@ const Cart = () => {
 
                               <div
                                 className="w-8 h-8 rounded-full border border-gray-300 flex justify-center items-center"
-                                onClick={add}
+                                onClick={(i) => add(i)}
                               >
                                 <svg
                                   class="fill-current text-gray-600 w-3 cursor-pointer"
@@ -412,12 +425,14 @@ const Cart = () => {
 
               <div className="flex justify-between mt-5 px-6 w-full">
                 <div className="flex flex-col gap-y-3">
-                  <div>Price (1 item)</div>
+                  <div>Price ({count} {count === 1 ? <span>item</span> : <span>items</span>})</div>
+                  <div>Discount</div>
                   <div>Delivery Charges</div>
                 </div>
 
                 <div className="flex flex-col gap-y-3">
-                  <div>₹4000</div>
+                  <div>₹{totalSum.toLocaleString()}</div>
+                  <div>- ₹{totalDiscount.toLocaleString()}</div>
                   <div className="text-primary font-semibold w-full flex justify-end">
                     FREE
                   </div>
@@ -430,7 +445,7 @@ const Cart = () => {
 
               <div className="mt-5 flex justify-between font-semibold text-lg px-5">
                 <div>Total Amount</div>
-                <div>₹{totalAmount}</div>
+                <div>₹{(totalSum-totalDiscount).toLocaleString()}</div>
               </div>
 
               <div className="mt-6 flex justify-center w-full">
