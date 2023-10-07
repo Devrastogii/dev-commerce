@@ -29,6 +29,7 @@ const Buy = () => {
   const category = location?.state?.category;
   const newImgName = location?.state?.newImgName;
   const sale = location?.state?.origin
+  const frequent = location?.state?.forigin
 
   function minus() {
     if (quantity === 1 || quantity <= 0) {
@@ -88,13 +89,17 @@ const Buy = () => {
                                 src={require(`../../all/${image}.jpg`)}
                                 className="h-[8rem]"
                                 loading="lazy"
+                              /> : frequent ? <img
+                                src={require(`../../frequent_images/${image}.jpg`)}
+                                className="h-[8rem]"
+                                loading="lazy"
                               /> : <img
                                 src={require(`../../cat_images/${
                                   category
                                 }/${newImgName}${image}.jpg`)}
                                 className="h-[8rem]"
                                 loading="lazy"
-                              /> }                 
+                              />}                 
                                                          
                           </div>
                         </div>

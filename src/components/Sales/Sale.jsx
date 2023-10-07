@@ -42,7 +42,7 @@ const Sale = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    async function start(){
+      async function start(){
         const res = await axios.get("/sale_products_show")
         setProductName(res.data.name)
         setProductPrice(res.data.original)
@@ -159,7 +159,7 @@ const Sale = () => {
                     <div className='flex justify-center'>                    
                         <div><img src={require(`../../all/${productId[index]}.jpg`)} alt="product-image" className='h-[12rem]' loading='lazy' /></div>
                         <div>
-                        {spinner ? (currentIndex === index ? <CircularProgress isIndeterminate color='#4E4FEB' size={'30px'} /> : <i class={`bi bi-heart-fill hover:text-red-500`}></i>) : <i class={`bi bi-heart-fill hover:text-red-500`}></i>}
+                        {spinner ? (currentIndex === index ? <CircularProgress isIndeterminate color='#4E4FEB' size={'30px'} /> : <i class={`bi bi-heart-fill hover:text-red-500 text-gray-200`}></i>) : <i class={`bi bi-heart-fill hover:text-red-500 text-gray-200`}></i>}
                         </div>
                     </div>
                     <div className={`font-semibold mt-4 ${hoverState && (indepIndex === index) ? 'text-primary': 'text-black'}`}>{val}</div>

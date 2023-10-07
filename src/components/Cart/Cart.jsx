@@ -34,8 +34,6 @@ const Cart = () => {
   const [totalSum, setTotalSum] = useState(0)
   const [totalDiscount, setTotalDiscount] = useState(0)
 
-  const location = useLocation()
-
   function minus() {
     if (quantity === 1 || quantity <= 0) {
       setQuantity(1);
@@ -145,35 +143,47 @@ useEffect(() => {
 
     e.preventDefault()
 
-    {!fullImageName ? navigate("/product-page", {
-      state: {
-        name: name,
-        rating: productRating,
-        totalRating: productTotalRating,
-        description: productDescription,
-        offer: productOfferPrice,
-        price: productPrice,
-        off: productOff,
-        image: image,        
-        id: id,  
-        'origin': 'sale'     
-      },
-    }) : navigate("/product-page", {
-      state: {
-        name: name,
-        rating: productRating,
-        totalRating: productTotalRating,
-        description: productDescription,
-        offer: productOfferPrice,
-        price: productPrice,
-        off: productOff,
-        image: image,
-        category: category,
-        id: id,
-        newImageName: newImageName,        
-      },
-    }) }      
-    
+    {fullImageName ? navigate("/product-page", {
+        state: {
+          name: name,
+          rating: productRating,
+          totalRating: productTotalRating,
+          description: productDescription,
+          offer: productOfferPrice,
+          price: productPrice,
+          off: productOff,
+          image: image,
+          category: category,
+          id: id,
+          newImageName: newImageName,        
+        },
+      }) : id == 8 ? navigate("/product-page", {
+          state: {
+            name: name,
+            rating: productRating,
+            totalRating: productTotalRating,
+            description: productDescription,
+            offer: productOfferPrice,
+            price: productPrice,
+            off: productOff,
+            image: image,        
+            id: id,  
+            'origin': 'sale'     
+          },
+        }) : navigate("/product-page", {
+            state: {
+              name: name,
+              rating: productRating,
+              totalRating: productTotalRating,
+              description: productDescription,
+              offer: productOfferPrice,
+              price: productPrice,
+              off: productOff,
+              image: image,        
+              id: id,  
+              'forigin': 'frequent'     
+            },
+          })}         
   };
 
   return (
@@ -209,13 +219,17 @@ useEffect(() => {
                                 className="h-[8rem]"
                                 loading="lazy"
                               />
-                            ) : (
+                            ) : v.data().id === 8 ? (
                               <img
                                 src={require(`../../all/${v.data().image}.jpg`)}
                                 className="h-[8rem]"
                                 loading="lazy"
                               />
-                            )}
+                            ) : <img
+                                src={require(`../../frequent_images/${v.data().image}.jpg`)}
+                                className="h-[8rem]"
+                                loading="lazy"
+                              />}
                           </div>
                         </div>
 

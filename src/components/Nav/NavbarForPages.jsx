@@ -57,16 +57,13 @@ const NavbarForPages = () => {
   return (
     <>
         {load ? <Loading /> : <section>
-            <div className='flex w-full justify-center items-center bg-primary text-white gap-x-[3rem] h-[4rem] fixed top-0 z-10 drop-shadow-lg'>
+            <div className='flex w-full justify-between px-12 items-center bg-primary text-white gap-x-[3rem] h-[4rem] fixed top-0 z-10 drop-shadow-lg'>
                 <div>
                     <Link to={'/'} className='font-bold text-xl'>DEV-COMMERCE</Link>
-                </div>
-                <div className='flex gap-x-8'>
-                    <div><input type="text" placeholder='Search products...' className='outline-none p-3 w-[20rem] rounded-md h-[2rem] bg-white text-black text-sm' /></div>                    
-                </div>
+                </div>               
                 <div className='flex gap-x-5 items-center'>                
-                    <button onClick={wishlist}><i class="bi bi-heart text-[1.4rem] hover:text-red-500 transition-all duration-500"></i></button>
-                    <button onClick={() => navigate('/cart')}><i class="bi bi-cart3 text-[1.4rem]"></i></button>                    
+                    <button onClick={wishlist} className="w-[6rem] h-[2.5rem] flex justify-center items-center border-opacity-75 font-semibold rounded-lg border border-primary text-primary bg-white">Wishlist</button>
+                    <button onClick={() => navigate('/cart')} className="w-[6rem] h-[2.5rem] flex justify-center items-center border-opacity-75 font-semibold rounded-lg border border-primary text-primary bg-white">Cart</button>                    
 
                     {checkLoggedInUser === null ? (
               <Link

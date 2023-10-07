@@ -25,6 +25,7 @@ const ProductPage = () => {
   const newImgName = location?.state?.newImageName;
   const id = location?.state?.id;
   const sale = location?.state?.origin;
+  const frequent = location?.state?.forigin
 
   const [pincode, setPincode] = useState();
   const [pinErr, showPinErr] = useState("");
@@ -129,7 +130,9 @@ const ProductPage = () => {
         }
       });
 
-      if (!checkInDB && !sale) {
+      // Normal Product
+
+      if (!checkInDB && !sale && !frequent) {
         const querySnapshot = await addDoc(collection(db, "/cart"), {
           productName,
           productRating,
@@ -148,7 +151,11 @@ const ProductPage = () => {
         showAddToCartMessage();
         setAddLoadCartBtn(false);
         setChangeCardText("GO TO CART");
-      } else if (!checkInDB && sale) {
+      } 
+
+      // Sale Product
+      
+      else if (!checkInDB && sale && !frequent) {
         const querySnapshot = await addDoc(collection(db, "/cart"), {
           productName,
           productRating,
@@ -165,9 +172,34 @@ const ProductPage = () => {
         setAddLoadCartBtn(false);
         setChangeCardText("GO TO CART");
       }
+
+      // Frequent Product
+
+      else if (!checkInDB && !sale && frequent) {
+        const querySnapshot = await addDoc(collection(db, "/cart"), {
+          productName,
+          productRating,
+          productTotalRating,
+          productDescription,
+          productOfferPrice,
+          productPrice,
+          productOff,
+          id,
+          image,
+        });
+
+        showAddToCartMessage();
+        setAddLoadCartBtn(false);
+        setChangeCardText("GO TO CART");
+      }
+
     } else {
-      if(sale) {
+      if(sale && !frequent) {
         navigate('/cart', {state: {'origin':'sale'}})
+      }
+
+      if(!sale && frequent) {
+        navigate('/cart', {state: {'forigin':'frequent'}})
       }
 
       navigate("/cart");
@@ -226,7 +258,9 @@ const ProductPage = () => {
       }
     });
 
-    if (!checkInDB && !sale) {
+    // Normal Product
+
+    if (!checkInDB && !sale && !frequent) {
       const querySnapshot = await addDoc(collection(db, "/cart"), {
         productName,
         productRating,
@@ -243,9 +277,27 @@ const ProductPage = () => {
       });
 
       setGoToCartBtn(false);
-    }    
+    } 
+    
+    // Sale Product
 
-    else if (!checkInDB && sale) {
+    else if (!checkInDB && sale && !frequent) {
+      const querySnapshot = await addDoc(collection(db, "/cart"), {
+        productName,
+        productRating,
+        productTotalRating,
+        productDescription,
+        productOfferPrice,
+        productPrice,
+        productOff,
+        id,
+        image,
+      });
+    }
+
+    // Frequent Product
+
+    else if (!checkInDB && !sale && frequent) {
       const querySnapshot = await addDoc(collection(db, "/cart"), {
         productName,
         productRating,
@@ -270,6 +322,17 @@ const ProductPage = () => {
           image: image,
           'origin': 'sale'
         },
+      }) : frequent ? navigate("/buy-now", {
+        state: {
+          name: productName,
+          offer: productOfferPrice,
+          price: productPrice,
+          off: productOff,
+          category: image_category,
+          newImgName: newImageName,
+          image: image,
+          'forigin': 'frequent'
+        },
       }) : navigate("/buy-now", {
         state: {
           name: productName,
@@ -280,7 +343,7 @@ const ProductPage = () => {
           newImgName: newImageName,
           image: image,
         },
-      });}     
+      })}     
 
   };
 
@@ -304,13 +367,17 @@ const ProductPage = () => {
                       loading="lazy"
                       alt="product-image"
                     />
-                  ) : (
+                  ) : frequent ? (
                     <img
-                      src={require(`../../cat_images/${category}/${newImgName}${image}.jpg`)}
+                      src={require(`../../frequent_images/${image}.jpg`)}
                       loading="lazy"
                       alt="product-image"
                     />
-                  )}
+                  ) : <img
+                      src={require(`../../cat_images/${category}/${newImgName}${image}.jpg`)}
+                      loading="lazy"
+                      alt="product-image"
+                    />}
 
                   <div className="flex mt-10 gap-x-5">
                     {goToCartBtn ? (
@@ -539,6 +606,7 @@ const ProductPage = () => {
             newImgName={newImgName}
             text={setChangeCardText}
             sale={sale}
+            frequent={frequent}
           />
         </>
       )}

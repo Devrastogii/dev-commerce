@@ -91,7 +91,20 @@ const Recommend = (props) => {
         'id': id,
         'newImageName': newImgName,
         'origin': 'sale'
-    }})  : navigate('/product-page', {state: {
+    }}) : props?.frequent ? navigate('/product-page', {state: {
+        'name': name,
+        'rating': productRating,
+        'totalRating': productTotalRating,
+        'description': productDescription,
+        'offer': productOfferPrice,
+        'price': productPrice,
+        'off': productOff,
+        'image': image,
+        'category': category,
+        'id': id,
+        'newImageName': newImgName, 
+        'forigin': 'frequent'    
+    }}) : navigate('/product-page', {state: {
         'name': name,
         'rating': productRating,
         'totalRating': productTotalRating,
@@ -103,7 +116,7 @@ const Recommend = (props) => {
         'category': category,
         'id': id,
         'newImageName': newImgName,     
-    }})  }      
+    }})}      
     
     getData()  
   }
@@ -128,7 +141,7 @@ const Recommend = (props) => {
 
                                 <div className='w-[12rem] h-[15rem] flex justify-center items-center'>
 
-                                {props?.sale ? <img src={require(`../../all/${productId[start+i]}.jpg`)} alt="product-image" className='h-[13rem]' /> : <img src={require(`../../cat_images/${props.category}/${props.newImgName}${productId[start+i]}.jpg`)} alt="product-image" className='h-[13rem]' />}                                 
+                                {props?.sale ? <img src={require(`../../all/${productId[start+i]}.jpg`)} alt="product-image" className='h-[13rem]' /> : props?.frequent ? <img src={require(`../../frequent_images/${productId[start+i]}.jpg`)} alt="product-image" className='h-[13rem]' /> : <img src={require(`../../cat_images/${props.category}/${props.newImgName}${productId[start+i]}.jpg`)} alt="product-image" className='h-[13rem]' />}                                 
                            
                                 </div>                          
 

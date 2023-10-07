@@ -24,7 +24,8 @@ const SalesPage = () => {
   const [spinner, setSpinner] = useState(false)
   const [currentIndex, setCurrentIndex] = useState()
 
-  useEffect(() => {
+  useEffect(() => {    
+
     async function start(){
         const res = await axios.get("/sale_products_show")
         setProductName(res.data.name)

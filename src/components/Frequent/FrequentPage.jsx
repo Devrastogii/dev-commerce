@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import NavbarForPages from '../Nav/NavbarForPages'
-import Loading from '../Loading/Loading'
 import { useNavigate } from 'react-router-dom'
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { CircularProgress } from '@chakra-ui/react'
+import { addDoc, collection, deleteDoc, getDocs, query, where } from 'firebase/firestore'
+import { db } from '../../firebase'
+import NavbarForPages from '../Nav/NavbarForPages';
+import Loading from '../Loading/Loading';
 
 const FrequentPage = () => {
 
@@ -16,8 +21,24 @@ const FrequentPage = () => {
   const [productId, setProductId] = useState([])
 
   const [show, setShow] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState()
+  const [spinner, setSpinner] = useState(false)
+
+  const wishlistCollection = collection(db, "wishlist");
 
   const navigate = useNavigate()  
+
+  // Toast Messages
+  
+  const showWishlistMessage = (num) => {
+
+    {num == 1 ? toast.success("Added To Wishlist ", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      }) : toast.success("Removed From Wishlist ", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });}
+    
+  };
 
   useEffect(() => {
     async function start(){
@@ -56,6 +77,14 @@ const FrequentPage = () => {
         setHoverState(false)
   }
 
+  const identifyBtnClicked = (e, name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, index) => {
+    if (e.target.tagName === 'DIV') {
+        navigateProductPage(name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, 9)
+      } else if (e.target.tagName === 'I') {
+        toggleWishlist(name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, 9, index);   
+      }
+  }
+
   const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId) => {
     navigate('/product-page', {state: {
         'name': name,
@@ -71,6 +100,40 @@ const FrequentPage = () => {
     }})
   }
 
+  const toggleWishlist = async (productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, id, index) => {    
+    setCurrentIndex(index)
+    setSpinner(true)
+    let checkInDB = false   
+    
+    const getAllDoc = await getDocs(wishlistCollection);
+
+    getAllDoc.forEach((doc) => {       
+        if(productName === doc.data().productName) {
+            checkInDB = true                        
+        }
+    })    
+
+    if(!checkInDB) {
+        const querySnapshot = await addDoc(wishlistCollection, {productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, id})  
+
+        setSpinner(false)
+        showWishlistMessage(1);
+    }
+
+    else {
+        const deleteFromWishlist = await getDocs(
+            query(collection(db, "/wishlist"), where("productName", "==", productName))
+        );
+       
+        deleteFromWishlist.forEach((doc) => {   
+            deleteDoc(doc.ref);
+          }); 
+        
+        setSpinner(false)
+        showWishlistMessage(0); 
+    }
+  }
+
   return (
     <>
     {show ? <Loading /> : <>
@@ -84,10 +147,13 @@ const FrequentPage = () => {
                 {productName.slice(0, 81).map((val, index) => {
                     return (
                         <>
-                        <div className='flex flex-col cursor-pointer w-[12rem]' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={() => navigateProductPage(val, productRating[index], productTotalRating[index], productDescription[index], productOfferPrice[index], productPrice[index], productOff[index], productId[index])}>
-                    <div className='flex justify-center'>                    
-                        <img src={require(`../../frequent_images/${productId[index]}.jpg`)} alt="product-image" className='h-[12rem]' loading='lazy' />
-                    </div>
+                        <div className='flex flex-col cursor-pointer w-[12rem]' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={(e) => identifyBtnClicked(e, val, productRating[index], productTotalRating[index], productDescription[index], productOfferPrice[index], productPrice[index], productOff[index], productId[index], index)}>
+                        <div className='flex justify-center'>                    
+                        <div><img src={require(`../../frequent_images/${productId[index]}.jpg`)} alt="product-image" className='h-[12rem]' loading='lazy' /></div>
+                        <div className='flex ml-5'>
+                        {spinner ? (currentIndex === index ? <CircularProgress isIndeterminate color='#4E4FEB' size={'30px'} /> : <i class={`bi bi-heart-fill hover:text-red-500 text-gray-200`}></i>) : <i class={`bi bi-heart-fill hover:text-red-500 text-gray-200`}></i>}
+                        </div>
+                        </div>
                     <div className={`font-semibold mt-4 ${hoverState && (indepIndex === index) ? 'text-primary': 'text-black'}`}>{val}</div>
                     <div className='flex gap-x-2 items-center mt-3'>
                         <div className='bg-primary text-white rounded-lg w-[3.6rem] h-[1.7rem] text-sm flex justify-center items-center'>{productRating[index]} <i class="bi bi-star-fill ml-1 text-sm"></i></div>
@@ -100,6 +166,8 @@ const FrequentPage = () => {
                 })}                
             </div>
         </section>
+
+        <ToastContainer />
     </>}
     </>
   )

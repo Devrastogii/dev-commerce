@@ -172,7 +172,7 @@ const Wishlist = () => {
               newImageName: newImageName,
             },
           })
-        : navigate("/product-page", {
+        : id == 8 ? navigate("/product-page", {
             state: {
               name: name,
               rating: productRating,
@@ -187,7 +187,22 @@ const Wishlist = () => {
               newImageName: newImageName,
               origin: "sale",
             },
-          });
+          }) : navigate("/product-page", {
+            state: {
+              name: name,
+              rating: productRating,
+              totalRating: productTotalRating,
+              description: productDescription,
+              offer: productOfferPrice,
+              price: productPrice,
+              off: productOff,
+              image: image,
+              category: category,
+              id: id,
+              newImageName: newImageName,
+              forigin: "frequent",
+            },
+          })
     }
   };
 
@@ -250,7 +265,7 @@ const Wishlist = () => {
                               className="h-[8rem]"
                               loading="lazy"
                             />
-                          ) : (
+                          ) : v.data().id === 8 ? (
                             <img
                               src={require(`../../all/${
                                 v.data().productId
@@ -258,7 +273,13 @@ const Wishlist = () => {
                               className="h-[8rem]"
                               loading="lazy"
                             />
-                          )}
+                          ) : <img
+                              src={require(`../../frequent_images/${
+                                v.data().productId
+                              }.jpg`)}
+                              className="h-[8rem]"
+                              loading="lazy"
+                            />}
                         </div>
                       </div>
 

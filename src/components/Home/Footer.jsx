@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { app } from "../../firebase";
 
 const Footer = () => {
   const date = new Date().getFullYear();
@@ -7,6 +9,21 @@ const Footer = () => {
   const [input, change] = useState("");
   const [bool, setBool] = useState(false);
   const [err, seterr] = useState("");
+
+  const [checkLoggedInUser, setLoggedInUser] = useState(null);
+  const auth = getAuth(app)
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoggedInUser(user);
+      } else {
+        setLoggedInUser(null);
+      }
+    });
+  }, []);
 
   function track(e) {
     change(e.target.value);
@@ -23,22 +40,18 @@ const Footer = () => {
   }
 
   const scrollToTop = () => {
-
     function scrollTop(e) {
       window.scrollTo({
-          top: 0,
-          behavior: "smooth",
+        top: 0,
+        behavior: "smooth",
       });
-  }
+    }
 
-  const buttonElement = document.getElementById("footer-scroll-btn")
-  buttonElement.addEventListener('click', scrollTop)
+    const buttonElement = document.getElementById("footer-scroll-btn");
+    buttonElement.addEventListener("click", scrollTop);
 
-  return (
-    buttonElement.removeEventListener('click', scrollToTop) // After a click this event will be removed and so by clicking anywhere on the page, it will not take me to top
-  )
-
-  }
+    return buttonElement.removeEventListener("click", scrollToTop); // After a click this event will be removed and so by clicking anywhere on the page, it will not take me to top
+  };
 
   return (
     <>
@@ -57,7 +70,10 @@ const Footer = () => {
                   <br />
                 </li>
                 <li>
-                  <Link to={'/wishlist'} class="text-gray-400 hover:text-white cursor-pointer hover:underline">
+                  <Link
+                    to={"/wishlist"}
+                    class="text-gray-400 hover:text-white cursor-pointer hover:underline"
+                  >
                     Wishlist
                   </Link>
                 </li>
@@ -103,9 +119,16 @@ const Footer = () => {
                 <li>
                   <button>
                     {" "}
-                    <Link to={'/profile'} class="text-gray-400 hover:text-white hover:underline cursor-pointer ">
+                    <button
+                      onClick={() =>
+                        navigate("/profile", {
+                          state: { email: checkLoggedInUser.email },
+                        })
+                      }
+                      class="text-gray-400 hover:text-white hover:underline cursor-pointer "
+                    >
                       Your Account
-                    </Link>
+                    </button>
                   </button>
                 </li>
                 <li>
@@ -180,7 +203,7 @@ const Footer = () => {
         <div class="bg-zinc-900 bg-opacity-75">
           <div class="container px-5 py-6 mx-auto flex items-center sm:flex-row flex-col">
             <a class="flex title-font font-medium items-center md:justify-start justify-center text-white">
-              <button onClick={scrollToTop} id="footer-scroll-btn">             
+              <button onClick={scrollToTop} id="footer-scroll-btn">
                 <span class="ml-3 text-xl">Dev-Commerce</span>
               </button>
             </a>

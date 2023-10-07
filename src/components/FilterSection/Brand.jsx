@@ -1,27 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 const Brand = (props) => {
 
-  const [show, showMore] = useState(6)
+  const show = 6
   const [click, setClick] = useState(false)
-  const [text, showText] = useState("Show Less")
-
-//   const [filterArray, setFilterArray] = useState(props.brand)
-//   const [brandArray, setBrandArray] = useState([])
-
-//   useEffect(() => {
-//     console.log(filterArray);
-//   }, [])
+  const text = "Show Less"
 
   const showAllBrands = () => {
     setClick(!click)  
   }
 
-//   const handleCheckbox = (e) => {
-//     setBrandArray((prev) => [...prev, e.target.value])
-//     // props.brand = props.brand.filter((p) => p != e.target.value)
-//   }
+  const [checkArr, setCheckArr] = useState([])
 
+  const handleCheckbox = (v) => {
+    setCheckArr((prev) => [...prev, v])
+  }
+  
   return (
     <>
         <div className='font-medium'>BRAND</div>
@@ -31,7 +25,7 @@ const Brand = (props) => {
                     return (
                         <>
                             <div className='flex gap-x-2'>
-                                <div><input type="checkbox" name={v} value={v} id={i} /></div>
+                                <div><input type="checkbox" name={v} value={v} id={i} onChange={() => handleCheckbox(v)} /></div>
                                 <div className='text-sm'>{v}</div>
                             </div>
                         </>

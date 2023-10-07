@@ -52,27 +52,18 @@ const Navbar = () => {
   return (
     <>
     {load ? <Loading /> : <section>
-        <div className="flex w-full justify-around items-center">
+        <div className="flex w-full justify-between items-center px-20">
           <div>
             <Link to={"/"} className="font-bold text-xl">
               DEV-COMMERCE
             </Link>
-          </div>
-          <div className="flex gap-x-8">
-            <div>
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="outline-none p-4 w-[24rem] rounded-xl h-[2.5rem] opacity-60 border border-opacity-25 border-black"
-              />
-            </div>
-          </div>
+          </div>         
           <div className="flex gap-x-5 items-center">
-            <button onClick={wishlist}>
-              <i class="bi bi-heart text-[1.4rem] hover:text-red-500 transition-all duration-500"></i>
+            <button onClick={wishlist} className="w-[6rem] h-[2.5rem] flex justify-center items-center border-opacity-75 font-semibold rounded-lg border border-primary text-primary bg-white slide-right-home-navbar hover:text-white">
+              Wishlist
             </button>
-            <button onClick={() => navigate('/cart')}>
-              <i class="bi bi-cart3 text-[1.4rem]"></i>
+            <button onClick={() => navigate('/cart')} className="w-[6rem] h-[2.5rem] flex justify-center items-center border-opacity-75 font-semibold rounded-lg border border-primary text-primary bg-white slide-right-home-navbar hover:text-white">
+              Cart
             </button>
 
             {checkLoggedInUser === null ? (
