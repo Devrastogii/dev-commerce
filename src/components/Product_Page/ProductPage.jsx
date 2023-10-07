@@ -65,13 +65,31 @@ const ProductPage = () => {
     });
   };
 
-  const showDeliveryErrorMessage = () => {
-    toast.error("Please provide correct pin code", {
-      position: toast.POSITION.BOTTOM_CENTER,
-    });
-  };
+  const [productDetails, setProductDetails] = useState([]);
+  const [changeCartText, setChangeCardText] = useState("ADD TO CART");
 
   useEffect(() => {
+
+    async function fetchData() {
+      try {
+        const products = await getDocs(collection(db, "cart"));
+        setProductDetails(products.docs);       
+
+        let fullImageName = newImgName + image
+  
+        products.docs.forEach((doc) => {
+            if(fullImageName === doc.data().fullImageName){
+                setChangeCardText("GO TO CART")
+            }
+        });
+         
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+  
+    fetchData();
+
     const f = setTimeout(() => {
       setShow(false);
     }, 1000);
@@ -82,7 +100,7 @@ const ProductPage = () => {
   }, []);
 
   const [addLoadCartBtn, setAddLoadCartBtn] = useState(false);
-  const [changeCartText, setChangeCardText] = useState("ADD TO CART");
+  const [goToCartBtn, setGoToCartBtn] = useState(false);  
 
   const addToCart = async (
     productName,
@@ -95,7 +113,7 @@ const ProductPage = () => {
     image_category,
     newImageName
   ) => {
-    // if(validatePincode(pinErr)){
+
     if (changeCartText == "ADD TO CART") {
       setAddLoadCartBtn(true);
 
@@ -123,27 +141,17 @@ const ProductPage = () => {
           fullImageName,
           id,
           image,
-          newImageName
+          newImageName,
         });
 
         showAddToCartMessage();
         setAddLoadCartBtn(false);
-        setChangeCardText("GO TO CART");      
+        setChangeCardText("GO TO CART");
       }
 
-      // else {
-      //   setChangeCardText("GO TO CART");
-      //   setAddLoadCartBtn(false);
-      // }
     } else {
       navigate("/cart");
     }
-    // }
-
-    // else {
-    //   showDeliveryErrorMessage()
-    //   return;
-    // }
   };
 
   function validatePincode(pincode) {
@@ -174,6 +182,62 @@ const ProductPage = () => {
     });
   };
 
+  const buynow = async (
+    productName,
+    productRating,
+    productTotalRating,
+    productDescription,
+    productOfferPrice,
+    productPrice,
+    productOff,
+    image_category,
+    newImageName
+  ) => {
+
+    setGoToCartBtn(true);
+    let checkInDB = false;
+    let fullImageName = newImgName + image;
+
+    const getAllDoc = await getDocs(collection(db, "/cart"));
+
+    getAllDoc.forEach((doc) => {
+      if (fullImageName === doc.data().fullImageName) {
+        checkInDB = true;
+      }
+    });
+
+    if (!checkInDB) {
+      const querySnapshot = await addDoc(collection(db, "/cart"), {
+        productName,
+        productRating,
+        productTotalRating,
+        productDescription,
+        productOfferPrice,
+        productPrice,
+        productOff,
+        image_category,
+        fullImageName,
+        id,
+        image,
+        newImageName,
+      });
+
+      setGoToCartBtn(false);
+
+      navigate("/buy-now", {
+        state: {
+          name: productName,
+          offer: productOfferPrice,
+          price: productPrice,
+          off: productOff,
+          category: image_category,
+          newImgName: newImageName,
+          image: image,
+        },
+      });
+    }
+  };
+
   return (
     <>
       {show ? (
@@ -195,9 +259,33 @@ const ProductPage = () => {
                   />
 
                   <div className="flex mt-10 gap-x-5">
-                    <button className="bg-orange-600 hover:bg-orange-700 transition-all duration-500 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center">
+                    {goToCartBtn ? (
+                      <Button
+                        isLoading
+                        loadingText="BUY NOW"
+                        colorScheme="dark"
+                        variant="outline"
+                        spinnerPlacement="start"
+                      ></Button>
+                    ) :  <button
+                      className="bg-orange-600 hover:bg-orange-700 transition-all duration-500 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center"
+                      onClick={() =>
+                        buynow(
+                          name,
+                          rating,
+                          totalRating,
+                          description,
+                          offer,
+                          price,
+                          off,
+                          category,
+                          newImgName,
+                          image
+                        )
+                      }
+                    >
                       <i class="bi bi-lightning-fill mr-1"></i> BUY NOW
-                    </button>
+                    </button>}                   
 
                     {addLoadCartBtn ? (
                       <Button
@@ -393,7 +481,7 @@ const ProductPage = () => {
             category={category}
             id={id}
             newImgName={newImgName}
-            text={setChangeCardText}           
+            text={setChangeCardText}
           />
         </>
       )}

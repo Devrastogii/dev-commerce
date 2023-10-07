@@ -10,6 +10,7 @@ import Register from "./components/Auth/Register";
 import Login from "./components/Auth/Login";
 import Account from "./components/Auth/Account";
 import Cart from "./components/Cart/Cart";
+import Buy from "./components/Cart/Buy";
 
 axios.defaults.baseURL = 'http://localhost:5000/';
 axios.defaults.withCredentials = true;
@@ -28,6 +29,7 @@ function App() {
         <Route path="/login-user" element={<Login />} />    
         <Route path="/profile" element={<Account />} /> 
         <Route path="/cart" element={<Cart />} />   
+        <Route path="/buy-now" element={<Buy />} />
       </Routes>
     </>
   );
