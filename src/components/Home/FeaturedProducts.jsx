@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import monitor from '../../images/featured_monitor.jpg'
 import watch from '../../images/featured_watch.jpg'
-import earbud from '../../images/featured_earbud.jpg'
 import mobile from '../../images/featured_mobile.jpg'
+import laptop from '../../images/featured_laptop.jpeg'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 
@@ -63,7 +63,7 @@ const FeaturedProducts = () => {
                 </div>
                 <div className='relative flex flex-col'>
                     <div className='relative'>
-                        <img src={earbud} alt="monitor" className='w-[30rem] h-[17rem]' />
+                        <img src={laptop} alt="laptop" className='w-[30rem] h-[17rem]' />
                     </div>
 
                 <div className='absolute flex flex-col text-white w-[30rem] h-[17rem] cursor-pointer' onMouseEnter={() => handleHover("2")} onMouseLeave={() => handleHover("0")}>
