@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const [count, setCount] = useState();
@@ -33,6 +33,8 @@ const Cart = () => {
 
   const [totalSum, setTotalSum] = useState(0)
   const [totalDiscount, setTotalDiscount] = useState(0)
+
+  const location = useLocation()
 
   function minus() {
     if (quantity === 1 || quantity <= 0) {
@@ -138,11 +140,25 @@ useEffect(() => {
     category,
     newImageName,    
     id,
+    fullImageName
   ) => {
 
     e.preventDefault()
-  
-      navigate("/product-page", {
+
+    {!fullImageName ? navigate("/product-page", {
+      state: {
+        name: name,
+        rating: productRating,
+        totalRating: productTotalRating,
+        description: productDescription,
+        offer: productOfferPrice,
+        price: productPrice,
+        off: productOff,
+        image: image,        
+        id: id,  
+        'origin': 'sale'     
+      },
+    }) : navigate("/product-page", {
       state: {
         name: name,
         rating: productRating,
@@ -156,7 +172,7 @@ useEffect(() => {
         id: id,
         newImageName: newImageName,        
       },
-    }) 
+    }) }      
     
   };
 
@@ -219,7 +235,8 @@ useEffect(() => {
                                 v.data().image,
                                 v.data().image_category,
                                 v.data().newImageName,
-                                v.data().id                                                          
+                                v.data().id,
+                                v.data().fullImageName                                                      
                               )
                             }
                           >

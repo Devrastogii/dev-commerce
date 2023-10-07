@@ -69,6 +69,8 @@ const Recommend = (props) => {
 
   const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image, category, newImgName) => {       
 
+    console.log(image);
+
     {props.text("ADD TO CART")}
 
     window.scrollTo({
@@ -76,7 +78,7 @@ const Recommend = (props) => {
         behavior: "smooth",
     });
 
-    navigate('/product-page', {state: {
+    {props?.sale ? navigate('/product-page', {state: {
         'name': name,
         'rating': productRating,
         'totalRating': productTotalRating,
@@ -88,7 +90,20 @@ const Recommend = (props) => {
         'category': category,
         'id': id,
         'newImageName': newImgName,
-    }})
+        'origin': 'sale'
+    }})  : navigate('/product-page', {state: {
+        'name': name,
+        'rating': productRating,
+        'totalRating': productTotalRating,
+        'description': productDescription,
+        'offer': productOfferPrice,
+        'price': productPrice,
+        'off': productOff,
+        'image': image,
+        'category': category,
+        'id': id,
+        'newImageName': newImgName,     
+    }})  }      
     
     getData()  
   }
@@ -113,7 +128,7 @@ const Recommend = (props) => {
 
                                 <div className='w-[12rem] h-[15rem] flex justify-center items-center'>
 
-                                 <img src={require(`../../cat_images/${props.category}/${props.newImgName}${productId[start+i]}.jpg`)} alt="product-image" className='h-[13rem]' />
+                                {props?.sale ? <img src={require(`../../all/${productId[start+i]}.jpg`)} alt="product-image" className='h-[13rem]' /> : <img src={require(`../../cat_images/${props.category}/${props.newImgName}${productId[start+i]}.jpg`)} alt="product-image" className='h-[13rem]' />}                                 
                            
                                 </div>                          
 

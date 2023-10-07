@@ -21,13 +21,14 @@ const Buy = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const name = location.state.name; 
-  const offer = location.state.offer;
-  const price = location.state.price;
-  const off = location.state.off;
-  const image = location.state.image;
-  const category = location.state.category;
-  const newImgName = location.state.newImgName;
+  const name = location?.state?.name; 
+  const offer = location?.state?.offer;
+  const price = location?.state?.price;
+  const off = location?.state?.off;
+  const image = location?.state?.image;
+  const category = location?.state?.category;
+  const newImgName = location?.state?.newImgName;
+  const sale = location?.state?.origin
 
   function minus() {
     if (quantity === 1 || quantity <= 0) {
@@ -81,14 +82,20 @@ const Buy = () => {
               <div className="mt-10 px-10">       
                       <div className="flex gap-x-20 p-4 pt-6">
                         <div className="px-1 w-[10rem] h-[10rem] flex justify-center gap-x-7">
-                          <div>                  
-                              <img
+                          <div> 
+
+                          {sale ? <img
+                                src={require(`../../all/${image}.jpg`)}
+                                className="h-[8rem]"
+                                loading="lazy"
+                              /> : <img
                                 src={require(`../../cat_images/${
                                   category
                                 }/${newImgName}${image}.jpg`)}
                                 className="h-[8rem]"
                                 loading="lazy"
-                              />                            
+                              /> }                 
+                                                         
                           </div>
                         </div>
 

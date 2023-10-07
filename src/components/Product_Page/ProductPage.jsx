@@ -13,17 +13,18 @@ const ProductPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const name = location.state.name;
-  const rating = location.state.rating;
-  const totalRating = location.state.totalRating;
-  const description = location.state.description;
-  const offer = location.state.offer;
-  const price = location.state.price;
-  const off = location.state.off;
-  const image = location.state.image;
-  const category = location.state.category;
-  const newImgName = location.state.newImageName;
+  const name = location?.state?.name;
+  const rating = location?.state?.rating;
+  const totalRating = location?.state?.totalRating;
+  const description = location?.state?.description;
+  const offer = location?.state?.offer;
+  const price = location?.state?.price;
+  const off = location?.state?.off;
+  const image = location?.state?.image;
+  const category = location?.state?.category;
+  const newImgName = location?.state?.newImageName;
   const id = location?.state?.id;
+  const sale = location?.state?.origin;
 
   const [pincode, setPincode] = useState();
   const [pinErr, showPinErr] = useState("");
@@ -65,29 +66,27 @@ const ProductPage = () => {
     });
   };
 
-  const [productDetails, setProductDetails] = useState([]);
   const [changeCartText, setChangeCardText] = useState("ADD TO CART");
 
   useEffect(() => {
-
     async function fetchData() {
       try {
         const products = await getDocs(collection(db, "cart"));
-        setProductDetails(products.docs);       
+        let fullImageName = newImgName + image;
 
-        let fullImageName = newImgName + image
-  
         products.docs.forEach((doc) => {
-            if(fullImageName === doc.data().fullImageName){
-                setChangeCardText("GO TO CART")
-            }
+          if (
+            fullImageName === doc.data().fullImageName ||
+            name == doc.data().productName
+          ) {
+            setChangeCardText("GO TO CART");
+          }
         });
-         
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
-  
+
     fetchData();
 
     const f = setTimeout(() => {
@@ -100,7 +99,7 @@ const ProductPage = () => {
   }, []);
 
   const [addLoadCartBtn, setAddLoadCartBtn] = useState(false);
-  const [goToCartBtn, setGoToCartBtn] = useState(false);  
+  const [goToCartBtn, setGoToCartBtn] = useState(false);
 
   const addToCart = async (
     productName,
@@ -113,7 +112,6 @@ const ProductPage = () => {
     image_category,
     newImageName
   ) => {
-
     if (changeCartText == "ADD TO CART") {
       setAddLoadCartBtn(true);
 
@@ -123,12 +121,15 @@ const ProductPage = () => {
       const getAllDoc = await getDocs(collection(db, "/cart"));
 
       getAllDoc.forEach((doc) => {
-        if (fullImageName === doc.data().fullImageName) {
+        if (
+          fullImageName === doc.data().fullImageName ||
+          productName == doc.data().productName
+        ) {
           checkInDB = true;
         }
       });
 
-      if (!checkInDB) {
+      if (!checkInDB && !sale) {
         const querySnapshot = await addDoc(collection(db, "/cart"), {
           productName,
           productRating,
@@ -147,9 +148,28 @@ const ProductPage = () => {
         showAddToCartMessage();
         setAddLoadCartBtn(false);
         setChangeCardText("GO TO CART");
+      } else if (!checkInDB && sale) {
+        const querySnapshot = await addDoc(collection(db, "/cart"), {
+          productName,
+          productRating,
+          productTotalRating,
+          productDescription,
+          productOfferPrice,
+          productPrice,
+          productOff,
+          id,
+          image,
+        });
+
+        showAddToCartMessage();
+        setAddLoadCartBtn(false);
+        setChangeCardText("GO TO CART");
+      }
+    } else {
+      if(sale) {
+        navigate('/cart', {state: {'origin':'sale'}})
       }
 
-    } else {
       navigate("/cart");
     }
   };
@@ -193,7 +213,6 @@ const ProductPage = () => {
     image_category,
     newImageName
   ) => {
-
     setGoToCartBtn(true);
     let checkInDB = false;
     let fullImageName = newImgName + image;
@@ -201,12 +220,13 @@ const ProductPage = () => {
     const getAllDoc = await getDocs(collection(db, "/cart"));
 
     getAllDoc.forEach((doc) => {
-      if (fullImageName === doc.data().fullImageName) {
+      if (fullImageName === doc.data().fullImageName ||
+      productName == doc.data().productName) {
         checkInDB = true;
       }
     });
 
-    if (!checkInDB) {
+    if (!checkInDB && !sale) {
       const querySnapshot = await addDoc(collection(db, "/cart"), {
         productName,
         productRating,
@@ -223,8 +243,34 @@ const ProductPage = () => {
       });
 
       setGoToCartBtn(false);
+    }    
 
-      navigate("/buy-now", {
+    else if (!checkInDB && sale) {
+      const querySnapshot = await addDoc(collection(db, "/cart"), {
+        productName,
+        productRating,
+        productTotalRating,
+        productDescription,
+        productOfferPrice,
+        productPrice,
+        productOff,
+        id,
+        image,
+      });
+    }
+
+      {sale ? navigate("/buy-now", {
+        state: {
+          name: productName,
+          offer: productOfferPrice,
+          price: productPrice,
+          off: productOff,
+          category: image_category,
+          newImgName: newImageName,
+          image: image,
+          'origin': 'sale'
+        },
+      }) : navigate("/buy-now", {
         state: {
           name: productName,
           offer: productOfferPrice,
@@ -234,8 +280,8 @@ const ProductPage = () => {
           newImgName: newImageName,
           image: image,
         },
-      });
-    }
+      });}     
+
   };
 
   return (
@@ -252,11 +298,19 @@ const ProductPage = () => {
                 <div
                   className={`border border-black border-opacity-10 h-[30rem] w-full flex flex-col justify-center items-center`}
                 >
-                  <img
-                    src={require(`../../cat_images/${category}/${newImgName}${image}.jpg`)}
-                    loading="lazy"
-                    alt="product-image"
-                  />
+                  {sale ? (
+                    <img
+                      src={require(`../../all/${image}.jpg`)}
+                      loading="lazy"
+                      alt="product-image"
+                    />
+                  ) : (
+                    <img
+                      src={require(`../../cat_images/${category}/${newImgName}${image}.jpg`)}
+                      loading="lazy"
+                      alt="product-image"
+                    />
+                  )}
 
                   <div className="flex mt-10 gap-x-5">
                     {goToCartBtn ? (
@@ -267,25 +321,27 @@ const ProductPage = () => {
                         variant="outline"
                         spinnerPlacement="start"
                       ></Button>
-                    ) :  <button
-                      className="bg-orange-600 hover:bg-orange-700 transition-all duration-500 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center"
-                      onClick={() =>
-                        buynow(
-                          name,
-                          rating,
-                          totalRating,
-                          description,
-                          offer,
-                          price,
-                          off,
-                          category,
-                          newImgName,
-                          image
-                        )
-                      }
-                    >
-                      <i class="bi bi-lightning-fill mr-1"></i> BUY NOW
-                    </button>}                   
+                    ) : (
+                      <button
+                        className="bg-orange-600 hover:bg-orange-700 transition-all duration-500 w-[10rem] h-[2.5rem] text-lg text-white flex justify-center items-center"
+                        onClick={() =>
+                          buynow(
+                            name,
+                            rating,
+                            totalRating,
+                            description,
+                            offer,
+                            price,
+                            off,
+                            category,
+                            newImgName,
+                            image,                          
+                          )
+                        }
+                      >
+                        <i class="bi bi-lightning-fill mr-1"></i> BUY NOW
+                      </button>
+                    )}
 
                     {addLoadCartBtn ? (
                       <Button
@@ -482,6 +538,7 @@ const ProductPage = () => {
             id={id}
             newImgName={newImgName}
             text={setChangeCardText}
+            sale={sale}
           />
         </>
       )}

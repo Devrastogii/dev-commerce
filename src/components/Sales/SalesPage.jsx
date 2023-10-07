@@ -3,6 +3,11 @@ import axios from 'axios'
 import NavbarForPages from '../Nav/NavbarForPages'
 import Loading from '../Loading/Loading'
 import { useNavigate } from 'react-router-dom'
+import { addDoc, collection, deleteDoc, getDocs, query, where } from 'firebase/firestore'
+import { db } from '../../firebase'
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { CircularProgress } from '@chakra-ui/react'
 
 const SalesPage = () => {
 
@@ -16,6 +21,8 @@ const SalesPage = () => {
   const [productDescription, setProductDescription] = useState([])
 
   const [load, setLoad] = useState(true)
+  const [spinner, setSpinner] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState()
 
   useEffect(() => {
     async function start(){
@@ -30,11 +37,22 @@ const SalesPage = () => {
         setProductId(res.data.uid)             
         
         setLoad(false)
-        console.log(productName);
     }
 
     start()
   },[])
+
+  // Toast Messages
+  
+  const showWishlistMessage = (num) => {
+
+    {num == 1 ? toast.success("Added To Wishlist ", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      }) : toast.success("Removed From Wishlist ", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });}
+    
+  };
 
   const [hoverState, setHoverState] = useState(false)
   const [indepIndex, setIndepIndex] = useState()
@@ -51,7 +69,16 @@ const SalesPage = () => {
 
   const navigate = useNavigate()
 
+  const identifyBtnClicked = (e, name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, index) => {
+    if (e.target.tagName === 'DIV') {
+        navigateProductPage(name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, 8)
+      } else if (e.target.tagName === 'I') {
+        toggleWishlist(name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, 8, index);   
+      }
+  }
+
   const navigateProductPage = (name, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId) => {
+
     navigate('/product-page', {state: {
         'name': name,
         'rating': productRating,
@@ -64,6 +91,42 @@ const SalesPage = () => {
         'id': 8,
         'origin':'sale'
     }})
+  }
+
+  const wishlistCollection = collection(db, "wishlist");
+
+  const toggleWishlist = async (productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, id, index) => {    
+    setSpinner(true)
+    setCurrentIndex(index)
+    let checkInDB = false   
+    
+    const getAllDoc = await getDocs(wishlistCollection);
+
+    getAllDoc.forEach((doc) => {       
+        if(productName === doc.data().productName) {
+            checkInDB = true                        
+        }
+    })    
+
+    if(!checkInDB) {
+        const querySnapshot = await addDoc(wishlistCollection, {productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, id})  
+
+        showWishlistMessage(1);
+        setSpinner(false)
+    }
+
+    else {
+        const deleteFromWishlist = await getDocs(
+            query(collection(db, "/wishlist"), where("productName", "==", productName))
+        );
+       
+        deleteFromWishlist.forEach((doc) => {   
+            deleteDoc(doc.ref);
+          }); 
+          
+        setSpinner(false)
+        showWishlistMessage(0); 
+    }
   }
 
   return (
@@ -80,10 +143,11 @@ const SalesPage = () => {
                 {productName.slice(0,productName.length-1).map((val, index) => {            
                     return (
                         <>
-                    <div className='flex flex-col cursor-pointer w-[12rem]' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={() => navigateProductPage(val, productRating[index], productTotalRating[index], productDescription[index], productOfferPrice[index], productPrice[index], productOff[index], productId[index])}>
-                    <div className='flex justify-center'>                    
-                        <img src={require(`../../all/${productId[index]}.jpg`)} alt="product-image" className='h-[12rem]' loading='lazy' />
-                    </div>
+                    <div className='flex flex-col cursor-pointer w-[12rem]' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={(e) => identifyBtnClicked(e, val, productRating[index], productTotalRating[index], productDescription[index], productOfferPrice[index], productPrice[index], productOff[index], productId[index], index)}>
+                    <div className='flex justify-center'>    
+                    <div><img src={require(`../../all/${productId[index]}.jpg`)} alt="product-image" className='h-[12rem]' loading='lazy' /></div>  
+                    {spinner ? (currentIndex === index ? <CircularProgress isIndeterminate color='#4E4FEB' size={'30px'} /> : <i class={`bi bi-heart-fill hover:text-red-500`}></i>) : <i class={`bi bi-heart-fill hover:text-red-500`}></i>}                               
+                    </div>                                     
                     <div className={`font-semibold mt-4 ${hoverState && (indepIndex === index) ? 'text-primary': 'text-black'}`}>{val}</div>
                     <div className='flex gap-x-2 items-center mt-3'>
                         <div className='bg-primary text-white rounded-lg w-[3.6rem] h-[1.7rem] text-sm flex justify-center items-center'>{productRating[index]} <i class="bi bi-star-fill ml-1 text-sm"></i></div>
@@ -97,6 +161,8 @@ const SalesPage = () => {
             </div>
         </section>
     </>}        
+
+    <ToastContainer />
     </>
   )
 }
