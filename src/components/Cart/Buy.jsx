@@ -14,7 +14,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import Address from "../Checkout/Address";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { app } from "../../firebase";
+import { app, db } from "../../firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 const Buy = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -33,36 +34,36 @@ const Buy = () => {
   const sale = location?.state?.origin;
   const frequent = location?.state?.forigin;
 
-  const auth = getAuth(app)
-  const [checkLoggedInUser, setLoggedInUser] = useState(null)
+  const auth = getAuth(app);
+  const [checkLoggedInUser, setLoggedInUser] = useState(null);
+  const [userDetails, setUserDetails] = useState([]);
+
+  const showQuantityErrorMessage = () => {
+    toast.error("Currently we are accepting only single quantity ", {
+      position: toast.POSITION.BOTTOM_CENTER,
+    });
+  };
 
   useEffect(() => {
-    onAuthStateChanged(auth, user => {
-      if(user) {
-        setLoggedInUser(user)
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const getData = await getDocs(
+          query(collection(db, "/user-data"), where("email", "==", user.email))
+        );
+
+        getData.forEach((doc) => {
+          setUserDetails(doc.data());
+        });
+        setLoggedInUser(user);
+      } else {
+        setLoggedInUser(null);
+        navigate("/login-user");
       }
-
-      else {
-        setLoggedInUser(null)
-      }     
-    })
-  })
-
-  function minus() {
-    if (quantity === 1 || quantity <= 0) {
-      setQuantity(1);
-      return false;
-    } else {
-      setQuantity(quantity - 1);
-    }
-  }
+    });
+  }, [userDetails]);
 
   function add() {
-    if (quantity === 5) {
-      setQuantity(quantity);
-      return false;
-    }
-    setQuantity(quantity + 1);
+   showQuantityErrorMessage()
   }
 
   const [showDeleteAlert, setshowDeleteAlert] = useState(false);
@@ -139,8 +140,7 @@ const Buy = () => {
 
                     <div className="flex gap-x-6">
                       <div
-                        className="w-8 h-8 rounded-full border border-gray-300 flex justify-center items-center"
-                        onClick={minus}
+                        className="w-8 h-8 rounded-full border border-gray-300 flex justify-center items-center"                     
                       >
                         <svg
                           class="fill-current text-gray-600 w-3 cursor-pointer"
@@ -227,7 +227,7 @@ const Buy = () => {
                     )}
                   </div>
                 </div>
-              </div>           
+              </div>
             </div>
           </div>
 
@@ -284,7 +284,7 @@ const Buy = () => {
           </div>
         </div>
       </section>
-     <Address amount={(offer * quantity).toLocaleString()} />
+      <Address amount={(offer * quantity).toLocaleString()} />
       <ToastContainer />
     </>
   );

@@ -115,9 +115,9 @@ const Address = (props) => {
                   </div>
                   <div className="mt-1">{userDetails?.address}</div>
                 </div>
-              </div>
+              </div>              
 
-              <div className="mb-4 px-5 text-red-500 font-semibold">{err}</div>
+              <div className="mb-4 px-5 text-red-500 font-semibold flex justify-center">{err}</div>
              
             </div>
 

@@ -245,10 +245,7 @@ const Wishlist = () => {
       {load ? (
         <Loading />
       ) : (
-        <section>
-          <div className="flex flex-col mt-[3rem] px-10">
-            <div className="text-2xl font-semibold">Wishlist({count})</div>
-          </div>
+        <section>          
 
           {count === 0 ? (
             <div className="flex w-full flex-col justify-center items-center h-[23rem]">
@@ -260,6 +257,10 @@ const Wishlist = () => {
               </div>
             </div>
           ) : (
+            <>
+            <div className="flex flex-col mt-[3rem] px-10">
+            <div className="text-2xl font-semibold">Wishlist({count})</div>
+          </div>
             <div className="mt-10 px-10">
               {productDetails.map((v, i) => {
                 return (
@@ -415,6 +416,7 @@ const Wishlist = () => {
                 );
               })}
             </div>
+            </>
           )}
         </section>
       )}

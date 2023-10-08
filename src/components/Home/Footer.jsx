@@ -167,6 +167,7 @@ const Footer = () => {
                     value={input}
                     readOnly={bool}
                     onChange={track}
+                    autoComplete="off"
                   />
                 </div>
 

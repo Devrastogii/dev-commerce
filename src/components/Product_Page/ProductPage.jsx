@@ -106,20 +106,15 @@ const ProductPage = () => {
             setChangeCardText("GO TO CART");
           }
         });
+
+        setShow(false);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
 
     fetchData();
-
-    const f = setTimeout(() => {
-      setShow(false);
-    }, 1000);
-
-    return () => {
-      clearTimeout(f);
-    };
+    
   }, [checkLoggedInUser]);
 
   const [addLoadCartBtn, setAddLoadCartBtn] = useState(false);
@@ -137,100 +132,108 @@ const ProductPage = () => {
     newImageName
   ) => {
     if (changeCartText == "ADD TO CART") {
-      setAddLoadCartBtn(true);
 
-      let checkInDB = false;
-      let fullImageName = newImageName + image;
+      if(checkLoggedInUser){
+        setAddLoadCartBtn(true);
 
-      const getAllDoc = await getDocs(collection(db, "/cart"));
-      let userId = userDetails.userId
-
-      getAllDoc.forEach((doc) => {
-        if (
-          userId == doc.data().userId && (fullImageName === doc.data().fullImageName ||
-          productName == doc.data().productName)
-        ) {
-          checkInDB = true;
+        let checkInDB = false;
+        let fullImageName = newImageName + image;
+  
+        const getAllDoc = await getDocs(collection(db, "/cart"));
+        let userId = userDetails.userId
+  
+        getAllDoc.forEach((doc) => {
+          if (
+            userId == doc.data().userId && (fullImageName === doc.data().fullImageName ||
+            productName == doc.data().productName)
+          ) {
+            checkInDB = true;
+          }
+        });
+  
+        // Normal Product
+  
+        if (!checkInDB && !sale && !frequent) {
+          const querySnapshot = await addDoc(collection(db, "/cart"), {
+            productName,
+            productRating,
+            productTotalRating,
+            productDescription,
+            productOfferPrice,
+            productPrice,
+            productOff,
+            image_category,
+            fullImageName,
+            id,
+            image,
+            newImageName,
+            userId
+          });
+  
+          showAddToCartMessage();
+          setAddLoadCartBtn(false);
+          setChangeCardText("GO TO CART");
+        } 
+  
+        // Sale Product
+        
+        else if (!checkInDB && sale && !frequent) {
+          const querySnapshot = await addDoc(collection(db, "/cart"), {
+            productName,
+            productRating,
+            productTotalRating,
+            productDescription,
+            productOfferPrice,
+            productPrice,
+            productOff,
+            id,
+            image,
+            userId
+          });
+  
+          showAddToCartMessage();
+          setAddLoadCartBtn(false);
+          setChangeCardText("GO TO CART");
         }
-      });
+  
+        // Frequent Product
+  
+        else if (!checkInDB && !sale && frequent) {
+          const querySnapshot = await addDoc(collection(db, "/cart"), {
+            productName,
+            productRating,
+            productTotalRating,
+            productDescription,
+            productOfferPrice,
+            productPrice,
+            productOff,
+            id,
+            image,
+            userId
+          });
+  
+          showAddToCartMessage();
+          setAddLoadCartBtn(false);
+          setChangeCardText("GO TO CART");
+        }
+  
+      } else {
+        if(sale && !frequent) {
+          navigate('/cart', {state: {'origin':'sale'}})
+        }
+  
+        if(!sale && frequent) {
+          navigate('/cart', {state: {'forigin':'frequent'}})
+        }
+  
+        navigate("/cart");
+      }
+      }
 
-      // Normal Product
-
-      if (!checkInDB && !sale && !frequent) {
-        const querySnapshot = await addDoc(collection(db, "/cart"), {
-          productName,
-          productRating,
-          productTotalRating,
-          productDescription,
-          productOfferPrice,
-          productPrice,
-          productOff,
-          image_category,
-          fullImageName,
-          id,
-          image,
-          newImageName,
-          userId
-        });
-
-        showAddToCartMessage();
-        setAddLoadCartBtn(false);
-        setChangeCardText("GO TO CART");
-      } 
-
-      // Sale Product
+      else {
+        navigate('/login-user')
+      }
       
-      else if (!checkInDB && sale && !frequent) {
-        const querySnapshot = await addDoc(collection(db, "/cart"), {
-          productName,
-          productRating,
-          productTotalRating,
-          productDescription,
-          productOfferPrice,
-          productPrice,
-          productOff,
-          id,
-          image,
-          userId
-        });
-
-        showAddToCartMessage();
-        setAddLoadCartBtn(false);
-        setChangeCardText("GO TO CART");
-      }
-
-      // Frequent Product
-
-      else if (!checkInDB && !sale && frequent) {
-        const querySnapshot = await addDoc(collection(db, "/cart"), {
-          productName,
-          productRating,
-          productTotalRating,
-          productDescription,
-          productOfferPrice,
-          productPrice,
-          productOff,
-          id,
-          image,
-          userId
-        });
-
-        showAddToCartMessage();
-        setAddLoadCartBtn(false);
-        setChangeCardText("GO TO CART");
-      }
-
-    } else {
-      if(sale && !frequent) {
-        navigate('/cart', {state: {'origin':'sale'}})
-      }
-
-      if(!sale && frequent) {
-        navigate('/cart', {state: {'forigin':'frequent'}})
-      }
-
-      navigate("/cart");
-    }
   };
 
   function validatePincode(pincode) {
@@ -272,18 +275,24 @@ const ProductPage = () => {
     image_category,
     newImageName
   ) => {
-    setGoToCartBtn(true);
+
+    if(checkLoggedInUser) {
+      setGoToCartBtn(true);
     let checkInDB = false;
     let fullImageName = newImgName + image;
 
     const getAllDoc = await getDocs(collection(db, "/cart"));
 
-    getAllDoc.forEach((doc) => {
-      if (fullImageName === doc.data().fullImageName ||
-      productName == doc.data().productName) {
-        checkInDB = true;
-      }
-    });
+    let userId = userDetails.userId
+
+      getAllDoc.forEach((doc) => {
+        if (
+          userId == doc.data().userId && (fullImageName === doc.data().fullImageName ||
+          productName == doc.data().productName)
+        ) {
+          checkInDB = true;
+        }
+      });
 
     // Normal Product
 
@@ -301,6 +310,7 @@ const ProductPage = () => {
         id,
         image,
         newImageName,
+        userId
       });
 
       setGoToCartBtn(false);
@@ -319,6 +329,7 @@ const ProductPage = () => {
         productOff,
         id,
         image,
+        userId
       });
     }
 
@@ -335,6 +346,7 @@ const ProductPage = () => {
         productOff,
         id,
         image,
+        userId
       });
     }
 
@@ -370,7 +382,12 @@ const ProductPage = () => {
           newImgName: newImageName,
           image: image,
         },
-      })}     
+      })}
+    }   
+    
+    else {
+      navigate('/login-user')
+    }
 
   };
 

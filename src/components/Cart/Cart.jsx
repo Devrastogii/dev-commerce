@@ -32,27 +32,10 @@ const Cart = () => {
   const [currentIndex, setCurrentIndex] = useState();
   const [quantity, setQuantity] = useState(1);
 
-  const [totalSum, setTotalSum] = useState(0)
-  const [totalDiscount, setTotalDiscount] = useState(0)
+  const [totalSum, setTotalSum] = useState(0);
+  const [totalDiscount, setTotalDiscount] = useState(0);
 
-  function minus() {
-    if (quantity === 1 || quantity <= 0) {
-      setQuantity(1);
-      return false;
-    } else {
-      setQuantity(quantity - 1);
-    }
-  }
-
-  function add() {
-    if(quantity === 5) {
-      setQuantity(quantity)
-      return false
-    }
-    setQuantity(quantity + 1);
-  }
-
-  const navigate = useNavigate();
+  // Toast Messages
 
   const showCartMessage = () => {
     toast.success("Removed From Cart ", {
@@ -60,64 +43,82 @@ const Cart = () => {
     });
   };
 
-  const auth = getAuth(app)
+  const showQuantityErrorMessage = () => {
+    toast.error("Currently we are accepting only single quantity ", {
+      position: toast.POSITION.BOTTOM_CENTER,
+    });
+  };
+
+  function add() {
+    showQuantityErrorMessage()
+  }
+
+  const navigate = useNavigate();  
+
+  const auth = getAuth(app);
   const [checkLoggedInUser, setLoggedInUser] = useState(null);
   const [userDetails, setUserDetails] = useState([]);
 
-  
-useEffect(() => {
-  async function fetchData() {
-    try {
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        onAuthStateChanged(auth, async (user) => {
+          if (user) {
+            const getData = await getDocs(
+              query(
+                collection(db, "/user-data"),
+                where("email", "==", user.email)
+              )
+            );
 
-      onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          const getData = await getDocs(
-            query(
-              collection(db, "/user-data"),
-              where("email", "==", user.email)
-            )
-          );          
+            getData.forEach((doc) => {
+              setUserDetails(doc.data());
+            });
+            setLoggedInUser(user);            
+          } else {
+            setLoggedInUser(null);
+            navigate("/login-user");
+          }
+        });
 
-          getData.forEach((doc) => {
-            setUserDetails(doc.data());
-          });
-          setLoggedInUser(user);
-        } else {
-          setLoggedInUser(null);
-          navigate("/login-user");
-        }
-      });
+        const products = await getDocs(
+          query(
+            collection(db, "cart"),
+            where("userId", "==", userDetails.userId)
+          )
+        );
+        setProductDetails(products.docs);
+        setCount(products.docs.length);
 
+        // Initialize totalAmount as an array
+        const totalAmount = [];
+        const totalDiscountAvail = [];
 
-      const products = await getDocs(query(collection(db, "cart"), where("userId", "==", userDetails.userId)));
-      setProductDetails(products.docs);
-      setCount(products.docs.length);
+        products.docs.forEach((doc) => {
+          const productPrice = parseInt(doc.data().productPrice);
+          totalAmount.push(productPrice);
+          const productTotalDiscount =
+            parseInt(doc.data().productPrice) -
+            parseInt(doc.data().productOfferPrice);
+          totalDiscountAvail.push(productTotalDiscount);
+        });
 
-      // Initialize totalAmount as an array
-      const totalAmount = [];
-      const totalDiscountAvail = []
-
-      products.docs.forEach((doc) => {
-        const productPrice = parseInt(doc.data().productPrice);
-        totalAmount.push(productPrice);
-        const productTotalDiscount = parseInt(doc.data().productPrice) - parseInt(doc.data().productOfferPrice);
-        totalDiscountAvail.push(productTotalDiscount)
-      });
-
-      // Calculate the sum of totalAmount and update totalSum
-      const sum = totalAmount.reduce((acc, price) => acc + price, 0);
-      const discount = totalDiscountAvail.reduce((acc, discount) => acc + discount, 0)
-      setTotalSum(sum);
-      setTotalDiscount(discount)
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoad(false);
+        // Calculate the sum of totalAmount and update totalSum
+        const sum = totalAmount.reduce((acc, price) => acc + price, 0);
+        const discount = totalDiscountAvail.reduce(
+          (acc, discount) => acc + discount,
+          0
+        );
+        setTotalSum(sum);
+        setTotalDiscount(discount);
+        setLoad(false)
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     }
-  }
 
-  fetchData();
-}, [userDetails]);
+    fetchData();
+  }, [userDetails]);
 
   const [showDeleteAlert, setshowDeleteAlert] = useState(false);
 
@@ -130,11 +131,11 @@ useEffect(() => {
     }
   };
 
-  const deleteFromCart = async (fullImageName, name) => {    
+  const deleteFromCart = async (fullImageName, name) => {
     try {
-      let deleteFromCart
+      let deleteFromCart;
 
-      if(fullImageName){
+      if (fullImageName) {
         deleteFromCart = await getDocs(
           query(
             collection(db, "/cart"),
@@ -142,9 +143,7 @@ useEffect(() => {
             where("fullImageName", "==", fullImageName)
           )
         );
-      }
-      
-      else {
+      } else {
         deleteFromCart = await getDocs(
           query(
             collection(db, "/cart"),
@@ -176,41 +175,15 @@ useEffect(() => {
     productOff,
     image,
     category,
-    newImageName,    
+    newImageName,
     id,
     fullImageName
   ) => {
+    e.preventDefault();
 
-    e.preventDefault()
-
-    {fullImageName ? navigate("/product-page", {
-        state: {
-          name: name,
-          rating: productRating,
-          totalRating: productTotalRating,
-          description: productDescription,
-          offer: productOfferPrice,
-          price: productPrice,
-          off: productOff,
-          image: image,
-          category: category,
-          id: id,
-          newImageName: newImageName,        
-        },
-      }) : id == 8 ? navigate("/product-page", {
-          state: {
-            name: name,
-            rating: productRating,
-            totalRating: productTotalRating,
-            description: productDescription,
-            offer: productOfferPrice,
-            price: productPrice,
-            off: productOff,
-            image: image,        
-            id: id,  
-            'origin': 'sale'     
-          },
-        }) : navigate("/product-page", {
+    {
+      fullImageName
+        ? navigate("/product-page", {
             state: {
               name: name,
               rating: productRating,
@@ -219,11 +192,42 @@ useEffect(() => {
               offer: productOfferPrice,
               price: productPrice,
               off: productOff,
-              image: image,        
-              id: id,  
-              'forigin': 'frequent'     
+              image: image,
+              category: category,
+              id: id,
+              newImageName: newImageName,
             },
-          })}         
+          })
+        : id == 8
+        ? navigate("/product-page", {
+            state: {
+              name: name,
+              rating: productRating,
+              totalRating: productTotalRating,
+              description: productDescription,
+              offer: productOfferPrice,
+              price: productPrice,
+              off: productOff,
+              image: image,
+              id: id,
+              origin: "sale",
+            },
+          })
+        : navigate("/product-page", {
+            state: {
+              name: name,
+              rating: productRating,
+              totalRating: productTotalRating,
+              description: productDescription,
+              offer: productOfferPrice,
+              price: productPrice,
+              off: productOff,
+              image: image,
+              id: id,
+              forigin: "frequent",
+            },
+          });
+    }
   };
 
   return (
@@ -234,12 +238,24 @@ useEffect(() => {
         <Loading />
       ) : (
         <section>
-          <div className="flex gap-x-5 w-full bg-gray-100 p-5 pt-10">
-            <div className="w-2/3 bg-white flex flex-col">
+          <div className="flex gap-x-5 w-full bg-gray-100 p-5 pt-10 h-screen">
+
+          {count === 0 ? (
+            <div className="flex w-full flex-col justify-center items-center h-[23rem]">
+              <div>
+                <i class="bi bi-basket text-[8rem] text-gray-400"></i>
+              </div>
+              <div className="font-semibold text-xl text-gray-400">
+                YOUR CART IS EMPTY
+              </div>
+            </div>
+          ) : (
+              <>             
+            <div className="w-2/3 bg-white flex flex-col h-fit">
               <div className="flex flex-col mt-[2rem] px-5">
                 <div className="text-2xl font-semibold">Cart({count})</div>
               </div>
-
+              
               <div className="mt-5">
                 <hr className="opacity-5 border-0 h-[1px] bg-black" />
               </div>
@@ -265,11 +281,15 @@ useEffect(() => {
                                 className="h-[8rem]"
                                 loading="lazy"
                               />
-                            ) : <img
-                                src={require(`../../frequent_images/${v.data().image}.jpg`)}
+                            ) : (
+                              <img
+                                src={require(`../../frequent_images/${
+                                  v.data().image
+                                }.jpg`)}
                                 className="h-[8rem]"
                                 loading="lazy"
-                              />}
+                              />
+                            )}
                           </div>
                         </div>
 
@@ -290,7 +310,7 @@ useEffect(() => {
                                 v.data().image_category,
                                 v.data().newImageName,
                                 v.data().id,
-                                v.data().fullImageName                                                      
+                                v.data().fullImageName
                               )
                             }
                           >
@@ -329,8 +349,7 @@ useEffect(() => {
 
                             <div className="flex gap-x-6">
                               <div
-                                className="w-8 h-8 rounded-full border border-gray-300 flex justify-center items-center"
-                                onClick={minus}
+                                className="w-8 h-8 rounded-full border border-gray-300 flex justify-center items-center"                        
                               >
                                 <svg
                                   class="fill-current text-gray-600 w-3 cursor-pointer"
@@ -370,7 +389,10 @@ useEffect(() => {
                         <div className="flex flex-col">
                           <div>
                             <button>
-                              <i class="bi bi-trash3-fill text-gray-500 hover:text-red-600" onClick={() => showDeleteModel(i)}></i>
+                              <i
+                                class="bi bi-trash3-fill text-gray-500 hover:text-red-600"
+                                onClick={() => showDeleteModel(i)}
+                              ></i>
                             </button>
                           </div>
 
@@ -405,9 +427,9 @@ useEffect(() => {
                                         ml={3}
                                         fontSize={"0.9rem"}
                                         onClick={() =>
-                                          deleteFromCart(                                           
-                                            v.data().fullImageName,    
-                                            v.data().productName                                        
+                                          deleteFromCart(
+                                            v.data().fullImageName,
+                                            v.data().productName
                                           )
                                         }
                                       >
@@ -421,12 +443,12 @@ useEffect(() => {
                           </div>
                         </div>
                       </div>
-                      <hr className="opacity-10 border-0 h-[1px] bg-black" />
+                      <hr className="opacity-10 border-0 h-[1px] bg-black mb-[1.15rem]" />
                     </>
                   );
                 })}
               </div>
-            </div>
+            </div>                 
 
             <div className="w-1/3 bg-white h-fit">
               <div className="flex flex-col mt-[1rem] px-5">
@@ -441,14 +463,21 @@ useEffect(() => {
 
               <div className="flex justify-between mt-5 px-6 w-full">
                 <div className="flex flex-col gap-y-3">
-                  <div>Price ({count} {count === 1 ? <span>item</span> : <span>items</span>})</div>
+                  <div>
+                    Price ({count}{" "}
+                    {count === 1 ? <span>item</span> : <span>items</span>})
+                  </div>
                   <div>Discount</div>
                   <div>Delivery Charges</div>
                 </div>
 
                 <div className="flex flex-col gap-y-3">
-                  <div className="flex justify-end">₹{(totalSum*quantity).toLocaleString()}</div>
-                  <div className="flex justify-end">- ₹{(totalDiscount*quantity).toLocaleString()}</div>
+                  <div className="flex justify-end">
+                    ₹{(totalSum * quantity).toLocaleString()}
+                  </div>
+                  <div className="flex justify-end">
+                    - ₹{(totalDiscount * quantity).toLocaleString()}
+                  </div>
                   <div className="text-primary font-semibold w-full flex justify-end">
                     FREE
                   </div>
@@ -461,7 +490,13 @@ useEffect(() => {
 
               <div className="mt-5 flex justify-between font-semibold text-lg px-5">
                 <div>Total Amount</div>
-                <div>₹{(totalSum*quantity-totalDiscount*quantity).toLocaleString()}</div>
+                <div>
+                  ₹
+                  {(
+                    totalSum * quantity -
+                    totalDiscount * quantity
+                  ).toLocaleString()}
+                </div>
               </div>
 
               <div className="mt-6 flex justify-center w-full">
@@ -469,9 +504,13 @@ useEffect(() => {
               </div>
 
               <div className="mt-5 flex justify-between font-semibold text-lg px-5 text-primary mb-5">
-                <div>You will save ₹{(totalDiscount*quantity).toLocaleString()} on this order</div>
+                <div>
+                  You will save ₹{(totalDiscount * quantity).toLocaleString()}{" "}
+                  on this order
+                </div>
               </div>
             </div>
+            </>)}
           </div>
         </section>
       )}
