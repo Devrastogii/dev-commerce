@@ -4,10 +4,11 @@ import NavbarForPages from '../Nav/NavbarForPages'
 import Loading from '../Loading/Loading'
 import { useNavigate } from 'react-router-dom'
 import { addDoc, collection, deleteDoc, getDocs, query, where } from 'firebase/firestore'
-import { db } from '../../firebase'
+import { app, db } from '../../firebase'
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { CircularProgress } from '@chakra-ui/react'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 const SalesPage = () => {
 
@@ -24,9 +25,34 @@ const SalesPage = () => {
   const [spinner, setSpinner] = useState(false)
   const [currentIndex, setCurrentIndex] = useState()
 
+  const auth = getAuth(app)
+  const [checkLoggedInUser, setLoggedInUser] = useState(null);
+  const [userDetails, setUserDetails] = useState([]);
+
+
   useEffect(() => {    
 
     async function start(){
+
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          const getData = await getDocs(
+            query(
+              collection(db, "/user-data"),
+              where("email", "==", user.email)
+            )
+          );          
+
+          getData.forEach((doc) => {
+            setUserDetails(doc.data());
+          });
+          setLoggedInUser(user);
+        } else {
+          setLoggedInUser(null);
+          navigate("/login-user");
+        }
+      });
+
         const res = await axios.get("/sale_products_show")
         setProductName(res.data.name)
         setProductPrice(res.data.original)
@@ -107,10 +133,12 @@ const SalesPage = () => {
         if(productName === doc.data().productName) {
             checkInDB = true                        
         }
-    })    
+    })  
+    
+    let userId = userDetails.userId
 
     if(!checkInDB) {
-        const querySnapshot = await addDoc(wishlistCollection, {productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, id})  
+        const querySnapshot = await addDoc(wishlistCollection, {productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, id, userId})  
 
         showWishlistMessage(1);
         setSpinner(false)
@@ -147,7 +175,7 @@ const SalesPage = () => {
                     <div className='flex flex-col cursor-pointer w-[12rem]' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={(e) => identifyBtnClicked(e, val, productRating[index], productTotalRating[index], productDescription[index], productOfferPrice[index], productPrice[index], productOff[index], productId[index], index)}>
                     <div className='flex justify-center'>    
                     <div><img src={require(`../../all/${productId[index]}.jpg`)} alt="product-image" className='h-[12rem]' loading='lazy' /></div>  
-                    {spinner ? (currentIndex === index ? <CircularProgress isIndeterminate color='#4E4FEB' size={'30px'} /> : <i class={`bi bi-heart-fill hover:text-red-500`}></i>) : <i class={`bi bi-heart-fill hover:text-red-500`}></i>}                               
+                    {spinner ? (currentIndex === index ? <CircularProgress isIndeterminate color='#4E4FEB' size={'30px'} /> : <i class={`bi bi-heart-fill hover:text-red-500 text-gray-200`}></i>) : <i class={`bi bi-heart-fill hover:text-red-500 text-gray-200`}></i>}                               
                     </div>                                     
                     <div className={`font-semibold mt-4 ${hoverState && (indepIndex === index) ? 'text-primary': 'text-black'}`}>{val}</div>
                     <div className='flex gap-x-2 items-center mt-3'>

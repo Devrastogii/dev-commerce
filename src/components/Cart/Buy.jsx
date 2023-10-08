@@ -40,7 +40,6 @@ const Buy = () => {
     onAuthStateChanged(auth, user => {
       if(user) {
         setLoggedInUser(user)
-        console.log(user);
       }
 
       else {
@@ -65,12 +64,6 @@ const Buy = () => {
     }
     setQuantity(quantity + 1);
   }
-
-  const showCartMessage = () => {
-    toast.success("Removed From Cart ", {
-      position: toast.POSITION.BOTTOM_CENTER,
-    });
-  };
 
   const [showDeleteAlert, setshowDeleteAlert] = useState(false);
 

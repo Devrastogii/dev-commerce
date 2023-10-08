@@ -5,9 +5,10 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { CircularProgress } from '@chakra-ui/react'
 import { addDoc, collection, deleteDoc, getDocs, query, where } from 'firebase/firestore'
-import { db } from '../../firebase'
+import { app, db } from '../../firebase'
 import NavbarForPages from '../Nav/NavbarForPages';
 import Loading from '../Loading/Loading';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const FrequentPage = () => {
 
@@ -26,7 +27,10 @@ const FrequentPage = () => {
 
   const wishlistCollection = collection(db, "wishlist");
 
-  const navigate = useNavigate()  
+  const navigate = useNavigate() 
+  const auth = getAuth(app)
+  const [checkLoggedInUser, setLoggedInUser] = useState(null);
+  const [userDetails, setUserDetails] = useState([]); 
 
   // Toast Messages
   
@@ -42,6 +46,26 @@ const FrequentPage = () => {
 
   useEffect(() => {
     async function start(){
+
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          const getData = await getDocs(
+            query(
+              collection(db, "/user-data"),
+              where("email", "==", user.email)
+            )
+          );          
+
+          getData.forEach((doc) => {
+            setUserDetails(doc.data());
+          });
+          setLoggedInUser(user);
+        } else {
+          setLoggedInUser(null);
+          navigate("/login-user");
+        }
+      });
+      
         const res = await axios.get("/frequently_purchased")
         setProductName(res.data.name)
         setProductPrice(res.data.original)
@@ -111,10 +135,12 @@ const FrequentPage = () => {
         if(productName === doc.data().productName) {
             checkInDB = true                        
         }
-    })    
+    })  
+    
+    let userId = userDetails.userId
 
     if(!checkInDB) {
-        const querySnapshot = await addDoc(wishlistCollection, {productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, id})  
+        const querySnapshot = await addDoc(wishlistCollection, {productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, id, userId})  
 
         setSpinner(false)
         showWishlistMessage(1);

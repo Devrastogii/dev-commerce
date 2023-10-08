@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const [count, setCount] = useState();
@@ -105,7 +105,6 @@ useEffect(() => {
   };
 
   const deleteFromCart = async (fullImageName) => {
-    console.log(fullImageName);
     try {
       const deleteFromCart = await getDocs(
         query(

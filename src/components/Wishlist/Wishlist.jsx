@@ -7,7 +7,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { app, db } from "../../firebase";
+import { db } from "../../firebase";
 import Loading from "../Loading/Loading";
 import {
   AlertDialog,
@@ -21,10 +21,9 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const Wishlist = () => {
-  const [count, setCount] = useState();
+  const [count, setCount] = useState(0);
   const [load, setLoad] = useState(true);
 
   const [productDetails, setProductDetails] = useState([]);
@@ -34,8 +33,6 @@ const Wishlist = () => {
   const [indepIndex, setIndepIndex] = useState();
 
   const navigate = useNavigate();
-  const auth = getAuth(app);
-  const [checkLoggedInUser, setLoggedInUser] = useState(null);
 
   const showWishlistMessage = () => {
     toast.success("Removed From Wishlist ", {
@@ -43,18 +40,11 @@ const Wishlist = () => {
     });
   };
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setLoggedInUser(user);
-      } else {
-        setLoggedInUser(null);
-      }
-    });
-
+  useEffect(() => {   
     async function fetchData() {
       try {
-        const products = await getDocs(collection(db, "wishlist"));
+        const products = await getDocs(collection(db, "wishlist"));      
+
         setProductDetails(products.docs);
         setCount(productDetails.length);
       } catch (error) {

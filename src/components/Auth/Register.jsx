@@ -105,8 +105,7 @@ const Register = () => {
 
         try {
 
-          const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-          console.log(userCredential);
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password)          
 
           const user = (await userCredential).user
           const userDocRef = doc(usersCollection, user.uid)
@@ -127,6 +126,7 @@ const Register = () => {
 
         catch (error) {
           window.alert("Account Not Created !!", error)
+          setShow(true)          
         }
                
       } else {
