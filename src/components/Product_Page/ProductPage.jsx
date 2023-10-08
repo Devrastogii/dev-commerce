@@ -3,11 +3,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Recommend from "./Recommend";
 import Loading from "../Loading/Loading";
 import NavbarForPages from "../Nav/NavbarForPages";
-import { addDoc, collection, getDocs } from "firebase/firestore";
-import { db } from "../../firebase";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { app, db } from "../../firebase";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@chakra-ui/react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const ProductPage = () => {
   const location = useLocation();
@@ -68,14 +69,36 @@ const ProductPage = () => {
   };
 
   const [changeCartText, setChangeCardText] = useState("ADD TO CART");
+  const auth = getAuth(app)
+  const [checkLoggedInUser, setLoggedInUser] = useState(null);
+  const [userDetails, setUserDetails] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
+
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          const getData = await getDocs(
+            query(
+              collection(db, "/user-data"),
+              where("email", "==", user.email)
+            )
+          );          
+
+          getData.forEach((doc) => {
+            setUserDetails(doc.data());
+          });
+          setLoggedInUser(user);
+        } else {
+          setLoggedInUser(null);          
+        }
+      });
+
       try {
-        const products = await getDocs(collection(db, "cart"));
+        const products = await getDocs(query(collection(db, "cart"), where('userId', "==", userDetails.userId)));
         let fullImageName = newImgName + image;
 
-        products.docs.forEach((doc) => {
+        products.docs.forEach((doc) => { 
           if (
             fullImageName === doc.data().fullImageName ||
             name == doc.data().productName
@@ -97,7 +120,7 @@ const ProductPage = () => {
     return () => {
       clearTimeout(f);
     };
-  }, []);
+  }, [checkLoggedInUser]);
 
   const [addLoadCartBtn, setAddLoadCartBtn] = useState(false);
   const [goToCartBtn, setGoToCartBtn] = useState(false);
@@ -120,11 +143,12 @@ const ProductPage = () => {
       let fullImageName = newImageName + image;
 
       const getAllDoc = await getDocs(collection(db, "/cart"));
+      let userId = userDetails.userId
 
       getAllDoc.forEach((doc) => {
         if (
-          fullImageName === doc.data().fullImageName ||
-          productName == doc.data().productName
+          userId == doc.data().userId && (fullImageName === doc.data().fullImageName ||
+          productName == doc.data().productName)
         ) {
           checkInDB = true;
         }
@@ -146,6 +170,7 @@ const ProductPage = () => {
           id,
           image,
           newImageName,
+          userId
         });
 
         showAddToCartMessage();
@@ -166,6 +191,7 @@ const ProductPage = () => {
           productOff,
           id,
           image,
+          userId
         });
 
         showAddToCartMessage();
@@ -186,6 +212,7 @@ const ProductPage = () => {
           productOff,
           id,
           image,
+          userId
         });
 
         showAddToCartMessage();

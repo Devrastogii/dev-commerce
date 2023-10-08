@@ -7,7 +7,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { db } from "../../firebase";
+import { app, db } from "../../firebase";
 import Loading from "../Loading/Loading";
 import {
   AlertDialog,
@@ -21,6 +21,7 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const Cart = () => {
   const [count, setCount] = useState();
@@ -59,11 +60,36 @@ const Cart = () => {
     });
   };
 
+  const auth = getAuth(app)
+  const [checkLoggedInUser, setLoggedInUser] = useState(null);
+  const [userDetails, setUserDetails] = useState([]);
+
   
 useEffect(() => {
   async function fetchData() {
     try {
-      const products = await getDocs(collection(db, "cart"));
+
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          const getData = await getDocs(
+            query(
+              collection(db, "/user-data"),
+              where("email", "==", user.email)
+            )
+          );          
+
+          getData.forEach((doc) => {
+            setUserDetails(doc.data());
+          });
+          setLoggedInUser(user);
+        } else {
+          setLoggedInUser(null);
+          navigate("/login-user");
+        }
+      });
+
+
+      const products = await getDocs(query(collection(db, "cart"), where("userId", "==", userDetails.userId)));
       setProductDetails(products.docs);
       setCount(products.docs.length);
 
@@ -91,7 +117,7 @@ useEffect(() => {
   }
 
   fetchData();
-}, [productDetails]);
+}, [userDetails]);
 
   const [showDeleteAlert, setshowDeleteAlert] = useState(false);
 
@@ -104,14 +130,29 @@ useEffect(() => {
     }
   };
 
-  const deleteFromCart = async (fullImageName) => {
+  const deleteFromCart = async (fullImageName, name) => {    
     try {
-      const deleteFromCart = await getDocs(
-        query(
-          collection(db, "/cart"),
-          where("fullImageName", "==", fullImageName)
-        )
-      );
+      let deleteFromCart
+
+      if(fullImageName){
+        deleteFromCart = await getDocs(
+          query(
+            collection(db, "/cart"),
+            where("userId", "==", userDetails.userId),
+            where("fullImageName", "==", fullImageName)
+          )
+        );
+      }
+      
+      else {
+        deleteFromCart = await getDocs(
+          query(
+            collection(db, "/cart"),
+            where("userId", "==", userDetails.userId),
+            where("productName", "==", name)
+          )
+        );
+      }
 
       deleteFromCart.forEach((doc) => {
         deleteDoc(doc.ref);
@@ -365,7 +406,8 @@ useEffect(() => {
                                         fontSize={"0.9rem"}
                                         onClick={() =>
                                           deleteFromCart(                                           
-                                            v.data().fullImageName,                                            
+                                            v.data().fullImageName,    
+                                            v.data().productName                                        
                                           )
                                         }
                                       >

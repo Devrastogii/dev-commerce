@@ -81,7 +81,7 @@ const Wishlist = () => {
     }
 
     fetchData();
-  }, [productDetails]);
+  }, [userDetails]);
 
   const [showDeleteAlert, setshowDeleteAlert] = useState(false);
 
