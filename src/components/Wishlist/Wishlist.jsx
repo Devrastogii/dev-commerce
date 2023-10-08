@@ -7,7 +7,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { db } from "../../firebase";
+import { app, db } from "../../firebase";
 import Loading from "../Loading/Loading";
 import {
   AlertDialog,
@@ -21,6 +21,7 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const Wishlist = () => {
   const [count, setCount] = useState(0);
@@ -40,17 +41,42 @@ const Wishlist = () => {
     });
   };
 
+  const auth = getAuth(app)
+  const [checkLoggedInUser, setLoggedInUser] = useState(null);
+  const [userDetails, setUserDetails] = useState([]);
+
   useEffect(() => {   
-    async function fetchData() {
+    async function fetchData() {      
       try {
-        const products = await getDocs(collection(db, "wishlist"));      
+
+        onAuthStateChanged(auth, async (user) => {
+          if (user) {
+            const getData = await getDocs(
+              query(
+                collection(db, "/user-data"),
+                where("email", "==", user.email)
+              )
+            );          
+  
+            getData.forEach((doc) => {
+              setUserDetails(doc.data());
+            });
+            setLoggedInUser(user);
+          } else {
+            setLoggedInUser(null);
+            navigate("/login-user");
+          }
+        });
+
+
+        const products = await getDocs(query(collection(db, "wishlist"), where("userId", "==", userDetails.userId)));   
 
         setProductDetails(products.docs);
         setCount(productDetails.length);
+        setLoad(false)
+       
       } catch (error) {
         console.error("Error fetching data:", error);
-      } finally {
-        setLoad(false);
       }
     }
 
@@ -104,14 +130,30 @@ const Wishlist = () => {
     }
   };
 
-  const deleteFromWishlist = async (i, fullImageName, e) => {
+  const deleteFromWishlist = async (i, fullImageName, e, name) => {
     try {
-      const deleteFromWishlist = await getDocs(
-        query(
-          collection(db, "/wishlist"),
-          where("fullImageName", "==", fullImageName)
-        )
-      );
+
+      let deleteFromWishlist;
+      
+      if(fullImageName){
+        deleteFromWishlist = await getDocs(
+          query(
+            collection(db, "/wishlist"),
+            where("userId", "==", userDetails.userId),
+            where("fullImageName", "==", fullImageName)
+          )
+        );
+      }
+
+      else {
+        deleteFromWishlist = await getDocs(
+          query(
+            collection(db, "/wishlist"),
+            where("userId", "==", userDetails.userId),
+            where("productName", "==", name)
+          )
+        );
+      }
 
       deleteFromWishlist.forEach((doc) => {
         deleteDoc(doc.ref);
@@ -353,7 +395,8 @@ const Wishlist = () => {
                                         deleteFromWishlist(
                                           i,
                                           v.data().fullImageName,
-                                          e
+                                          e,
+                                          v.data().productName
                                         )
                                       }
                                     >

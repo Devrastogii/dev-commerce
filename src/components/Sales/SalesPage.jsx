@@ -48,8 +48,7 @@ const SalesPage = () => {
           });
           setLoggedInUser(user);
         } else {
-          setLoggedInUser(null);
-          navigate("/login-user");
+          setLoggedInUser(null);          
         }
       });
 
@@ -123,39 +122,47 @@ const SalesPage = () => {
   const wishlistCollection = collection(db, "wishlist");
 
   const toggleWishlist = async (productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, id, index) => {    
-    setSpinner(true)
-    setCurrentIndex(index)
-    let checkInDB = false   
-    
-    const getAllDoc = await getDocs(wishlistCollection);
 
-    getAllDoc.forEach((doc) => {       
-        if(productName === doc.data().productName) {
-            checkInDB = true                        
-        }
-    })  
-    
-    let userId = userDetails.userId
-
-    if(!checkInDB) {
-        const querySnapshot = await addDoc(wishlistCollection, {productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, id, userId})  
-
-        showWishlistMessage(1);
-        setSpinner(false)
-    }
+    if(checkLoggedInUser) {
+      setSpinner(true)
+      setCurrentIndex(index)
+      let checkInDB = false   
+      
+      const getAllDoc = await getDocs(wishlistCollection);
+  
+      getAllDoc.forEach((doc) => {       
+          if(productName === doc.data().productName) {
+              checkInDB = true                        
+          }
+      })  
+      
+      let userId = userDetails.userId
+  
+      if(!checkInDB) {
+          const querySnapshot = await addDoc(wishlistCollection, {productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, id, userId})  
+  
+          showWishlistMessage(1);
+          setSpinner(false)
+      }
+  
+      else {
+          const deleteFromWishlist = await getDocs(
+              query(collection(db, "/wishlist"), where("userId", "==", userId), where("productName", "==", productName))
+          );
+         
+          deleteFromWishlist.forEach((doc) => {   
+              deleteDoc(doc.ref);
+            }); 
+            
+          setSpinner(false)
+          showWishlistMessage(0); 
+      }
+    }    
 
     else {
-        const deleteFromWishlist = await getDocs(
-            query(collection(db, "/wishlist"), where("productName", "==", productName))
-        );
-       
-        deleteFromWishlist.forEach((doc) => {   
-            deleteDoc(doc.ref);
-          }); 
-          
-        setSpinner(false)
-        showWishlistMessage(0); 
+      navigate("/login-user");
     }
+    
   }
 
   return (

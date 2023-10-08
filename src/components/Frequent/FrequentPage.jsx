@@ -61,8 +61,7 @@ const FrequentPage = () => {
           });
           setLoggedInUser(user);
         } else {
-          setLoggedInUser(null);
-          navigate("/login-user");
+          setLoggedInUser(null);          
         }
       });
       
@@ -125,7 +124,9 @@ const FrequentPage = () => {
   }
 
   const toggleWishlist = async (productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, id, index) => {    
-    setCurrentIndex(index)
+
+    if(checkLoggedInUser) {
+      setCurrentIndex(index)
     setSpinner(true)
     let checkInDB = false   
     
@@ -148,7 +149,7 @@ const FrequentPage = () => {
 
     else {
         const deleteFromWishlist = await getDocs(
-            query(collection(db, "/wishlist"), where("productName", "==", productName))
+            query(collection(db, "/wishlist"), where("userId", "==", userId), where("productName", "==", productName))
         );
        
         deleteFromWishlist.forEach((doc) => {   
@@ -158,6 +159,11 @@ const FrequentPage = () => {
         setSpinner(false)
         showWishlistMessage(0); 
     }
+    }
+
+    else {
+      navigate("/login-user");
+    }    
   }
 
   return (

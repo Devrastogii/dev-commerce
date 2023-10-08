@@ -4,11 +4,12 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import Filter from '../FilterSection/Filter'
 import Loading from '../Loading/Loading'
 import NavbarForPages from '../Nav/NavbarForPages'
-import { db } from '../../firebase'
+import { app, db } from '../../firebase'
 import { addDoc, collection, deleteDoc, getDocs, query, where } from 'firebase/firestore'
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ScrollToTop from "react-scroll-to-top";
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 const MobilesPage = () => {
 
@@ -54,8 +55,31 @@ const MobilesPage = () => {
 
   const [showBtn, setShowBtn] = useState(false)
 
+  const auth = getAuth(app)
+  const [checkLoggedInUser, setLoggedInUser] = useState(null);
+  const [userDetails, setUserDetails] = useState([]);
+
   useEffect(() => {
     async function start(){
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+              const getData = await getDocs(
+                query(
+                  collection(db, "/user-data"),
+                  where("email", "==", user.email)
+                )
+              );          
+    
+              getData.forEach((doc) => {
+                setUserDetails(doc.data());
+              });
+              setLoggedInUser(user);
+            } else {
+              setLoggedInUser(null);              
+            }
+          });
+
         const res = await axios.post("/products_show", {id})  
         setProductName(res.data.name)
         setProductPrice(res.data.original)
@@ -161,33 +185,33 @@ const MobilesPage = () => {
   const wishlistCollection = collection(db, "wishlist");
 
   const toggleWishlist = async (productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, productId, image_category, newImageName, index) => {
-    
-    storeWishlistContainer((prev) => [...prev, index])
-    wishlistContainer.sort()
 
-    console.log(wishlistContainer);
+    if (checkLoggedInUser){
+        storeWishlistContainer((prev) => [...prev, index])
+    wishlistContainer.sort()
    
     let checkInDB = false 
     let fullImageName = newImageName + productId   
     
     const getAllDoc = await getDocs(wishlistCollection);
 
-    getAllDoc.forEach((doc) => {
-        console.log(fullImageName, doc.data().fullImageName);
-        if(fullImageName === doc.data().fullImageName) {
+    let userId = userDetails.userId
+
+    getAllDoc.forEach((doc) => {       
+        if(fullImageName === doc.data().fullImageName && userId === doc.data().userId) {
             checkInDB = true                        
         }
-    })    
+    })       
 
     if(!checkInDB) {
-        const querySnapshot = await addDoc(wishlistCollection, {productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image_category, newImageName, productId, fullImageName, id})  
+        const querySnapshot = await addDoc(wishlistCollection, {productName, productRating, productTotalRating, productDescription, productOfferPrice, productPrice, productOff, image_category, newImageName, productId, fullImageName, id, userId})  
 
         showWishlistMessage(1);
     }
 
     else {
         const deleteFromWishlist = await getDocs(
-            query(collection(db, "/wishlist"), where("fullImageName", "==", fullImageName))
+            query(collection(db, "/wishlist"), where("userId", "==", userId), where("fullImageName", "==", fullImageName))
         );
        
         deleteFromWishlist.forEach((doc) => {   
@@ -196,6 +220,12 @@ const MobilesPage = () => {
           
         showWishlistMessage(0); 
     }
+    }
+    
+    else {
+        navigate("/login-user");
+    }
+    
   }
 
   return (
