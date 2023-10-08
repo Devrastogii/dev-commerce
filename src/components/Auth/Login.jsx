@@ -41,7 +41,7 @@ const Login = () => {
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
     if (email !== "" && password !== "" && emailPattern.test(email)) {
-    signInWithEmailAndPassword(auth, email, password).then(() => navigate('/profile')).catch((err) => showAccountNotPresentMessage(err), setShow(false))
+    signInWithEmailAndPassword(auth, email, password).then(() => navigate('/')).catch((err) => showAccountNotPresentMessage(err), setShow(false))
 
     } else {
       showToastErrorMessage();

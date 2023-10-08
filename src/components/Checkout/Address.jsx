@@ -43,7 +43,7 @@ const Address = (props) => {
     const address = document.getElementById("add")
 
     if(!address.checked){
-        setErr("** Please select your address")
+        setErr("** Please select your address")        
     } else {
         setErr('')
         onOpen()
@@ -91,6 +91,24 @@ const Address = (props) => {
     fetchDataIfLoggedIn();    
   }, []);
 
+  const [addressInput, showAddressInput] = useState(false)
+  const [text, setText] = useState("ADD NEW ADDRESS")
+  const [addressVal, setAddressVal] = useState('')
+
+  const addAddress = () => {
+   
+      if(text == "ADD NEW ADDRESS") {
+        showAddressInput(true)
+        setText("SAVE ADDRESS")
+      }
+      
+      else if(text == "SAVE ADDRESS") {
+        showAddressInput(false)
+        setText("SELECT ABOVE ADDRESS")
+      }    
+    
+  }
+
   return (
     <>     
         <section>
@@ -108,16 +126,29 @@ const Address = (props) => {
                 <div>
                   <input type="radio" value={'address'} id="add" />
                 </div>
-                <div className="flex flex-col ml-3 mb-6">
+                <div className="flex flex-col ml-3 mb-2">
                   <div className="flex font-semibold gap-x-2">
                     <div>{userDetails?.name}</div>
                     <div>{userDetails?.phone}</div>
-                  </div>
-                  <div className="mt-1">{userDetails?.address}</div>
+                  </div>                  
+                  {addressVal ? <div className="mt-1 text-sm">{addressVal}</div> : <div className="mt-1 text-sm">{userDetails?.address}</div>}                  
                 </div>
-              </div>              
+              </div> 
 
-              <div className="mb-4 px-5 text-red-500 font-semibold flex justify-center">{err}</div>
+              {addressInput ? <div className="px-5"><textarea
+                    cols={58}                                                          
+                    className={`border border-gray-200 mt-2 outline-blue-500 pl-2 text-gray-500 rounded-md h-40 bg-gray-100 resize-none}`}
+                    style={{resize: 'none', height: '4rem'}}          
+                    name="address"               
+                    value={addressVal}
+                    onChange={(e) => setAddressVal(e.target.value)}
+                  /></div> : null}
+
+            <div className="px-5">
+            <button className="text-primary text-xs" onClick={addAddress}><i class="bi bi-plus-circle-fill"></i><span className="font-semibold ml-2">{text}</span></button>    
+            </div>                       
+
+              <div className="mb-4 px-5 text-red-500 mt-8 font-semibold flex justify-center">{err}</div>
              
             </div>
 

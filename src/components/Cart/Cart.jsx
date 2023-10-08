@@ -22,6 +22,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import Address from "../Checkout/Address";
 
 const Cart = () => {
   const [count, setCount] = useState();
@@ -237,8 +238,9 @@ const Cart = () => {
       {load ? (
         <Loading />
       ) : (
-        <section>
-          <div className="flex gap-x-5 w-full bg-gray-100 p-5 pt-10 h-screen">
+        <>
+        <section className="h-screen">
+          <div className="flex gap-x-5 w-full bg-gray-100 p-5 pt-10">
 
           {count === 0 ? (
             <div className="flex w-full flex-col justify-center items-center h-[23rem]">
@@ -512,8 +514,15 @@ const Cart = () => {
             </div>
             </>)}
           </div>
+
+          <Address amount={(
+                    totalSum * quantity -
+                    totalDiscount * quantity
+                  ).toLocaleString()} />
         </section>
-      )}
+
+        </>
+      )}        
       <ToastContainer />
     </>
   );
