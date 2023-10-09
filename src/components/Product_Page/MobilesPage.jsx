@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useLocation, useNavigate } from 'react-router-dom'
-import Filter from '../FilterSection/Filter'
 import Loading from '../Loading/Loading'
 import NavbarForPages from '../Nav/NavbarForPages'
 import { app, db } from '../../firebase'
@@ -22,8 +21,6 @@ const MobilesPage = () => {
   const [productId, setProductId] = useState([])
   const [productDescription, setProductDescription] = useState([])
 
-  const [brandName, setBrandName] = useState([])
-  const [ram, setRam] = useState([])
   const [hoverState, setHoverState] = useState(false)
   const [indepIndex, setIndepIndex] = useState()
 
@@ -88,9 +85,7 @@ const MobilesPage = () => {
         setProductTotalRating(res.data.total_ratings)
         setProductOff(res.data.off)
         setProductDescription(res.data.description)    
-        setProductId(res.data.uid)     
-        setBrandName(res.data.brand)
-        setRam(res.data.ram)    
+        setProductId(res.data.uid)                
         setLoad(false) 
     }
 
@@ -237,26 +232,15 @@ const MobilesPage = () => {
         {showBtn && <ScrollToTop smooth color='#4E4FEB' svgPath='M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z' viewBox='0 0 16 16' className='flex justify-center items-center' style={{ border: '1px solid #4E4FEB' }} />}
         
         <section className='mt-10 px-5'>
-            <div className='flex gap-x-5'>
-                <div className='w-1/4 bg-white drop-shadow-lg h-full'>
-                    <Filter brand = {brandName} 
-                          ram = {ram} />
-                </div>
-                <div className='w-3/4 bg-white drop-shadow-lg py-2 px-4'>             
-                    <div className='font-semibold mt-[0.45rem] text-lg'>Showing {sliceStart + 1} - {sliceEnd} of {productName.length} results for {image_category[id]}</div>
-                    <div className='flex gap-x-5 mt-[0.45rem] text-sm'>
-                        <div className='font-semibold'>Sort By</div>
-                        <div>Relevance</div>
-                        <div>Price--Low to High</div>
-                        <div>Price--High to Low</div>
-                        <div>Newest First</div>
-                    </div>       
+            <div className='flex gap-x-5'>              
+                <div className='w-full bg-white drop-shadow-lg py-2 px-4'>             
+                    <div className='font-semibold mt-[0.45rem] text-lg'>Showing {sliceStart + 1} - {sliceEnd} of {productName.length} results for {image_category[id]}</div>                      
                     <div className='mt-5'><hr className='opacity-10 border-0 h-[1px] bg-black' /></div>
                     <div>
                         {productName.slice(sliceStart, sliceEnd).map((val, index) => {                                                   
                             return (
                                 <>
-                                    <div className='flex mt-10 gap-x-3 cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={(e) => identifyBtnClicked(e, val, productRating[sliceStart + index], productTotalRating[sliceStart + index], productDescription[sliceStart + index], productOfferPrice[sliceStart + index], productPrice[sliceStart + index], productOff[sliceStart + index], productId[sliceStart + index], image_category[id], newImageName[id], sliceStart + index)}>                                
+                                    <div className='flex justify-between mt-10 cursor-pointer' onMouseEnter={() => handleHover("yes", index)} onMouseLeave={() =>handleHover("no", index)} onClick={(e) => identifyBtnClicked(e, val, productRating[sliceStart + index], productTotalRating[sliceStart + index], productDescription[sliceStart + index], productOfferPrice[sliceStart + index], productPrice[sliceStart + index], productOff[sliceStart + index], productId[sliceStart + index], image_category[id], newImageName[id], sliceStart + index)}>                                
 
                                         <div className='flex gap-x-5'>
                                             <div className='px-1 w-[13rem] h-[15rem] flex justify-center gap-x-7'><div><img src={require(`../../cat_images/${image_category[id]}/${newImageName[id]}${productId[sliceStart + index]}.jpg`)} className='h-[13rem]' loading='lazy' /></div>
@@ -289,7 +273,7 @@ const MobilesPage = () => {
                                             </div>
                                             </div>
 
-                                        <div>
+                                        <div className='px-10'>
                                             <div className='flex flex-col'>
                                                 <div className='font-bold text-2xl'>₹{productOfferPrice[sliceStart + index]}</div>
                                             <div className='flex gap-x-2 mt-1'>
@@ -305,7 +289,7 @@ const MobilesPage = () => {
                         })}
                     </div>                                   
 
-                <div className='mt-10 flex w-3/4 justify-between'>
+                <div className='mt-10 flex mb-5 justify-between'>
                     <div>Page {currentPage} of {totalNumberOfPages}</div>
                     <div className='flex gap-x-5'>
                         <div>

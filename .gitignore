@@ -10,6 +10,7 @@
 /src/all
 /src/cat_images
 /src/frequent_images
+/.env
 
 # testing
 /coverage
